@@ -1,0 +1,13 @@
+.commentItem {
+  border-bottom: 1px solid #ccc;
+  padding-top: .2rem;
+}
+
+.replySpread {
+  max-height: 9999px;
+}
+
+.replyCollapse {
+  max-height: 0;
+  overflow: hidden;
+}

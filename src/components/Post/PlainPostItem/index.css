@@ -1,0 +1,57 @@
+.postItem {
+  padding: .4rem;
+  cursor: pointer;
+}
+
+.postItem:not(:first-child) {
+  border-top: 1px solid #f1f1f1;
+}
+
+.postItemHeader {
+  composes: flexAlignItemsCenter from global;
+}
+
+.avatarWrapper {
+  width: 2.4rem;
+  padding-right: .4rem;
+  box-sizing: content-box;
+}
+
+.title {
+  width: calc(100% - 2.8rem);
+  line-height: .48rem;
+  margin: 0;
+}
+
+.postItemMain {
+  padding: .3rem 0;
+}
+
+.postItemMain:after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: left;
+}
+
+.poster {
+  float: left;
+  width: 2.4rem;
+  height: 1.35rem;
+  object-fit: cover;
+  object-position: 50%;
+}
+
+.content {
+  margin: 0;
+  line-height: .3375rem;
+  color: #333;
+  max-height: 1.35rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.contentWithPoster {
+  composes: content;
+  margin-left: 2.8rem;
+}

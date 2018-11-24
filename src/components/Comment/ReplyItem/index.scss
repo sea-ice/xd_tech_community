@@ -1,0 +1,113 @@
+.replyItem {
+  position: relative;
+  padding-top: .2rem;
+  &:not(:last-child):after {
+    content: '';
+    background-color: #ccc;
+    position: absolute;
+    width: 90%;
+    height: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.replyMain {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.replyItemHeader,
+.replyItemFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.replyItemHeader {
+  & > p {
+    margin-bottom: 0;
+  }
+}
+
+.publisherInfo {
+  display: flex;
+  align-items: center;
+  & > time {
+    margin-left: .4rem;
+  }
+}
+
+.commentContent {
+  padding-top: .4rem;
+}
+
+.replyItemFooter {
+  padding-bottom: .1rem;
+  margin-left: -.2rem;
+}
+
+.iconBtns {
+  display: flex;
+  align-items: center;
+}
+
+.replyItemIcon {
+  composes: icon from global;
+  display: block;
+  width: .36rem;
+  height: .36rem;
+}
+
+.agreeIcon {
+  composes: replyItemIcon;
+  background-image: url(../../../assets/agree.svg);
+}
+
+.replyIcon {
+  composes: replyItemIcon;
+  background-image: url(../../../assets/reply.svg);
+}
+
+.collapseIcon {
+  composes: replyItemIcon;
+  background-image: url(../../../assets/collapse-gray.svg);
+}
+
+.spreadIcon {
+  composes: collapseIcon;
+  transform: rotate(180deg);
+}
+
+.more {
+  composes: icon from global;
+  display: block;
+  width: .32rem;
+  height: .32rem;
+  padding: .1rem 0 .1rem .1rem;
+  box-sizing: content-box;
+  background-origin: content-box;
+  background-image: url(../../../assets/ellipsis.svg);
+  cursor: pointer;
+}
+
+.replyBoxWrapper {
+  background-color: #e6e6e6;
+  transition: max-height .5s ease-in-out;
+  overflow: hidden;
+  & > div {
+    width: 90%;
+    margin: 0 auto;
+    padding: .4rem 0;
+  }
+}
+
+.replyBoxCollapse {
+  composes: replyBoxWrapper;
+  max-height: 0;
+}
+
+.replyBoxSpread {
+  composes: replyBoxWrapper;
+  max-height: 300px;
+}

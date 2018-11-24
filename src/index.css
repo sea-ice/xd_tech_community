@@ -1,0 +1,45 @@
+body {
+  background-color: #eee !important;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none !important;
+}
+
+:global(.app-container) {
+  padding-top: 1rem;
+}
+
+:global(.icon) {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+:global(.app-main) {
+  width: 88%;
+  padding-top: .8rem;
+  margin: 0 auto;
+}
+
+:global(.flexAlignItemsCenter) {
+  display: flex;
+  align-items: center;
+}
+
+:global(.flexSpaceBetween) {
+  justify-content: space-between;
+}
+
+:global(.no-margin) {
+  margin: 0;
+}

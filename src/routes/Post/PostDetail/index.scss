@@ -1,0 +1,125 @@
+.postContentSection {
+  background-color: white;
+  padding: .4rem .4rem .2rem;
+}
+
+.postTitleWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.more {
+  composes: icon from global;
+  display: block;
+  width: .36rem;
+  height: .36rem;
+  padding: .1rem;
+  box-sizing: content-box;
+  background-origin: content-box;
+  background-image: url(../../../assets/ellipsis.svg);
+  cursor: pointer;
+}
+
+.popoverItem {
+  padding: .1rem .2rem;
+  color: #666;
+}
+
+.postContent {
+  padding-top: .2rem;
+}
+
+.postInfoFooter {
+  display: flex;
+  align-items: center;
+  margin-left: -0.2rem;
+  padding: .2rem 0;
+}
+
+.postCommentSection {
+  background-color: white;
+  margin-top: 20px;
+}
+
+.postCommentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .2rem .4rem;
+  border-bottom: 1px solid #ccc;
+  h3 {
+    margin: 0;
+  }
+}
+
+.commentBoxWrapper {
+  padding: 1rem .4rem .4rem;
+}
+
+.postOtherInfo {
+  background-color: white;
+  padding: .3rem .4rem .4rem;
+}
+
+.postTags {
+  & > li {
+    float: left;
+    padding-top: .1rem;
+  }
+  &:after {
+    content: '';
+    display: block;
+    height: 0;
+    clear: left;
+  }
+}
+
+.postOtherInfoIcon {
+  padding-top: .2rem;
+  margin-left: -.2rem;
+}
+
+.authorInfoSection {
+  margin-top: 20px;
+  background-color: white;
+}
+
+.authorInfoHeader {
+  padding: .2rem .2rem .2rem .4rem;
+  h3 {
+    margin: 0;
+  }
+}
+
+.authorInfoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+}
+
+.contactAuthorBtns,
+.authorInfoMain {
+  display: flex;
+  align-items: center;
+}
+
+.authorInfoMain {
+  padding: .3rem .4rem;
+  border-bottom: 1px solid #eee;
+}
+
+.authorInfo {
+  // padding: .2rem .4rem;
+  margin-left: .4rem;
+  & > p {
+    margin-bottom: .5em;
+  }
+}
+
+.signature {
+  padding: .3rem .4rem;
+}
+
+

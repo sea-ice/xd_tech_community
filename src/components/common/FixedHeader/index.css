@@ -1,0 +1,81 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 100;
+}
+
+.headerContent {
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  width: 1rem;
+  height: 1rem;
+  content: url(../../../assets/yay.jpg);
+  margin: 0;
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+}
+
+.appLink {
+  margin-left: 1rem;
+}
+
+.flyIcon {
+  composes: icon from global;
+  display: block;
+  width: .4rem;
+  height: .4rem;
+  background-image: url(../../../assets/fly.svg);
+}
+
+.msgNotify {
+  margin-left: 1rem;
+}
+
+.msgNotifyIcon {
+  display: block;
+}
+
+.loginUserInfo {
+  margin-left: .8rem;
+  font-size: 0;
+  line-height: .4rem;
+  white-space: nowrap;
+}
+
+.userBtn {
+  display: inline-block;
+  font-size: .28rem;
+  vertical-align: top;
+}
+
+.register {
+  composes: userBtn;
+}
+
+.login {
+  composes: userBtn;
+}
+
+.login:before {
+  content: '';
+  margin-left: .2rem;
+  padding: .2rem .2rem .2rem 0;
+  border-left: 1px solid #ccc;
+  font-size: 0;
+  vertical-align: top;
+}

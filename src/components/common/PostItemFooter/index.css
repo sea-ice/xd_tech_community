@@ -1,0 +1,15 @@
+.postItemFooter,
+.postItemInfo,
+.postItemTags,
+.postItemStatistic {
+  composes: flexAlignItemsCenter from global;
+}
+
+.postItemFooter {
+  composes: flexSpaceBetween from global;
+}
+
+.postItemPublishTime {
+  color: #666;
+  margin-left: .4rem;
+}
