@@ -14,7 +14,7 @@ class AuthorPosts extends Component {
     let showDraftBtn = <div className={styles.draftBtn}><Button icon='file-text'>草稿箱</Button></div>
     return (
       <Tabs tabBarExtraContent={showDraftBtn}>
-        <Tabs.TabPane tab="我的分享帖" key="sharePosts">
+        <Tabs.TabPane tab={`我的分享帖(${5})`} key="sharePosts">
           <ul className={styles.postList}>
             <PostItem view={255} like={768} comment={22} />
             <PostItem view={255} like={768} comment={22} />
@@ -23,7 +23,7 @@ class AuthorPosts extends Component {
             <PostItem view={255} like={768} comment={22} />
           </ul>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="我的求助帖" key="helpPosts">
+        <Tabs.TabPane tab={`我的求助帖(${5})`} key="helpPosts">
           <ul className={styles.postList}>
             <PostItem view={255} like={768} comment={22} />
             <PostItem view={255} like={768} comment={22} />
