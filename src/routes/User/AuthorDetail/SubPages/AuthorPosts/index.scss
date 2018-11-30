@@ -1,0 +1,12 @@
+.draftBtn {
+  padding: 6px .2rem 6px 0;
+  height: 44px;
+  & > button {
+    display: block;
+  }
+}
+
+.postList {
+  margin-top: -1em;
+  margin-bottom: 0;
+}

@@ -8,7 +8,7 @@
 }
 
 .postItemHeader {
-  composes: flexAlignItemsCenter from global;
+  composes: faic from global;
 }
 
 .avatarWrapper {

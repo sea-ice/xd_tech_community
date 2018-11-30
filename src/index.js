@@ -1,4 +1,5 @@
 import dva from 'dva';
+import createHistory from 'history/createBrowserHistory'
 
 import {initRootFontSize} from './utils/dom'
 import './index.css';
@@ -8,7 +9,9 @@ startApp()
 
 function startApp() {
   // 1. Initialize
-  const app = dva();
+  const app = dva({
+    history: createHistory()
+  });
 
   // 2. Plugins
   // app.use({});

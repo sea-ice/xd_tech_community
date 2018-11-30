@@ -3,7 +3,9 @@
     ["import", {"libraryName": "antd", "libraryDirectory": "es", "style" : "css"}],
     ["module-resolver", {"alias": {
       "components": "./src/components",
-      "config": "./src/config"
+      "config": "./src/config",
+      "AuthorDetail": "./src/routes/User/AuthorDetail",
+      "utils": "./src/utils"
     }}]
   ]
 }

@@ -11,12 +11,12 @@
 
 .filterIcon {
   composes: filter;
-  background-image: url(../../assets/filter.svg);
+  background-image: url(/assets/filter.svg);
 }
 
 .collapseIcon {
   composes: filter;
-  background-image: url(../../assets/collapse.svg);
+  background-image: url(/assets/collapse.svg);
 }
 
 
