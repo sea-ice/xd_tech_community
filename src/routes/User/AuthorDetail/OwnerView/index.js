@@ -7,6 +7,7 @@ import {Row, Col, Affix, Menu} from 'antd'
 import styles from './index.scss'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
+import DraftBin from 'AuthorDetail/SubPages/DraftBin'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
 import AuthorFollowing from 'AuthorDetail/SubPages/AuthorFollowing'
 import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
@@ -16,34 +17,43 @@ import {getRootFontSize, getSearchObj} from 'utils'
 class OwnerAuthorDetail extends Component {
   constructor (props) {
     super(props)
-    this.authorDetailTabs = ['basic-info', 'my-post', 'my-collection', 'my-follow', 'follow-me', 'tag-manage']
-    this.state = this.getInitialState()
-
+    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['tag-manage']]
+    this.state = this.getURLSearchState()
     this.changeTab = this.changeTab.bind(this)
   }
-  getInitialState () {
+  getURLSearchState () {
     let {tab} = getSearchObj()
-    let selected = ['basic-info']
-    if (tab && (this.authorDetailTabs.indexOf(tab) > 0)) {
-      selected = [tab]
+    let selected = ['basic-info'],
+        subPage = 'basic-info'
+    if (tab) {
+      let targetTabs = this.authorDetailTabs.find(tabs => ~tabs.indexOf(tab))
+      if (targetTabs) {
+        selected = [targetTabs[0]]
+        subPage = tab
+      }
     }
-    return {selectedTab: selected}
+    return {selectedTab: selected, subPage}
   }
   changeTab ({key}) {
     let {dispatch, id} = this.props
-    dispatch(routerRedux.push(`/author/${id}?tab=${key}`))
+    dispatch(routerRedux.push({
+      pathname: `/author/${id}`,
+      search: `?tab=${key}`
+    }))
   }
   render () {
     let documentEleFontSize = getRootFontSize()
-    let {selectedTab} = this.state
+    let {selectedTab, subPage} = this.state
 
-    let subPage
-    switch (selectedTab[0]) {
+    switch (subPage) {
       case 'basic-info':
         subPage = <AuthorBasicInfo guest={false} />
         break
       case 'my-post':
         subPage = <AuthorPosts guest={false} />
+        break
+      case 'draft-bin':
+        subPage = <DraftBin />
         break
       case 'my-collection':
         subPage = <AuthorCollection guest={false} />

@@ -28,14 +28,6 @@
   }
 }
 
-.timeWrapper {
-  composes: faic from global;
-  time {
-    margin-right: .2rem;
-    color: #ccc;
-  }
-}
-
 .more {
   composes: moreBtn from global;
   width: .24rem;
@@ -51,5 +43,15 @@
 .footer {
   composes: faic from global;
   padding: .1rem 0 .06rem;
-  margin-left: -0.2rem;
+  time {
+    margin-right: .4rem;
+  }
+  & > .wordCount {
+    margin: 0;
+    color: #888;
+  }
+}
+
+.iconBtnWrapper {
+  composes: faic from global;
 }

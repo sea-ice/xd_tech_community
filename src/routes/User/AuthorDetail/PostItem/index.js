@@ -23,7 +23,7 @@ class PostItem extends Component {
     </ul>
   }
   render () {
-    let {view, like, comment} = this.props
+    let {isDraft, view, like, comment} = this.props
     let commonIconOpt = {
       type: 'icon',
       iconSize: '.24rem',
@@ -32,31 +32,37 @@ class PostItem extends Component {
       color: '#666'
     }
     return (
-      <li className={styles.postItem}>
+      <div className={styles.postItem}>
         <header className={styles.header}>
           <div className={styles.title}>
             <h4>[求助]炫酷粒子表白，双十一脱单靠它了！</h4>
             <i className={styles.editIcon}><Icon type="edit" /></i>
           </div>
-          <div className={styles.timeWrapper}>
-            <time>2018/11/29 12:44</time>
-            <Popover content={this.delPostTemplate} placement="bottomRight">
-              <i className={styles.more}></i>
-            </Popover>
-          </div>
+          <Popover content={this.delPostTemplate} placement="bottomRight">
+            <i className={styles.more}></i>
+          </Popover>
         </header>
         <footer className={styles.footer}>
-          <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonIconOpt} />
-          <IconBtn iconType="heart" iconBtnText={`${like}人喜欢`} {...commonIconOpt} />
-          <IconBtn iconType="message" iconBtnText={`${comment}人评论`} {...commonIconOpt} />
+          <time>2018/11/29 12:44</time>
+          {
+            isDraft ?
+            <p className={styles.wordCount}>共&nbsp;234&nbsp;字</p>
+            :
+            <div className={styles.iconBtnWrapper}>
+              <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonIconOpt} />
+              <IconBtn iconType="heart" iconBtnText={`${like}人喜欢`} {...commonIconOpt} />
+              <IconBtn iconType="message" iconBtnText={`${comment}人评论`} {...commonIconOpt} />
+            </div>
+          }
         </footer>
-      </li>
+      </div>
     );
   }
 }
 
 PostItem.propTypes = {
-  guest: PropTypes.bool
+  guest: PropTypes.bool,
+  isDraft: PropTypes.bool
 };
 
 export default connect()(PostItem);

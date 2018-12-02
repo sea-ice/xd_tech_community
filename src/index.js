@@ -10,7 +10,9 @@ startApp()
 function startApp() {
   // 1. Initialize
   const app = dva({
-    history: createHistory()
+    history: createHistory({
+      forceRefresh: true
+    })
   });
 
   // 2. Plugins
