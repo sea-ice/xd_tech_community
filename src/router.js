@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import IndexPage from './routes/Index';
+import RegisterPage from './routes/User/Register'
+import LoginPage from './routes/User/Login'
 import PostDetail from './routes/Post/PostDetail'
 import AuthorDetail from './routes/User/AuthorDetail'
 
@@ -9,6 +11,8 @@ function RouterConfig({ history }) {
     <Router history={history}>
       <Switch>
         <Route path="/" exact component={IndexPage} />
+        <Route path="/register" exact component={RegisterPage} />
+        <Route path="/login" exact component={LoginPage} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
       </Switch>

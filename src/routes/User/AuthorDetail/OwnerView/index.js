@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router'
+import { routerRedux, withRouter } from 'dva/router'
 
 import {Row, Col, Affix, Menu} from 'antd'
 
@@ -14,24 +14,42 @@ import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
 import TagManage from 'AuthorDetail/SubPages/TagManage'
 import {getRootFontSize, getSearchObj} from 'utils'
 
+@withRouter
+@connect()
 class OwnerAuthorDetail extends Component {
   constructor (props) {
     super(props)
-    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['tag-manage']]
-    this.state = this.getURLSearchState()
+    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['tag-manage']];
+
+    this.state = this.getURLSearchState(props.history.location)
     this.changeTab = this.changeTab.bind(this)
   }
-  getURLSearchState () {
-    let {tab} = getSearchObj()
+  UNSAFE_componentWillReceiveProps () {
+    let {location, history} = this.props
+    if (
+      // 用户刷新地址栏、点击前进后退均属于POP操作
+      // history.action === 'POP' ||
+      (history.action === 'PUSH' && location.search !== history.location.search)
+    ) {
+      // 旧props中的location保存当前UI渲染对应的路径信息
+      // 而history.location保存当前最新的路径信息，即浏览器地址栏中的信息
+      // push新的路径，浏览器地址栏会更新，但如果没有通过setState设置正确的selectedTab，UI并不会更新
+      this.setState(this.getURLSearchState(history.location))
+    }
+  }
+  getURLSearchState (location) {
+    let {tab} = getSearchObj(location)
     let selected = ['basic-info'],
         subPage = 'basic-info'
     if (tab) {
-      let targetTabs = this.authorDetailTabs.find(tabs => ~tabs.indexOf(tab))
+      let targetTabs = this.authorDetailTabs.find(
+        tabs => ~tabs.indexOf(tab))
       if (targetTabs) {
         selected = [targetTabs[0]]
         subPage = tab
       }
     }
+    // console.log({selectedTab: selected, subPage})
     return {selectedTab: selected, subPage}
   }
   changeTab ({key}) {
@@ -96,4 +114,4 @@ class OwnerAuthorDetail extends Component {
 OwnerAuthorDetail.propTypes = {
 };
 
-export default connect()(OwnerAuthorDetail);
+export default OwnerAuthorDetail;

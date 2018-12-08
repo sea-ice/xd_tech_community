@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'dva';
 import {Row, Col, Tabs} from 'antd'
 
+import {checkLogin} from 'utils'
+
 import styles from './index.css'
 import FixedHeader from 'components/common/FixedHeader'
 import IconBtn from 'components/common/IconBtn'
@@ -12,12 +14,18 @@ import PlainPostItem from 'components/Post/PlainPostItem';
 class IndexPage extends Component {
   constructor (props) {
     super(props)
-    this.toggleCollapse = this.toggleCollapse.bind(this)
-    this.refreshOnTagChange = this.refreshOnTagChange.bind(this)
+    this.bindHandlers()
     this.state = {
       postFilterCollapse: false
     }
+    let {dispatch} = this.props
+    dispatch({type: 'recommendSharePost/getPageData', payload: {page: 1}})
   }
+  bindHandlers() {
+    this.toggleCollapse = this.toggleCollapse.bind(this)
+    this.refreshOnTagChange = this.refreshOnTagChange.bind(this)
+  }
+  // 切换标签过滤器的收起/展开状态
   toggleCollapse () {
     let {postFilterCollapse} = this.state
     postFilterCollapse = !postFilterCollapse
@@ -148,4 +156,9 @@ class IndexPage extends Component {
 IndexPage.propTypes = {
 };
 
-export default connect()(IndexPage);
+export default checkLogin(connect(state => ({
+  stickSharePosts: state.indexStickSharePosts,
+  stickHelpPosts: state.indexStickHelpHosts,
+  recommendSharePosts: state.recommendPosts.share,
+  recommendHelpPosts: state.recommendPosts.help
+}))(IndexPage));

@@ -1,32 +1,30 @@
 import React, {Component} from 'react';
-import { connect } from 'dva';
-
-import {checkLogin} from 'utils'
+import { connect } from 'dva'
 
 import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
-import OwnerView from './OwnerView'
+import LoginForm from './LoginForm'
 
-@checkLogin
-@connect()
-class AuthorDetail extends Component {
+class UserLoginPage extends Component {
   constructor (props) {
     super(props)
   }
   render () {
-    let {match: {params: {id}}} = this.props
+
     return (
       <div className="app-container">
         <FixedHeader />
         <main className="app-main">
-          <OwnerView id={id} />
+          <div className={styles.loginForm}>
+            <LoginForm />
+          </div>
         </main>
       </div>
     );
   }
 }
 
-AuthorDetail.propTypes = {
+UserLoginPage.propTypes = {
 };
 
-export default AuthorDetail;
+export default connect()(UserLoginPage);
