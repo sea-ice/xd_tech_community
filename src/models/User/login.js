@@ -33,7 +33,7 @@ export default {
       return Object.assign({}, state, {
         userId,
         userToken: token,
-        userInfo
+        userInfo: {...userInfo, userId}
       })
     },
     resetLoginSuccessPage (state) {
@@ -75,14 +75,15 @@ export default {
         failCallback(message)
       }
     },
-    *checkLogin({payload}, {call, put}) {
-      let {token, userId, checkValidCallback} = payload
+    *checkLogin({payload}, effects) {
+      let {call, put} = effects
+      let {token, userId, checkLoginFinish} = payload
       let res = yield call(() => postJSON(
         '/api/user/checkIdentity', {
           token,
           userId
         }))
-      // console.log(res)
+      console.log(res)
       let {data: {code, body}} = res
       if (code === 100) {
         // console.log('......')
@@ -96,11 +97,19 @@ export default {
             userInfo: body
           }
         })
+        yield checkLoginFinish({userId, ...body}, effects)
       } else {
         yield put({
-          type: 'clearLoginInfo'
+          type: 'checkLoginInvalid',
+          payload: {checkLoginFinish}
         })
       }
+    },
+    *checkLoginInvalid ({payload}, effects) {
+      let {put} = effects
+      let {checkLoginFinish} = payload
+      yield put({ type: 'clearLoginInfo' })
+      yield checkLoginFinish(null, effects)
     },
     *logout({payload}, {call, put}) {
       let {userId, successCallback, failCallback} = payload

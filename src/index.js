@@ -2,7 +2,9 @@ import dva from 'dva';
 import createHistory from 'history/createBrowserHistory'
 
 import initialState from './initialState'
+import appRouterConfig from './router'
 import {initRootFontSize} from './utils/dom'
+
 import './index.css';
 
 initRootFontSize()
@@ -22,11 +24,15 @@ function startApp() {
 
   // 3. Model
   app.model(require('./models/Post/recommendPosts').default);
+  app.model(require('./models/Post/indexStickPosts').default);
+  app.model(require('./models/Post/postFilterState').default);
+  app.model(require('./models/firstScreenRender').default);
+
   app.model(require('./models/User/login').default);
   app.model(require('./models/User/register').default);
 
   // 4. Router
-  app.router(require('./router').default);
+  app.router(appRouterConfig(app));
 
   // 5. Start
   app.start('#root');

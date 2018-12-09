@@ -7,20 +7,17 @@
   border-top: 1px solid #f1f1f1;
 }
 
-.postItemHeader {
-  composes: faic from global;
-}
-
 .avatarWrapper {
-  width: 2.4rem;
-  padding-right: .4rem;
-  box-sizing: content-box;
+  composes: faic from global;
+  & > time {
+    margin-left: .3rem;
+  }
 }
 
 .title {
-  width: calc(100% - 2.8rem);
   line-height: .48rem;
   margin: 0;
+  margin-top: .2rem;
 }
 
 .postItemMain {
@@ -40,6 +37,7 @@
   height: 1.35rem;
   object-fit: cover;
   object-position: 50%;
+  margin-right: .4rem;
 }
 
 .content {
@@ -49,9 +47,4 @@
   max-height: 1.35rem;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-
-.contentWithPoster {
-  composes: content;
-  margin-left: 2.8rem;
 }
