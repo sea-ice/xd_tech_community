@@ -25,32 +25,18 @@ a:active {
   background-position: 50%;
 }
 
-:global(.moreBtn) {
-  /* “更多操作”按钮通用样式 */
-  display: block;
-  box-sizing: content-box;
-  background-origin: content-box;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-image: url(/assets/ellipsis.svg);
-  cursor: pointer;
-}
-
 :global(.app-main) {
   width: 88%;
   padding-top: .8rem;
   margin: 0 auto;
 }
 
-:global(.faic) {
-  /* flex align items center */
+:global(.flexAlignItemsCenter) {
   display: flex;
   align-items: center;
 }
 
-:global(.fsb) {
-  /* flex space between */
+:global(.flexSpaceBetween) {
   justify-content: space-between;
 }
 

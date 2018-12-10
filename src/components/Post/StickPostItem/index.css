@@ -13,7 +13,7 @@
   position: absolute;
   width: .8rem;
   height: .8rem;
-  background-image: url(/assets/stick.svg);
+  background-image: url(../../../assets/stick.svg);
   top: 0;
   right: 0;
 }

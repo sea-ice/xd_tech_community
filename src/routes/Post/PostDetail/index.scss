@@ -10,10 +10,15 @@
 }
 
 .more {
-  composes: moreBtn from global;
+  composes: icon from global;
+  display: block;
   width: .36rem;
   height: .36rem;
   padding: .1rem;
+  box-sizing: content-box;
+  background-origin: content-box;
+  background-image: url(../../../assets/ellipsis.svg);
+  cursor: pointer;
 }
 
 .popoverItem {

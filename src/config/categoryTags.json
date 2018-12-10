@@ -1,12 +1,11 @@
 [{
-  "id": 0,
   "name": "开发语言",
   "tags": [{
     "id": "",
     "name": "Java"
   }, {
     "id": "",
-    "name": "Javascript"
+    "name": "JavaScript"
   }, {
     "id": "",
     "name": "C"
@@ -24,17 +23,16 @@
     "name": "PHP"
   }]
 }, {
-  "id": 1,
   "name": "前端",
   "tags": [{
     "id": "",
-    "name": "Html"
+    "name": "HTML"
   }, {
     "id": "",
-    "name": "Css"
+    "name": "CSS"
   }, {
     "id": "",
-    "name": "Javascript"
+    "name": "JavaScript"
   }, {
     "id": "",
     "name": "Angular.js"
@@ -55,7 +53,6 @@
     "name": "微信小程序"
   }]
 }, {
-  "id": 2,
   "name": "后端",
   "tags": [{
     "id": "",
@@ -86,7 +83,6 @@
     "name": "架构"
   }]
 }, {
-  "id": 3,
   "name": "Android开发",
   "tags": [{
     "id": "",
@@ -108,7 +104,6 @@
     "name": "gradle"
   }]
 }, {
-  "id": 4,
   "name": "iOS开发",
   "tags": [{
     "id": "",
@@ -133,7 +128,6 @@
     "name": "WWDC"
   }]
 }, {
-  "id": 5,
   "name": "热门专题",
   "tags": [{
     "id": "",
@@ -161,7 +155,6 @@
     "name": "大数据"
   }]
 }, {
-  "id": 6,
   "name": "产品/运营",
   "tags": [{
     "id": "",

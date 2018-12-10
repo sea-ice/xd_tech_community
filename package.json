@@ -8,13 +8,10 @@
   },
   "dependencies": {
     "antd": "^3.10.7",
-    "dayjs": "^1.7.7",
     "dva": "^2.4.1",
-    "history": "^4.7.2",
-    "immutable": "^4.0.0-rc.12",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "reselect": "^4.0.0"
+    "simditor": "^2.3.6"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",
