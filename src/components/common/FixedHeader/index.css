@@ -21,7 +21,7 @@
 .logo {
   width: 1rem;
   height: 1rem;
-  content: url(/assets/yay.jpg);
+  content: url(../../../assets/yay.jpg);
   margin: 0;
 }
 
@@ -39,7 +39,7 @@
   display: block;
   width: .4rem;
   height: .4rem;
-  background-image: url(/assets/fly.svg);
+  background-image: url(../../../assets/fly.svg);
 }
 
 .msgNotify {
@@ -80,20 +80,20 @@
   vertical-align: top;
 }
 
-.loginInfo {
-  display: inline-block;
-  line-height: 32px;
-  vertical-align: middle;
-}
-
-.nickName {
-  composes: loginInfo;
-  margin-left: .1rem;
-  font-size: .28rem;
-}
-
-.logout {
-  composes: loginInfo;
-  margin-left: .2rem;
-  font-size: .24rem;
+.btnYl{
+   display: inline-block;
+   margin-bottom: 0; 
+   text-align: center;
+   vertical-align: middle;
+   touch-action: manipulation;
+   cursor: pointer;
+   background: #1890ff;
+   color:#fff;
+   border: 1px solid transparent;
+   white-space: nowrap;
+   margin-left: 50px;
+   width:200px;
+   height:32px;
+   line-height: 32px;
+   border-radius: 5px;
 }

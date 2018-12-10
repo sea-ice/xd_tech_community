@@ -61,17 +61,17 @@
 
 .agreeIcon {
   composes: replyItemIcon;
-  background-image: url(/assets/agree.svg);
+  background-image: url(../../../assets/agree.svg);
 }
 
 .replyIcon {
   composes: replyItemIcon;
-  background-image: url(/assets/reply.svg);
+  background-image: url(../../../assets/reply.svg);
 }
 
 .collapseIcon {
   composes: replyItemIcon;
-  background-image: url(/assets/collapse-gray.svg);
+  background-image: url(../../../assets/collapse-gray.svg);
 }
 
 .spreadIcon {
@@ -87,7 +87,7 @@
   padding: .1rem 0 .1rem .1rem;
   box-sizing: content-box;
   background-origin: content-box;
-  background-image: url(/assets/ellipsis.svg);
+  background-image: url(../../../assets/ellipsis.svg);
   cursor: pointer;
 }
 

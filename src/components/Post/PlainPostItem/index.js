@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import {connect} from 'dva'
 import { routerRedux } from 'dva/router'
-import dayjs from 'dayjs'
 
-import styles from './index.scss'
+import styles from './index.css'
 import IconBtn from 'components/common/IconBtn'
 import PostItemFooter from 'components/common/PostItemFooter'
 
@@ -18,28 +17,24 @@ class PlainPostItem extends Component {
   }
   render () {
     let {
-      avator,
-      nickName,
+      avatarURL,
+      username,
       title,
-      image,
+      posterURL,
       content,
-      time,
       ...postFooterInfo
     } = this.props
     return (
       <li className={styles.postItem} onClick={this.showPostDetail}>
         <header className={styles.postItemHeader}>
           <div className={styles.avatarWrapper}>
-            <IconBtn type="avatar" avatarURL={avator} iconBtnText={nickName} btnPadding='0' color="#333" />
-            <time className={styles.postItemPublishTime}>{
-              dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
-            }</time>
+            <IconBtn type="avatar" avatarURL={avatarURL} iconBtnText={username} btnPadding='0' color="#333" />
           </div>
           <h2 className={styles.title}>{title}</h2>
         </header>
         <main className={styles.postItemMain}>
-          {image !== '-1' ? <img className={styles.poster} src={image} alt="poster" /> : null}
-          <p className={styles.content}>{content}</p>
+          {posterURL ? <img className={styles.poster} src={posterURL} alt="poster" /> : null}
+          <p className={posterURL ? styles.contentWithPoster : styles.content}>{content}</p>
         </main>
         <PostItemFooter {...postFooterInfo} />
       </li>

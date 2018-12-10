@@ -7,10 +7,10 @@ import colorfulTags from 'config/colorfulTags.json'
 
 function PostItemFooter ({
   publishTime,
-  label,
-  approvalNum,
+  tags,
+  like,
   view,
-  commentNum
+  comment
 }) {
   let commonIconOpt = {
     type: 'icon',
@@ -23,14 +23,11 @@ function PostItemFooter ({
     <footer className={styles.postItemFooter}>
       <div className={styles.postItemInfo}>
         <div className={styles.postItemTags}>
-          {
-            label && label.split(',').map(
+          {tags.map(
             tag => <Tag
               key={tag}
-              // color={colorfulTags.find(ct => ct.name === tag).color}
-              color='gold'
-            >{tag}</Tag>)
-          }
+              color={colorfulTags.find(ct => ct.name === tag).color}
+            >{tag}</Tag>)}
           {/* <Tag color="magenta">JavaScript</Tag>
           <Tag color="red">CSS</Tag>
           <Tag color="volcano">HTML</Tag> */}
@@ -43,12 +40,12 @@ function PostItemFooter ({
           <Tag color="geekblue">geekblue</Tag>
           <Tag color="purple">purple</Tag> */}
         </div>
-        {/* <time className={styles.postItemPublishTime}>{publishTime}</time> */}
+        <time className={styles.postItemPublishTime}>{publishTime}</time>
       </div>
       <div className={styles.postItemStatistic}>
         <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonIconOpt} />
-        <IconBtn iconType="heart" iconBtnText={`${approvalNum}人喜欢`} {...commonIconOpt} />
-        <IconBtn iconType="message" iconBtnText={`${commentNum}人评论`} {...commonIconOpt} />
+        <IconBtn iconType="heart" iconBtnText={`${like}人喜欢`} {...commonIconOpt} />
+        <IconBtn iconType="message" iconBtnText={`${comment}人评论`} {...commonIconOpt} />
       </div>
     </footer>
   )

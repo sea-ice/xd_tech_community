@@ -2,11 +2,11 @@
 .postItemInfo,
 .postItemTags,
 .postItemStatistic {
-  composes: faic from global;
+  composes: flexAlignItemsCenter from global;
 }
 
 .postItemFooter {
-  composes: fsb from global;
+  composes: flexSpaceBetween from global;
 }
 
 .postItemPublishTime {
