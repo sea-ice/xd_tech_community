@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Input, Badge, Icon, Avatar, message} from 'antd'
 import {connect} from 'dva'
-import {routerRedux} from 'dva/router'
+import {routerRedux, withRouter, Link} from 'dva/router'
 
 import IconBtn from '../IconBtn'
 import styles from './index.css'
@@ -58,6 +58,10 @@ class FixedHeader extends Component {
               placeholder="发现更多有趣的"
               onSearch={this.handleUserSearch}
               enterButton />
+            <Link to="/publish" className={styles.btnYl}>
+              <i className="fa fa-bullhorn"></i>
+              <span>发帖</span>
+            </Link>
             <div className={styles.appLink}>
               <IconBtn iconClassName={styles.flyIcon} iconBtnText="APP" color="#999" fontSize=".28rem" />
             </div>

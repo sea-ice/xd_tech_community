@@ -3,6 +3,7 @@ import { Router, Route, Switch } from 'dva/router';
 import dynamic from 'dva/dynamic'
 
 import IndexPage from './routes/Index';
+import Publish from './routes/Publish';
 import RegisterPage from './routes/User/Register'
 import LoginPage from './routes/User/Login'
 import PostDetail from './routes/Post/PostDetail'
@@ -34,6 +35,7 @@ function appRouterConfig(app) {
       <Switch>
         <Route path="/" exact component={IndexPage} />
         <Route path="/register" exact component={RegisterPage} />
+        <Route path="/publish" exact component={Publish} />
         <Route path="/login" exact component={LoginPage} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
