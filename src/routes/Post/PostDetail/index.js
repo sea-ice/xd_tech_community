@@ -4,6 +4,7 @@ import {Row, Col, Affix, Button, Popover, Tag, Avatar} from 'antd'
 
 import styles from './index.scss'
 import colorfulTags from 'config/colorfulTags.json'
+import {checkLogin} from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
 import Confirm from 'components/common/Confirm'
@@ -12,6 +13,8 @@ import IconBtn from 'components/common/IconBtn'
 import CommentItem from 'components/Comment/CommentItem'
 import CommentBox from 'components/Comment/CommentBox'
 
+@checkLogin
+@connect()
 class PostDetail extends Component {
   state = {
     tags: ['JavaScript', 'HTML']
@@ -149,4 +152,4 @@ class PostDetail extends Component {
 PostDetail.propTypes = {
 };
 
-export default connect()(PostDetail);
+export default PostDetail;
