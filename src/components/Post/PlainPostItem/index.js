@@ -13,8 +13,8 @@ class PlainPostItem extends Component {
     this.showPostDetail = this.showPostDetail.bind(this)
   }
   showPostDetail () {
-    let {dispatch} = this.props
-    dispatch(routerRedux.push('/post/1'))
+    let {dispatch, articleId} = this.props
+    dispatch(routerRedux.push(`/post/${articleId}`))
   }
   render () {
     let {

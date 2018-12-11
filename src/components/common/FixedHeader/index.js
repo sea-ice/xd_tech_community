@@ -14,10 +14,15 @@ import styles from './index.css'
 class FixedHeader extends Component {
   constructor (props) {
     super(props)
+    this.turnToIndexPage = this.turnToIndexPage.bind(this)
     this.handleUserSearch = this.handleUserSearch.bind(this)
     this.toRegister = this.toRegister.bind(this)
     this.toLogin = this.toLogin.bind(this)
     this.toLogout = this.toLogout.bind(this)
+  }
+  turnToIndexPage () {
+    let {dispatch} = this.props
+    dispatch(routerRedux.push('/'))
   }
   handleUserSearch () {
 
@@ -52,7 +57,7 @@ class FixedHeader extends Component {
     return (
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.logo}>源来，西电人的技术社区</h1>
+          <h1 className={styles.logo} onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"

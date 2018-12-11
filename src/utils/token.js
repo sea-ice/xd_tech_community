@@ -18,7 +18,8 @@ export function checkLogin (opt) {
           payload: {
             token: userToken,
             userId,
-            checkLoginFinish
+            checkLoginFinish,
+            props: this.props
           }
         })
       } else {
@@ -32,14 +33,18 @@ export function checkLogin (opt) {
             payload: {
               token,
               userId: id,
-              checkLoginFinish
+              checkLoginFinish,
+              props: this.props
             }
           })
         } else {
           // token不存在，则清除store中存储的登录信息
           dispatch({
-            type: 'checkLoginInvalid',
-            payload: {checkLoginFinish}
+            type: 'user/checkLoginInvalid',
+            payload: {
+              checkLoginFinish,
+              props: this.props
+            }
           })
         }
       }

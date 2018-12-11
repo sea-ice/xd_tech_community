@@ -33,6 +33,32 @@ export default {
         //   }
         // })
       ]
+    },
+    *postDetails({payload}, {put}) {
+      let {userInfo, id} = payload
+      let postDetails = yield (yield put({
+        type: 'postDetails/getDetails',
+        payload: {id}
+      }))
+      if (postDetails) {
+        let {userId} = postDetails
+        yield [
+          put({
+            type: 'postDetails/getAuthorInfo',
+            payload: {userId}
+          }),
+          put({
+            type: 'postDetails/getComments',
+            payload: {id, userInfo}
+          })
+        ]
+      }
+
+      if (userInfo) {
+
+      } else {
+
+      }
     }
   }
 }

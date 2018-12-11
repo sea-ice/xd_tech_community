@@ -26,6 +26,7 @@ function startApp() {
   app.model(require('./models/Post/recommendPosts').default);
   app.model(require('./models/Post/indexStickPosts').default);
   app.model(require('./models/Post/postFilterState').default);
+  app.model(require('./models/Post/postDetails').default);
   app.model(require('./models/firstScreenRender').default);
 
   app.model(require('./models/User/login').default);

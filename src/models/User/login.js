@@ -77,7 +77,7 @@ export default {
     },
     *checkLogin({payload}, effects) {
       let {call, put} = effects
-      let {token, userId, checkLoginFinish} = payload
+      let {token, userId, checkLoginFinish, props} = payload
       let res = yield call(() => postJSON(
         '/api/user/checkIdentity', {
           token,
@@ -97,19 +97,19 @@ export default {
             userInfo: body
           }
         })
-        yield checkLoginFinish({userId, ...body}, effects)
+        yield checkLoginFinish({userId, ...body}, effects, props)
       } else {
         yield put({
           type: 'checkLoginInvalid',
-          payload: {checkLoginFinish}
+          payload: {checkLoginFinish, props}
         })
       }
     },
     *checkLoginInvalid ({payload}, effects) {
       let {put} = effects
-      let {checkLoginFinish} = payload
+      let {checkLoginFinish, props} = payload
       yield put({ type: 'clearLoginInfo' })
-      yield checkLoginFinish(null, effects)
+      yield checkLoginFinish(null, effects, props)
     },
     *logout({payload}, {call, put}) {
       let {userId, successCallback, failCallback} = payload

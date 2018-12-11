@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
 import {Row, Col, Affix, Button, Popover, Tag, Avatar} from 'antd'
+import dayjs from 'dayjs'
 
 import styles from './index.scss'
 import colorfulTags from 'config/colorfulTags.json'
@@ -13,8 +14,23 @@ import IconBtn from 'components/common/IconBtn'
 import CommentItem from 'components/Comment/CommentItem'
 import CommentBox from 'components/Comment/CommentBox'
 
-@checkLogin
-@connect()
+@checkLogin({
+  *checkLoginFinish(userInfo, {put}, props) {
+    console.log('......')
+    console.log(props)
+    let {match: {params: {id}}} = props
+    yield put({
+      type: 'firstScreenRender/postDetails',
+      payload: {userInfo, id: Number(id)}
+    })
+  }
+})
+@connect(state => ({
+  loginUserId: state.user.userId,
+  postInfo: state.postDetails.postInfo,
+  authorInfo: state.postDetails.authorInfo,
+  comments: state.postDetails.comments
+}))
 class PostDetail extends Component {
   state = {
     tags: ['JavaScript', 'HTML']
@@ -51,7 +67,10 @@ class PostDetail extends Component {
     // let {match} = this.props
   }
   render () {
-    let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
+    // let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
+    let {loginUserId, postInfo, authorInfo, comments} = this.props
+    let {title, content, avator, label = '', nickName, time, userId} = postInfo
+    console.log(`loginUserId=${loginUserId}`)
     let commonFooterIconOpt = {
       type: 'icon',
       iconSize: '.24rem',
@@ -77,10 +96,10 @@ class PostDetail extends Component {
                     </Popover>
                   </header>
                   <article className={styles.postContent}>
-                    <p>素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏，而你嫣然的一笑如含苞待放，你的美一缕飘散，去到我去不了的地方，天青色等烟雨 而我在等你，炊烟袅袅升起 隔江千万里</p>
+                    <p>{content}</p>
                   </article>
                   <footer className={styles.postInfoFooter}>
-                    <IconBtn iconType="heart" iconBtnText={`${like}人喜欢`} {...commonFooterIconOpt} />
+                    {/* <IconBtn iconType="heart" iconBtnText={`${like}人喜欢`} {...commonFooterIconOpt} /> */}
                     <IconBtn iconType="star" iconBtnText="收藏" {...commonFooterIconOpt} />
                     <IconBtn iconType="share-alt" iconBtnText="分享" {...commonFooterIconOpt} />
                   </footer>
@@ -104,40 +123,48 @@ class PostDetail extends Component {
               <Affix offsetTop={1.8 * documentEleFontSize}>
                 <div className={styles.postOtherInfo}>
                   <ul className={styles.postTags}>
-                    {tags.map(tag => <li>
-                      <Tag
-                        key={tag}
-                        color={colorfulTags.find(ct => ct.name === tag).color}
-                      >{tag}</Tag>
-                    </li>)}
+                    {
+                      label.split(',').map(tag => <li key={tag}>
+                        <Tag
+                          // color={colorfulTags.find(ct => ct === tag).color}
+                          color="gold"
+                        >{tag}</Tag>
+                      </li>)
+                    }
                   </ul>
                   <div className={styles.postOtherInfoIcon}>
-                    <IconBtn iconType="clock-circle" iconBtnText="2018年11月22日 03:46" {...commonOtherInfoIconOpt} />
+                    <IconBtn iconType="clock-circle" iconBtnText={
+                      dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
+                    } {...commonOtherInfoIconOpt} />
                   </div>
                   <div className={styles.postOtherInfoIcon}>
-                    <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonOtherInfoIconOpt} />
+                    {/* <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonOtherInfoIconOpt} /> */}
                   </div>
                 </div>
                 <section className={styles.authorInfoSection}>
                   <header className={styles.authorInfoHeader}>
                     <h3>关于作者</h3>
-                    <div className={styles.contactAuthorBtns}>
-                      <IconBtn iconType="plus" iconBtnText="关注" {...authorIconOpt} />
-                      <IconBtn iconType="message" iconBtnText="私信" {...authorIconOpt} />
-                    </div>
+                    {
+                      (!loginUserId || userId && (loginUserId !== userId)) ? (
+                        <div className={styles.contactAuthorBtns}>
+                          <IconBtn iconType="plus" iconBtnText="关注" {...authorIconOpt} />
+                          <IconBtn iconType="message" iconBtnText="私信" {...authorIconOpt} />
+                        </div>
+                      ) : null
+                    }
                   </header>
                   <main className={styles.authorInfoMain}>
                     <div className={styles.avatarWrapper}>
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" size="large" />
+                      <Avatar src={avator} size="large" />
                     </div>
                     <div className={styles.authorInfo}>
-                      <p><strong>京津冀</strong></p>
+                      <p><strong>{nickName}</strong></p>
                       <span>关注Ta的人：1102</span>
                     </div>
                   </main>
                   <div className={styles.signature}>
                     <strong>签名：</strong>
-                    {signature}
+                    {/* {signature} */}
                   </div>
                 </section>
               </Affix>

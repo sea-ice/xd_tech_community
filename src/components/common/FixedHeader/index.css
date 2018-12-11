@@ -19,10 +19,11 @@
 }
 
 .logo {
-  width: 1rem;
+  width: 1.6699rem;
   height: 1rem;
-  content: url(/assets/yay.jpg);
+  content: url(/assets/logo.jpg);
   margin: 0;
+  cursor: pointer;
 }
 
 .headerMain {
