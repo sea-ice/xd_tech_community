@@ -1,0 +1,74 @@
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: .2rem;
+  margin-top: calc(.2rem - 24px);
+}
+
+.main {
+  max-height: 4rem;
+  overflow: auto;
+  margin-right: -24px;
+  margin-left: -24px;
+  margin-bottom: -24px;
+  padding: .1rem 24px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.list {
+  margin-bottom: 0;
+}
+
+.item {
+  border: 1px solid #ccc;
+  border-radius: .08rem;
+  padding: .2rem .3rem;
+  &:not(:first-child) {
+    margin-top: .1rem;
+  }
+}
+
+.selectedItem {
+  composes: item;
+  border-color: #1890ff;
+}
+
+.none {
+  padding: .2rem 0 .4rem;
+}
+
+.editItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  composes: item;
+  padding: calc(.2rem - 6px) .3rem;
+}
+
+.selectedEditItem {
+  composes: editItem;
+  border-color: #1890ff;
+}
+
+
+.inputContainer {
+  composes: faic from global;
+}
+
+
+.inputWrapper {
+  margin-left: 8px;
+}
+
+.inputTips {
+  white-space: nowrap;
+  font-style: italic;
+  font-size: .2rem;
+  margin-left: 8px;
+  margin-bottom: 0;
+  color: #999;
+  line-height: 32px;
+}
+
+
+

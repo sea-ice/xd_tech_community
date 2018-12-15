@@ -30,12 +30,19 @@ class ReplyItem extends Component {
         </Confirm>
       </li>
     </ul>
+    this.replyBox = React.createRef()
   }
   toggleCommentBox () {
-    this.setState({showReplyBox: !this.state.showReplyBox})
+    this.setState(
+      { showReplyBox: !this.state.showReplyBox }, () => {
+      this.focusReplyBox()
+    })
   }
   toggleReplies () {
     this.props.toggleReplies()
+  }
+  focusReplyBox() {
+    this.replyBox.current.focus()
   }
   render () {
     let {
@@ -74,14 +81,14 @@ class ReplyItem extends Component {
                 iconBtnText={`${agree}人赞同`} {...commonIconOpt} />
               <IconBtn
                 iconClassName={styles.replyIcon}
-                onIconClick={this.toggleCommentBox}
+                onClick={this.toggleCommentBox}
                 iconBtnText="回复" {...commonIconOpt} />
               {
                 rootComment &&
                 <IconBtn
                 iconClassName={collapseReplies ? styles.collapseIcon : styles.spreadIcon}
                 iconBtnText={`${collapseReplies ? '展开' : '收起' }评论(共${10}条)`}
-                onIconClick={this.toggleReplies}
+                onClick={this.toggleReplies}
                 {...commonIconOpt} />
               }
             </div>
@@ -93,7 +100,7 @@ class ReplyItem extends Component {
         <div className={showReplyBox ? styles.replyBoxSpread : styles.replyBoxCollapse}>
           <div className="replyBoxContainer">
             <h3>回复&nbsp;<span className="reply-to-commentator">Jack&nbsp;:</span></h3>
-            <CommentBox />
+            <CommentBox textareaRef={this.replyBox} />
           </div>
         </div>
       </section>

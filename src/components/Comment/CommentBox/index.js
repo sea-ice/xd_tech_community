@@ -8,10 +8,12 @@ class CommentBox extends Component {
   constructor (props) {
     super(props)
   }
-  render () {
+  render() {
+    let { textareaRef } = this.props
+
     return (
       <div className="commentBox">
-        <Input.TextArea autosize={{ minRows: 4, maxRows: 6 }} />
+        <Input.TextArea ref={textareaRef} autosize={{ minRows: 4, maxRows: 6 }} />
         <div className={styles.publishBtn}>
           <Button type="primary">发表</Button>
         </div>

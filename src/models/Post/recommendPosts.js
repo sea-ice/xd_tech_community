@@ -27,8 +27,10 @@ export default {
     *getPageData({payload}, {call, put}) {
       let {url, postType, params, reset} = payload
       let posts = yield call(() => postJSON(url, params))
-      let {data: {code, body}} = posts
-      console.log(body)
+      let { data: { code, body } } = posts
+      // console.log('----')
+      // console.log(body)
+      // console.log('----')
       if (code === 100) {
         yield put({
           type: 'putNextPage',
@@ -44,14 +46,14 @@ export default {
         return false
       }
     },
-    *getPostByNewTags ({payload}, {put}) {
+    *getPostByNewTags ({payload}, {all, put}) {
       let {userInfo, tags} = payload
       yield put({
         type: 'postFilterState/setState',
         payload: { confirmState: 'loading' }
       })
       // 同步刷新分享帖和求助帖列表
-      let res = yield [
+      let res = yield all([
         put({
           type: 'getPageData',
           payload: {
@@ -66,7 +68,7 @@ export default {
             reset: true
           }
         })
-      ] // 返回的res是由两个Promise对象构成的数组
+      ]) // 返回的res是由两个Promise对象构成的数组
       res = yield Promise.all(res)
       console.log(res)
       if (res[0] && res[1]) {

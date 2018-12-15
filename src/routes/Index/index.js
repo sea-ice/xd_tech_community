@@ -43,7 +43,7 @@ class IndexPage extends Component {
 
     let postFilterIconOpt = {
       lineHeight: '45px',
-      onIconClick: this.toggleCollapse
+      onClick: this.toggleCollapse
     }
     let filterIconBtn = postFilterCollapse ? <IconBtn
       iconClassName={styles.filterIcon}
@@ -101,8 +101,8 @@ IndexPage.propTypes = {
 };
 
 export default checkLogin({
-  *checkLoginFinish(userInfo, {put}) {
-    yield [
+  *checkLoginFinish(userInfo, {all, put}) {
+    yield all([
       put({
         type: 'postFilterState/initPostFilter',
         payload: { userInfo }
@@ -111,7 +111,7 @@ export default checkLogin({
         type: 'firstScreenRender/indexPage',
         payload: { userInfo }
       })
-    ]
+    ])
   }
 })(connect(state => ({
   postFilterCollapse: state.postFilterState.collapse,

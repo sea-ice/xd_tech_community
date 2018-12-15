@@ -77,33 +77,42 @@ export default {
     },
     *checkLogin({payload}, effects) {
       let {call, put} = effects
-      let {token, userId, checkLoginFinish, props} = payload
-      let res = yield call(() => postJSON(
-        '/api/user/checkIdentity', {
-          token,
-          userId
-        }))
-      console.log(res)
-      let {data: {code, body}} = res
-      if (code === 100) {
-        // console.log('......')
-        // console.log(token)
-        // console.log('......')
-        yield put({
-          type: 'saveLoginInfo',
-          payload: {
+      let { token, userId, checkLoginFinish, props } = payload
+      try {
+        // token验证失败时会返回html页面
+        let res = yield call(() => postJSON(
+          '/api/user/checkIdentity', {
             token,
-            userId,
-            userInfo: body
-          }
-        })
-        yield checkLoginFinish({userId, ...body}, effects, props)
-      } else {
+            userId
+          }))
+        console.log(res)
+        let { data: { code, body } } = res
+        if (code === 100) {
+          // console.log('......')
+          // console.log(token)
+          // console.log('......')
+          yield put({
+            type: 'saveLoginInfo',
+            payload: {
+              token,
+              userId,
+              userInfo: body
+            }
+          })
+          yield checkLoginFinish({ userId, ...body }, effects, props)
+        } else {
+          yield put({
+            type: 'checkLoginInvalid',
+            payload: { checkLoginFinish, props }
+          })
+        }
+      } catch (e) {
         yield put({
           type: 'checkLoginInvalid',
-          payload: {checkLoginFinish, props}
+          payload: { checkLoginFinish, props }
         })
       }
+
     },
     *checkLoginInvalid ({payload}, effects) {
       let {put} = effects

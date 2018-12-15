@@ -5,9 +5,9 @@ export default {
   state: {},
   reducers: {},
   effects: {
-    *indexPage({payload}, {put}) {
+    *indexPage({payload}, {all, put}) {
       let {userInfo} = payload
-      yield [
+      yield all([
         put({ // 推荐分享帖
           type: 'recommendPosts/getPageData',
           payload: fillPostListPayload(
@@ -32,32 +32,36 @@ export default {
         //     url: '/api/article/getHelpTops'
         //   }
         // })
-      ]
+      ])
     },
-    *postDetails({payload}, {put}) {
-      let {userInfo, id} = payload
-      let postDetails = yield (yield put({
-        type: 'postDetails/getDetails',
-        payload: {id}
-      }))
+    *postDetails({ payload }, { all, put }) {
+      // lastPostId为上一次加载帖子详情页面时的帖子id
+      let { userInfo, id, lastPostId } = payload
+      if (lastPostId === id) return
+
+      // 重置redux store中的帖子详情
+      yield put({ type: 'postDetails/reset' })
+      let [postDetails, _] = yield (yield all([
+        put({
+          type: 'postDetails/getDetails',
+          payload: { id, userInfo }
+        }),
+        // put({
+        //   type: 'postDetails/getComments',
+        //   payload: {
+        //     postId: id,
+        //     page: 0,
+        //     userInfo
+        //   }
+        // })
+      ])) // all类似于Promise.all返回一个Promise对象
       if (postDetails) {
+        // 根据返回的帖子详情的userId获取用户详情
         let {userId} = postDetails
-        yield [
-          put({
-            type: 'postDetails/getAuthorInfo',
-            payload: {userId}
-          }),
-          put({
-            type: 'postDetails/getComments',
-            payload: {id, userInfo}
-          })
-        ]
-      }
-
-      if (userInfo) {
-
-      } else {
-
+        yield put({
+          type: 'postDetails/getAuthorInfo',
+          payload: { userId }
+        })
       }
     }
   }

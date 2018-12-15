@@ -7,8 +7,12 @@ import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
 import OwnerView from './OwnerView'
 
-@checkLogin
 @connect()
+@checkLogin({
+  *checkLoginFinish(userInfo, { put }, props) {
+
+  }
+})
 class AuthorDetail extends Component {
   constructor (props) {
     super(props)
