@@ -1,21 +1,30 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {Popover} from 'antd'
+import { connect } from 'dva'
+import { Popover, message } from 'antd'
+import dayjs from 'dayjs'
 
 import styles from './index.scss'
 import Confirm from 'components/common/Confirm'
 import ReportUserForm from 'components/User/ReportUserForm'
 import IconBtn from 'components/common/IconBtn'
 import CommentBox from '../CommentBox'
+import Debounce from 'components/common/Debounce'
+import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 
+@connect()
 class ReplyItem extends Component {
   state = {
     showReplyBox: false,
+    replyContent: ''
   };
   constructor (props) {
     super(props)
     this.toggleCommentBox = this.toggleCommentBox.bind(this)
     this.toggleReplies = this.toggleReplies.bind(this)
+    this.starReply = this.starReply.bind(this)
+    this.onReplyContentChange = this.onReplyContentChange.bind(this)
+    this.publishReply = this.publishReply.bind(this)
 
     this.reportAuthorTemplate = <ul className="no-margin">
       <li>
@@ -30,7 +39,7 @@ class ReplyItem extends Component {
         </Confirm>
       </li>
     </ul>
-    this.replyBox = React.createRef()
+    this.replyInput = React.createRef()
   }
   toggleCommentBox () {
     this.setState(
@@ -42,31 +51,65 @@ class ReplyItem extends Component {
     this.props.toggleReplies()
   }
   focusReplyBox() {
-    this.replyBox.current.focus()
+    this.setState({ replyContent: '' }) // 清除输入框中的内容
+    this.replyInput.current.focus()
   }
+  starReply() {
+
+  }
+  onReplyContentChange(e) {
+    this.setState({ replyContent: e.target.value })
+  }
+  publishReply(content) {
+    let { dispatch, loginUserId, replyInfo } = this.props
+    let { commentsv1Id, commentNum } = replyInfo
+
+    dispatch({
+      type: 'comment/publishComment',
+      payload: {
+        // objectId: !!rootComment ? commentsv1Id : commentsv2Id,
+        objectId: commentsv1Id,
+        userId: loginUserId,
+        content,
+        reply: true,
+        total: commentNum + 1,
+        successCallback: () => {
+          message.success('回复成功')
+          this.setState({ replyContent: '', showReplyBox: false })
+        }
+      }
+    })
+  }
+
   render () {
     let {
-      replyDetails,
+      loginUserId,
+      replyInfo,
       rootComment,
-      collapseReplies
+      open
     } = this.props
-    let {username, avatar} = replyDetails.publisher
-    let {publishTime, agree, content} = replyDetails
-    avatar = 'https://www.baidu.com/s?rsv_idx=2&tn=baiduhome_pg&wd=%E5%BC%BA%E8%BF%AB%E7%97%87%E5%A4%B4%E5%83%8F&usm=1&ie=utf-8&rsv_cq=%E7%94%B7%E7%94%9F%E5%A4%B4%E5%83%8F%E5%8A%A8%E6%BC%AB&rsv_dl=0_right_recommends_merge_21102&cq=%E7%94%B7%E7%94%9F%E5%A4%B4%E5%83%8F%E5%8A%A8%E6%BC%AB&srcid=28310&rt=%E7%9B%B8%E5%85%B3%E8%AF%8D%E6%B1%87&recid=21102&euri=bd60485c57b3441789535b465001639c'
+    let { nickName, avator, commentNum, commentsv1Id, commentsv2Id, content, isAccept, approvalNum, time, userId } = replyInfo
+    let replyId = !!rootComment ? commentsv1Id : commentsv2Id
 
     let commonIconOpt = {
       color: '#666',
       btnPadding: '.2rem',
       fontSize: '.22rem'
     }
-    let {showReplyBox} = this.state
+    let { showReplyBox, replyContent } = this.state
     return (
       <section className={styles.replyItem}>
         <main className={styles.replyMain}>
           <header className={styles.replyItemHeader}>
             <p className={styles.publisherInfo}>
-              <IconBtn type="avatar" avatarSize={28} avatarURL={avatar} color="#333" iconBtnText={username} btnPadding={0}  />
-              <time>{publishTime}</time>
+              <IconBtn
+                type="avatar"
+                avatarSize={28}
+                avatarURL={avator}
+                color="#333"
+                iconBtnText={nickName}
+                btnPadding={0} />
+              <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
             </p>
             {
               rootComment &&
@@ -76,20 +119,37 @@ class ReplyItem extends Component {
           <p className={styles.commentContent}>{content}</p>
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
-              <IconBtn
-                iconClassName={styles.agreeIcon}
-                iconBtnText={`${agree}人赞同`} {...commonIconOpt} />
-              <IconBtn
-                iconClassName={styles.replyIcon}
-                onClick={this.toggleCommentBox}
-                iconBtnText="回复" {...commonIconOpt} />
+              <Debounce
+                active={!!isAccept}
+                number={approvalNum}
+                normalText="%n人赞同"
+                activeStyle={{ iconTheme: 'filled', iconColor: '#db2d43' }}
+                actionType="userBehaviors/approval"
+                extraPayload={{ type: 0, objectId: replyId }}
+                userId={loginUserId}
+                update={this.starReply}
+                btn={
+                  <IconBtn iconClassName={styles.agreeIcon} {...commonIconOpt} />
+                }
+              />
               {
-                rootComment &&
-                <IconBtn
-                iconClassName={collapseReplies ? styles.collapseIcon : styles.spreadIcon}
-                iconBtnText={`${collapseReplies ? '展开' : '收起' }评论(共${10}条)`}
-                onClick={this.toggleReplies}
-                {...commonIconOpt} />
+                !rootComment || (!!loginUserId && (loginUserId === userId)) ? null : (
+                  <ConfirmIfNotMeet
+                    condition={!!loginUserId}
+                    callbackWhenMeet={this.toggleCommentBox}
+                    btn={<IconBtn
+                      iconClassName={styles.replyIcon}
+                      iconBtnText="回复" {...commonIconOpt} />} />
+                )
+              }
+              {
+                (rootComment && commentNum) ? (
+                  <IconBtn
+                    iconClassName={open ? styles.spreadIcon : styles.collapseIcon}
+                    iconBtnText={`${open ? '收起' : '展开'}评论(共${commentNum}条)`}
+                    onClick={this.toggleReplies}
+                    {...commonIconOpt} />
+                ) : null
               }
             </div>
             <Popover content={this.reportAuthorTemplate} placement="bottomRight">
@@ -100,7 +160,12 @@ class ReplyItem extends Component {
         <div className={showReplyBox ? styles.replyBoxSpread : styles.replyBoxCollapse}>
           <div className="replyBoxContainer">
             <h3>回复&nbsp;<span className="reply-to-commentator">Jack&nbsp;:</span></h3>
-            <CommentBox textareaRef={this.replyBox} />
+            <CommentBox
+              textareaRef={this.replyInput}
+              content={replyContent}
+              loginUserId={loginUserId}
+              onContentChange={this.onReplyContentChange}
+              publishCallback={this.publishReply}/>
           </div>
         </div>
       </section>
@@ -109,17 +174,11 @@ class ReplyItem extends Component {
 }
 
 ReplyItem.propTypes = {
-  rootComment: PropTypes.number,
-  replyDetails: PropTypes.shape({
-    publisher: PropTypes.shape({
-      username: PropTypes.string,
-      avatar: PropTypes.string,
-    }),
-    content: PropTypes.string,
-    publishTime: PropTypes.string,
-    agree: PropTypes.number,
-    agreed: PropTypes.bool
-  })
+  loginUserId: PropTypes.number,
+  rootComment: PropTypes.number, // 顶层评论使用，代表评论楼层
+  toggleReplies: PropTypes.func, // 顶层评论使用
+  collapseReplies: PropTypes.bool, // 顶层评论使用
+  replyInfo: PropTypes.object
 }
 
 export default ReplyItem

@@ -35,8 +35,9 @@ class Debounce extends Component {
     })
   }
   render() {
-    let { userId, dispatch, btn, active, number, normalText = '%n人喜欢', activeText = '%n人喜欢', activeStyle } = this.props
+    let { userId, dispatch, btn, active, number, normalText = '%n人喜欢', activeText, activeStyle } = this.props
     let btnProps = active ? activeStyle : {}
+    activeText = activeText || normalText
     let text = active ? activeText : normalText
     let iconBtnText = (number === undefined) ? text : text.replace(/%n/g, number)
 

@@ -46,14 +46,14 @@ export default {
           type: 'postDetails/getDetails',
           payload: { id, userInfo }
         }),
-        // put({
-        //   type: 'postDetails/getComments',
-        //   payload: {
-        //     postId: id,
-        //     page: 0,
-        //     userInfo
-        //   }
-        // })
+        put({
+          type: 'postDetails/getComments',
+          payload: {
+            postId: id,
+            page: 1,
+            number: 10
+          }
+        })
       ])) // all类似于Promise.all返回一个Promise对象
       if (postDetails) {
         // 根据返回的帖子详情的userId获取用户详情

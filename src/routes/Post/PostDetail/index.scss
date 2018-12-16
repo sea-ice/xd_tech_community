@@ -26,8 +26,7 @@
 }
 
 .postInfoFooter {
-  display: flex;
-  align-items: center;
+  composes: faic from global;
   margin-left: -0.2rem;
   padding: .2rem 0;
 }
@@ -38,8 +37,7 @@
 }
 
 .postCommentHeader {
-  display: flex;
-  align-items: center;
+  composes: faic from global;
   justify-content: space-between;
   padding: .2rem .4rem;
   border-bottom: 1px solid #ccc;
@@ -77,6 +75,15 @@
 
 .noComment {
   padding-top: .6rem;
+}
+
+
+.paginatorWrapper {
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+  margin: 0 auto;
+  padding: .4rem 0;
 }
 
 
@@ -120,16 +127,14 @@
 }
 
 .authorInfoHeader {
-  display: flex;
-  align-items: center;
+  composes: faic from global;
   justify-content: space-between;
   border-bottom: 1px solid #ddd;
 }
 
 .contactAuthorBtns,
 .authorInfoMain {
-  display: flex;
-  align-items: center;
+  composes: faic from global;
 }
 
 .authorInfoMain {

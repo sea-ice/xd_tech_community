@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
-import {Row, Col, Affix, Button, Popover, Tag, Avatar} from 'antd'
+import { Row, Col, Affix, Button, Popover, Tag, Avatar, Pagination, message } from 'antd'
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
-import colorfulTags from 'config/colorfulTags.json'
+// import colorfulTags from 'config/colorfulTags.json'
 import {checkLogin} from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
@@ -23,7 +23,8 @@ import CommentBox from 'components/Comment/CommentBox'
   loginUserId: state.user.userId,
   postInfo: state.postDetails.postInfo,
   authorInfo: state.postDetails.authorInfo,
-  comments: state.postDetails.comments
+  comments: state.postDetails.comments,
+  commentCurrentPage: state.postDetails.commentCurrentPage
 }))
 @checkLogin({
   *checkLoginFinish(userInfo, { put }, props) {
@@ -73,7 +74,11 @@ class PostDetail extends Component {
     this.turnToAuthorHomePage = this.turnToAuthorPage.bind(this)()
     this.showAuthorFollowed = this.turnToAuthorPage.bind(this, 'follow-me')()
     this.showCommentBox = this.showCommentBox.bind(this)
-    this.commentBox = React.createRef()
+    this.publishComment = this.publishComment.bind(this)
+    this.onCommentContentChange = this.onCommentContentChange.bind(this)
+    this.onCommentPageChange = this.onCommentPageChange.bind(this)
+    this.commentInput = React.createRef()
+    this.state = { commentContent: '' }
   }
 
   starPost(like) {
@@ -122,7 +127,7 @@ class PostDetail extends Component {
     dispatch(routerRedux.push('/login'))
   }
   showCommentBox() {
-    this.commentBox.current.focus()
+    this.commentInput.current.focus()
   }
   turnToAuthorPage(tab) {
     return () => {
@@ -131,12 +136,51 @@ class PostDetail extends Component {
       dispatch(routerRedux.push(`/author/${userId}${tab ? `?tab=${tab}` : ''}`))
     }
   }
+  onCommentContentChange(e) {
+    this.setState({ commentContent: e.target.value })
+  }
+  publishComment(content) {
+    let { dispatch, loginUserId, postInfo } = this.props
+    let { articleId, commentNum } = postInfo
+
+    dispatch({
+      type: 'comment/publishComment',
+      payload: {
+        objectId: articleId,
+        userId: loginUserId,
+        content,
+        reply: false,
+        total: commentNum + 1,
+        successCallback: () => {
+          message.success('评论成功!')
+          this.setState({ commentContent: '' })
+        }
+      }
+    })
+  }
+  onCommentPageChange(page) {
+    let { dispatch, postInfo, commentCurrentPage, comments } = this.props
+    if (commentCurrentPage === page) return
+    let { articleId } = postInfo
+
+    dispatch({
+      type: 'postDetails/getComments',
+      payload: {
+        postId: articleId,
+        page,
+        number: 10,
+        loadedNumber: comments.length
+      }
+    })
+  }
   render () {
     // let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
-    let {loginUserId, postInfo, authorInfo, comments} = this.props
+    let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
     let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum, commentNum, scanNum, liked, collected } = postInfo
     let { hasFollowed } = authorInfo
-    comments = []
+    let { commentContent } = this.state
+    let commentStart = (commentCurrentPage - 1) * 10
+    comments = comments.slice(commentStart, commentStart + 10)
     // console.log(`liked=${liked}`)
     let commonFooterIconOpt = {
       type: 'icon',
@@ -220,24 +264,52 @@ class PostDetail extends Component {
                     {/* 评论数未超过5条正常显示 */}
                     {/* 未登录时只显示5条评论 */}
                     {
-                      comments.length > 5 ? (
+                      commentNum > 5 ? (
                         !!loginUserId ? (
-                          comments.map((item, i) => (
-                            <CommentItem key={i} number={i} />
-                          ))
+                          commentNum > 10 ? (
+                            <React.Fragment>
+                              {
+                                comments.map((item, i) => (
+                                  <CommentItem
+                                    key={i}
+                                    number={commentStart + i + 1}
+                                    loginUserId={loginUserId}
+                                    commentId={item.commentsv1Id} />
+                                ))
+                              }
+                              <div className={styles.paginatorWrapper}>
+                                <Pagination
+                                  defaultCurrent={1}
+                                  total={commentNum}
+                                  onChange={this.onCommentPageChange} />
+                              </div>
+                            </React.Fragment>
+                          ): (
+                            comments.map((item, i) => (
+                              <CommentItem
+                                key={i}
+                                number={i + 1}
+                                loginUserId={loginUserId}
+                                commentId={item.commentsv1Id} />
+                            ))
+                          )
                         ) : (
                           <div className={styles.notLoggedInComments}>
                             {comments.slice(0, 5).map((item, i) => (
-                              <CommentItem key={i} number={i} />))}
+                              <CommentItem
+                                key={i}
+                                number={i + 1}
+                                loginUserId={loginUserId}
+                                commentId={item.commentsv1Id} />))}
                             <p className={styles.loginToComment}>
                               <a href="javascript:void(0)" onClick={this.turnToLoginPage}>登录之后查看所有评论</a>
                             </p>
                           </div>
                         )
                       ) : (
-                        comments.length ? (
+                        commentNum ? (
                           comments.map((item, i) => (
-                            <CommentItem key={i} number={i} />
+                            <CommentItem key={i} number={i + 1} loginUserId={loginUserId} replyInfo={item} />
                           ))
                         ) : (
                           <div className={styles.noComment}>
@@ -256,7 +328,13 @@ class PostDetail extends Component {
                     }
                   </main>
                   <footer className={styles.commentBoxWrapper}>
-                    <CommentBox textareaRef={this.commentBox} />
+                    <CommentBox
+                      textareaRef={this.commentInput}
+                      content={commentContent}
+                      loginUserId={loginUserId}
+                      onContentChange={this.onCommentContentChange}
+                      publishCallback={this.publishComment}
+                    />
                   </footer>
                 </section>
               </main>
