@@ -1,4 +1,5 @@
 import { postJSON } from 'utils'
+import config from 'config/constants'
 
 export default {
   namespace: 'comment',
@@ -20,7 +21,7 @@ export default {
     *publishComment({ payload }, { all, call, put }) {
       let { objectId, reply, userId, content, successCallback, failCallback, total } = payload
       let version = reply ? 2 : 1
-      let url = `/api/commentsv${version}/submitCommentsv${version}`
+      let url = `${config.SERVER_URL_API_PREFIX}/commentsv${version}/submitCommentsv${version}`
       let params = {
         userId,
         time: '' + Date.now(),
@@ -71,7 +72,7 @@ export default {
         return
       }
       let res = yield call(() => postJSON(
-        '/api/commentsv2/getCommentsv2/Update', {
+        `${config.SERVER_URL_API_PREFIX}/commentsv2/getCommentsv2/Update`, {
           lastId: 0,
           id: commentId,
           page,
@@ -95,7 +96,8 @@ export default {
     },
     *getAllComments({ payload }, { call, put }) {
       let { postId, total } = payload
-      let res = yield call(() => postJSON('/api/commentsv1/getCommentsv1/Update', {
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/Update`, {
         id: postId,
         page: 0, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id
@@ -123,7 +125,7 @@ export default {
     *getAllReplies({ payload }, { call, put }) {
       let { commentId, total } = payload
       let res = yield call(() => postJSON(
-        '/api/commentsv2/getCommentsv2/Update', {
+        `${config.SERVER_URL_API_PREFIX}/commentsv2/getCommentsv2/Update`, {
           lastId: 0,
           id: commentId,
           page: 0,

@@ -5,6 +5,7 @@ import { routerRedux, withRouter } from 'dva/router'
 import {Row, Col, Affix, Menu} from 'antd'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import DraftBin from 'AuthorDetail/SubPages/DraftBin'
@@ -12,7 +13,7 @@ import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
 import AuthorFollowing from 'AuthorDetail/SubPages/AuthorFollowing'
 import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
 import TagManage from 'AuthorDetail/SubPages/TagManage'
-import {getRootFontSize, getSearchObj} from 'utils'
+import { getSearchObj } from 'utils'
 
 @withRouter
 @connect()
@@ -60,7 +61,6 @@ class OwnerAuthorDetail extends Component {
     }))
   }
   render () {
-    let documentEleFontSize = getRootFontSize()
     let {selectedTab, subPage} = this.state
 
     switch (subPage) {
@@ -90,7 +90,7 @@ class OwnerAuthorDetail extends Component {
     return (
       <Row gutter={20}>
         <Col span={6}>
-          <Affix offsetTop={1.8 * documentEleFontSize}>
+          <Affix offsetTop={40}>
             <aside className={styles.menuWrapper}>
               <Menu theme="light" defaultSelectedKeys={selectedTab} onClick={this.changeTab}>
                 <Menu.Item key="basic-info">基本信息</Menu.Item>

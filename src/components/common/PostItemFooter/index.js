@@ -14,8 +14,8 @@ function PostItemFooter ({
 }) {
   let commonIconOpt = {
     type: 'icon',
-    iconSize: '.24rem',
-    fontSize: '.2rem',
+    iconSize: '24px',
+    // fontSize: '16px',
     btnPadding: '.2rem',
     color: '#666'
   }

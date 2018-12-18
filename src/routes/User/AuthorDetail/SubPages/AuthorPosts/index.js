@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router';
 import {Tabs, Button} from 'antd'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import PostItem from 'AuthorDetail/PostItem'
 
 class AuthorPosts extends Component {

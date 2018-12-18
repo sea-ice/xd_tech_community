@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router'
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import IconBtn from 'components/common/IconBtn'
 import PostItemFooter from 'components/common/PostItemFooter'
 

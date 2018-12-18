@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {connect} from 'dva'
 import { routerRedux } from 'dva/router'
 
+import config from 'config/constants'
 import styles from './index.css'
 import PostItemFooter from 'components/common/PostItemFooter'
 
@@ -21,7 +22,9 @@ class StickPostItem extends Component {
     } = this.props
     return (
       <li className={styles.postItem} onClick={this.showPostDetail}>
-        <i className={styles.stickIcon}></i>
+        <i
+          className={styles.stickIcon}
+          style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/stick.svg)` }}></i>
         <h2 className={styles.stickPostTitle}>[置顶]{title}</h2>
         <PostItemFooter {...postFooterInfo} />
       </li>

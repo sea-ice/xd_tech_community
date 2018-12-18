@@ -1,15 +1,8 @@
 import {
-  routerRedux
-} from "dva/router";
-
-import {
   request,
   postJSON
 } from "utils"
 import config from 'config/constants'
-import {
-  hasStorageKey
-} from 'utils'
 
 export default {
   namespace: 'userBehaviors',
@@ -20,7 +13,7 @@ export default {
   effects: {
     *approval({ payload }, { call, put }) {
       let { type, objectId, userId, state, successCallback, failCallback } = payload
-      let url = `/api/approval/${state ? 'doApproval' : 'cancelApproval'}`
+      let url = `${config.SERVER_URL_API_PREFIX}/approval/${state ? 'doApproval' : 'cancelApproval'}`
       let params = { type, objectId, userId }
       if (state) params.time = '' + Date.now()
 
@@ -39,14 +32,15 @@ export default {
     *collectPost({payload}, {call,put}) {
       let { userId, postId, collectionName, cancel } = payload
       if (!cancel) {
-        yield call(() => postJSON('/api/favorite/doFavorite', {
+        yield call(() => postJSON(
+          `${config.SERVER_URL_API_PREFIX}/favorite/doFavorite`, {
           userId, postId,
           favoriteDir: collectionName
         }))
       } else {
         // 取消收藏需要先获取帖子所在的收藏夹
         let target = yield call(() => postJSON(
-          '/api/favorite/getFavoriteDirInfo', {
+          `${config.SERVER_URL_API_PREFIX}/favorite/getFavoriteDirInfo`, {
             userId,
             postId
           }))
@@ -56,7 +50,7 @@ export default {
     },
     *followAuthor({ payload }, { call, put }) {
       let { userId, authorId, state, successCallback, failCallback } = payload
-      let url = '/api/focus'
+      let url = `${config.SERVER_URL_API_PREFIX}/focus`
       let params = {
         from: userId,
         to: authorId,
@@ -83,7 +77,7 @@ export default {
     *isLikedOrNot({ payload }, { call, put }) {
       let { type, objectId, userId } = payload
       let res = yield call(() => postJSON(
-        '/api/approval/getApproval', {
+        `${config.SERVER_URL_API_PREFIX}/approval/getApproval`, {
           type, objectId, userId
         }))
       let { data: { code, body } } = res
@@ -100,7 +94,7 @@ export default {
     *isCollectedOrNot({ payload }, { call, put }) {
       let { type, objectId, userId } = payload
       let res = yield call(() => postJSON(
-        '/api/favorite/getFavorite', {
+        `${config.SERVER_URL_API_PREFIX}/favorite/getFavorite`, {
           type, objectId, userId
         }))
       let { data: { code, body } } = res

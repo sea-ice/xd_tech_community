@@ -11,9 +11,9 @@
 
 .more {
   composes: moreBtn from global;
-  width: .36rem;
-  height: .36rem;
-  padding: .1rem;
+  width: 24px;
+  height: 24px;
+  padding: 5px;
 }
 
 .popoverItem {

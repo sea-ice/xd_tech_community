@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Form, Input, Button, notification} from 'antd'
+import { Button } from 'antd'
 import { connect } from 'dva';
-import {routerRedux} from 'dva/router'
+import { routerRedux } from 'dva/router'
 
+import config from 'config/constants'
 import styles from './index.scss'
 
 class RegisterDone extends Component {
@@ -13,14 +14,14 @@ class RegisterDone extends Component {
 
   toLogin () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push('/login'))
+    dispatch(routerRedux.push(`/login`))
   }
 
   render () {
 
     return (
       <main className={styles.wrapper}>
-        <img src="/assets/yay.jpg" alt=""/>
+        <img src={`${config.SUBDIRECTORY_PREFIX}/assets/yay.jpg`} alt=""/>
         <h2>注册成功!</h2>
         <Button type="primary" onClick={this.toLogin}>去登录</Button>
       </main>

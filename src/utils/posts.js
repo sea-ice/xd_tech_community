@@ -12,7 +12,9 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
   let params = {page, number: config.POSTS_PER_PAGE}
   let payload = {postType, params}
   if (userInfo) {
-    payload.url = postType === 'share' ? '/api/article/getShareRecommend/LoadMore' : '/api/article/getHelpRecommend/LoadMore'
+    payload.url = postType === 'share' ?
+      `${config.SERVER_URL_API_PREFIX}/article/getShareRecommend/LoadMore` :
+      `${config.SERVER_URL_API_PREFIX}/article/getHelpRecommend/LoadMore`
     params.userId = userInfo.userId
     params.label = tags.length ? getFullTags(tags) : ''
   } else {

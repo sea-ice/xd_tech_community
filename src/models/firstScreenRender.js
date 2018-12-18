@@ -1,4 +1,5 @@
-import {fillPostListPayload} from 'utils'
+import { fillPostListPayload } from 'utils'
+import config from 'config/constants'
 
 export default {
   namespace: 'firstScreenRender',
@@ -22,14 +23,14 @@ export default {
           type: 'indexStickPosts/getPageData',
           payload: {
             postType: 'share',
-            url: '/api/article/getShareTops'
+            url: `${config.SERVER_URL_API_PREFIX}/article/getShareTops`
           }
         }),
         // put({ // 求助置顶帖
         //   type: 'indexStickPosts/getPageData',
         //   payload: {
         //     postType: 'help',
-        //     url: '/api/article/getHelpTops'
+        //     url: `${config.SERVER_URL_API_PREFIX}/article/getHelpTops`
         //   }
         // })
       ])

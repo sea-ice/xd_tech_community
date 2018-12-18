@@ -15,6 +15,7 @@ function startApp() {
   const app = dva({
     initialState,
     history: createHistory({
+      basename: process.env.NODE_ENV === 'development' ? '' : '/tech_community',
       forceRefresh: !('pushState' in window.history)// 仅在浏览器不支持HTML5 History API时启用强制刷新
     })
   });

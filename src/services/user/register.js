@@ -1,8 +1,10 @@
+import config from 'config/constants'
 import smsConfig from 'config/secret'
-import {request} from 'utils'
+import { request } from 'utils'
 
 export function getSmsCode ({phone}) {
-  return request('/sms/1.1/requestSmsCode', {
+  return request(
+    `${config.SMS_SERVICE_URL_PREFIX}/1.1/requestSmsCode`, {
     method: 'POST',
     body: JSON.stringify({
       mobilePhoneNumber: phone,
@@ -18,7 +20,10 @@ export function getSmsCode ({phone}) {
 }
 
 export function verifySmsCode ({phone, code}) {
-  return request(`/sms/1.1/verifySmsCode/${encodeURIComponent(code)}`, {
+  return request(
+    `${
+      config.SMS_SERVICE_URL_PREFIX
+    }/1.1/verifySmsCode/${encodeURIComponent(code)}`, {
     method: 'POST',
     body: JSON.stringify({
       mobilePhoneNumber: phone

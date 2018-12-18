@@ -55,27 +55,12 @@
 .replyItemIcon {
   composes: icon from global;
   display: block;
-  width: .36rem;
-  height: .36rem;
-}
-
-.agreeIcon {
-  composes: replyItemIcon;
-  background-image: url(/assets/agree.svg);
-}
-
-.replyIcon {
-  composes: replyItemIcon;
-  background-image: url(/assets/reply.svg);
-}
-
-.collapseIcon {
-  composes: replyItemIcon;
-  background-image: url(/assets/collapse-gray.svg);
+  width: 28px;
+  height: 28px;
 }
 
 .spreadIcon {
-  composes: collapseIcon;
+  composes: replyItemIcon;
   transform: rotate(180deg);
 }
 
@@ -87,7 +72,6 @@
   padding: .1rem 0 .1rem .1rem;
   box-sizing: content-box;
   background-origin: content-box;
-  background-image: url(/assets/ellipsis.svg);
   cursor: pointer;
 }
 

@@ -1,4 +1,5 @@
-import {postJSON} from 'utils'
+import { postJSON } from 'utils'
+import config from 'config/constants'
 
 export default {
   namespace: 'postDetails',
@@ -59,7 +60,7 @@ export default {
         })
       }
       let details = yield call(() => postJSON(
-        '/api/article/getArticleDetails',
+        `${config.SERVER_URL_API_PREFIX}/article/getArticleDetails`,
         { id }
       ))
       console.log('details')
@@ -79,7 +80,7 @@ export default {
     *getAuthorInfo({payload}, {call, put}) {
       let {userId, userInfo} = payload
       let authorInfo = yield call(() => postJSON(
-          '/api/user/getUserInfo', {
+        `${config.SERVER_URL_API_PREFIX}/user/getUserInfo`, {
           userId
         }))
       if (userInfo) {
@@ -107,7 +108,8 @@ export default {
         })
         return
       }
-      let res = yield call(() => postJSON('/api/commentsv1/getCommentsv1/Update', {
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/Update`, {
         id: postId,
         page, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id

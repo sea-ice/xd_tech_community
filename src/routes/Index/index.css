@@ -5,18 +5,8 @@
 .filter {
   composes: icon from global;
   display: block;
-  width: .32rem;
-  height: .32rem;
-}
-
-.filterIcon {
-  composes: filter;
-  background-image: url(/assets/filter.svg);
-}
-
-.collapseIcon {
-  composes: filter;
-  background-image: url(/assets/collapse.svg);
+  width: 24px;
+  height: 24px;
 }
 
 

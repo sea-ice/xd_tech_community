@@ -5,6 +5,7 @@ import { Popover, message } from 'antd'
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import ReportUserForm from 'components/User/ReportUserForm'
 import IconBtn from 'components/common/IconBtn'
@@ -94,7 +95,7 @@ class ReplyItem extends Component {
     let commonIconOpt = {
       color: '#666',
       btnPadding: '.2rem',
-      fontSize: '.22rem'
+      fontSize: '16px'
     }
     let { showReplyBox, replyContent } = this.state
     return (
@@ -104,7 +105,7 @@ class ReplyItem extends Component {
             <p className={styles.publisherInfo}>
               <IconBtn
                 type="avatar"
-                avatarSize={28}
+                avatarSize={36}
                 avatarURL={avator}
                 color="#333"
                 iconBtnText={nickName}
@@ -129,7 +130,11 @@ class ReplyItem extends Component {
                 userId={loginUserId}
                 update={this.starReply}
                 btn={
-                  <IconBtn iconClassName={styles.agreeIcon} {...commonIconOpt} />
+                  <IconBtn
+                    iconClassName={styles.replyItemIcon}
+                    bgImage={
+                      `${config.SUBDIRECTORY_PREFIX}/assets/agree.svg`
+                    } {...commonIconOpt} />
                 }
               />
               {
@@ -138,14 +143,20 @@ class ReplyItem extends Component {
                     condition={!!loginUserId}
                     callbackWhenMeet={this.toggleCommentBox}
                     btn={<IconBtn
-                      iconClassName={styles.replyIcon}
+                      iconClassName={styles.replyItemIcon}
+                      bgImage={
+                        `${config.SUBDIRECTORY_PREFIX}/assets/reply.svg`
+                      }
                       iconBtnText="回复" {...commonIconOpt} />} />
                 )
               }
               {
                 (rootComment && commentNum) ? (
                   <IconBtn
-                    iconClassName={open ? styles.spreadIcon : styles.collapseIcon}
+                    iconClassName={open ? styles.spreadIcon : styles.replyItemIcon}
+                    bgImage={
+                      `${config.SUBDIRECTORY_PREFIX}/assets/collapse-gray.svg`
+                    }
                     iconBtnText={`${open ? '收起' : '展开'}评论(共${commentNum}条)`}
                     onClick={this.toggleReplies}
                     {...commonIconOpt} />
@@ -153,7 +164,12 @@ class ReplyItem extends Component {
               }
             </div>
             <Popover content={this.reportAuthorTemplate} placement="bottomRight">
-              <i className={styles.more}></i>
+              <i
+                className={styles.more}
+                style={{
+                  backgroundImage: `url(${
+                    config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
+                }}></i>
             </Popover>
           </footer>
         </main>

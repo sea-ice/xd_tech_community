@@ -1,14 +1,7 @@
 import {
-  routerRedux
-} from "dva/router";
-
-import {
   postJSON
 } from "utils"
 import config from 'config/constants'
-import {
-  hasStorageKey
-} from 'utils'
 
 export default {
   namespace: 'collection',
@@ -45,7 +38,7 @@ export default {
     *new({ payload }, { all, call, put }) {
       let { userId, collectionName, successCallback, failCallback} = payload
       let res = yield call(() => postJSON(
-        '/api/favorite/newFavoritrDir', {
+        `${config.SERVER_URL_API_PREFIX}/favorite/newFavoritrDir`, {
           userId,
           favoriteDir: collectionName
         }))
@@ -78,7 +71,7 @@ export default {
       let { userId } = payload
 
       let res = yield call(() => postJSON(
-        '/api/favorite/getFavoriteDir', {
+        `${config.SERVER_URL_API_PREFIX}/favorite/getFavoriteDir`, {
           userId
         }))
       let { data: { code, body } } = res

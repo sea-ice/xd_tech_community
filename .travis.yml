@@ -5,6 +5,7 @@ addons:
     - sshpass
 node_js:
 - 6
+cache: npm
 after_success:
 - export SSHPASS=$DEPLOY_SERVER_PASSWORD
 - sshpass -e ssh jack@$DEPLOY_SERVER_IP -o stricthostkeychecking=no 'cd /home/jack/xd_tech_community && git pull && npm i && npm run build'

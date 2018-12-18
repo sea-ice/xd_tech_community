@@ -3,6 +3,7 @@ import {Input, Badge, Icon, Avatar, message} from 'antd'
 import {connect} from 'dva'
 import {routerRedux, withRouter, Link} from 'dva/router'
 
+import config from 'config/constants'
 import IconBtn from '../IconBtn'
 import styles from './index.css'
 
@@ -22,18 +23,18 @@ class FixedHeader extends Component {
   }
   turnToIndexPage () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push('/'))
+    dispatch(routerRedux.push(`/`))
   }
   handleUserSearch () {
 
   }
   toRegister () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push('/register'))
+    dispatch(routerRedux.push(`/register`))
   }
   toLogin () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push('/login'))
+    dispatch(routerRedux.push(`/login`))
   }
   toLogout () {
     let {dispatch, userId} = this.props
@@ -57,7 +58,9 @@ class FixedHeader extends Component {
     return (
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.logo} onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
+          <h1
+            className={styles.logo}
+            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.jpg)` }} onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"
@@ -68,12 +71,15 @@ class FixedHeader extends Component {
               <span>发帖</span>
             </Link>
             <div className={styles.appLink}>
-              <IconBtn iconClassName={styles.flyIcon} iconBtnText="APP" color="#999" fontSize=".28rem" />
+              <IconBtn
+                iconClassName={styles.flyIcon}
+                bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
+                iconBtnText="APP" color="#999" fontSize="18px" />
             </div>
             <div className={styles.msgNotify}>
               <Badge count={4}>
                 <a href="javascript:void(0);" className={styles.msgNotifyIcon}>
-                  <Icon type="notification" theme="twoTone" style={{fontSize: '.4rem', padding: '.05rem'}} />
+                  <Icon type="notification" theme="twoTone" style={{fontSize: '28px', padding: '.05rem'}} />
                 </a>
               </Badge>
             </div>

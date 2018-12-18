@@ -1,5 +1,6 @@
 import { postJSON } from "utils"
-import {getSmsCode, verifySmsCode} from 'services/user/register'
+import config from 'config/constants'
+import { getSmsCode, verifySmsCode } from 'services/user/register'
 
 export default {
   namespace: 'register',
@@ -15,7 +16,8 @@ export default {
   effects: {
     *register({payload}, {call}) {
       let {username, password, successCallback, failCallback} = payload
-      let registerApi = () => postJSON('/api/user/doRegister', {
+      let registerApi = () => postJSON(
+        `${config.SERVER_URL_API_PREFIX }/user/doRegister`, {
         userName: username,
         password
       })
@@ -30,7 +32,8 @@ export default {
     },
     *checkRegister({payload}, {call, put}) {
       let {username, checkFailCallback, sendSuccessCallback} = payload
-      let checkRes = yield call(() => postJSON('/api/user/checkPhone', {
+      let checkRes = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/user/checkPhone`, {
         userName: username
       }))
       let {data: {code, message}} = checkRes

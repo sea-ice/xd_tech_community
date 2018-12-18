@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'dva';
 import {Row, Col, Tabs} from 'antd'
 
-// import config from 'config/constants'
+import config from 'config/constants'
 import {checkLogin} from 'utils'
 
 import styles from './index.css'
@@ -45,13 +45,18 @@ class IndexPage extends Component {
       lineHeight: '45px',
       onClick: this.toggleCollapse
     }
-    let filterIconBtn = postFilterCollapse ? <IconBtn
-      iconClassName={styles.filterIcon}
-      iconBtnText="筛选"
-      {...postFilterIconOpt} /> : <IconBtn
-      iconClassName={styles.collapseIcon}
-      iconBtnText="收起"
-      {...postFilterIconOpt} />
+    let filterIconBtn = postFilterCollapse ? (
+      <IconBtn
+        iconClassName={styles.filter}
+        bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/filter.svg`}
+        iconBtnText="筛选"
+        {...postFilterIconOpt} />
+    ) : (
+      <IconBtn
+        iconClassName={styles.filter}
+        bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/collapse.svg`}
+        iconBtnText="收起"
+        {...postFilterIconOpt} />)
 
     return (
       <div className="app-container">

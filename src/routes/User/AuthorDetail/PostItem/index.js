@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import {Icon, Popover} from 'antd'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import IconBtn from "components/common/IconBtn";
 
@@ -39,7 +40,10 @@ class PostItem extends Component {
             <i className={styles.editIcon}><Icon type="edit" /></i>
           </div>
           <Popover content={this.delPostTemplate} placement="bottomRight">
-            <i className={styles.more}></i>
+            <i
+              className={styles.more}
+              style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}
+            ></i>
           </Popover>
         </header>
         <footer className={styles.footer}>

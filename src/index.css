@@ -16,7 +16,7 @@ a:active {
 }
 
 :global(.app-container) {
-  padding-top: 1rem;
+  padding-top: 68px;
 }
 
 :global(.icon) {
@@ -33,13 +33,12 @@ a:active {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 50%;
-  background-image: url(/assets/ellipsis.svg);
   cursor: pointer;
 }
 
 :global(.app-main) {
   width: 88%;
-  padding-top: .8rem;
+  padding-top: 40px;
   margin: 0 auto;
 }
 

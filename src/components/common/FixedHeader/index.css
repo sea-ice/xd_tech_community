@@ -3,7 +3,6 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1rem;
   box-sizing: border-box;
   border-bottom: 1px solid #ccc;
   background-color: #fff;
@@ -19,9 +18,9 @@
 }
 
 .logo {
-  width: 1.6699rem;
-  height: 1rem;
-  content: url(/assets/logo.jpg);
+  width: 113.55px;
+  height: 68px;
+  /* content: url(/assets/logo.jpg); */
   margin: 0;
   cursor: pointer;
 }
@@ -38,9 +37,8 @@
 .flyIcon {
   composes: icon from global;
   display: block;
-  width: .4rem;
-  height: .4rem;
-  background-image: url(/assets/fly.svg);
+  width: 28px;
+  height: 28px;
 }
 
 .msgNotify {
@@ -90,18 +88,18 @@
 .nickName {
   composes: loginInfo;
   margin-left: .1rem;
-  font-size: .28rem;
+  font-size: 18px;
 }
 
 .logout {
   composes: loginInfo;
   margin-left: .2rem;
-  font-size: .24rem;
+  font-size: 16px;
 }
 
 .btnYl{
    display: inline-block;
-   margin-bottom: 0; 
+   margin-bottom: 0;
    text-align: center;
    vertical-align: middle;
    touch-action: manipulation;

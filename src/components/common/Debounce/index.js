@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { routerRedux, withRouter } from 'dva/router'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import Confirm from '../Confirm'
 
 @connect()
@@ -64,7 +65,7 @@ class Debounce extends Component {
               type: 'user/setLoginSuccessPage',
               payload: { page: pathname }
             })
-            dispatch(routerRedux.push('/login'))
+            dispatch(routerRedux.push(`/login`))
           }}
         />
     )

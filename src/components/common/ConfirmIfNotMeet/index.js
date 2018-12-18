@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
 
+import config from 'config/constants'
 import Confirm from '../Confirm'
 
 @connect()
@@ -19,9 +20,9 @@ class ConfirmIfNotMeet extends Component {
       handleOk: () => {
         dispatch({
           type: 'user/setLoginSuccessPage',
-          payload: {page: pathname}
+          payload: { page: pathname }
         })
-        dispatch(routerRedux.push('/login'))
+        dispatch(routerRedux.push(`/login`))
       }
     }, confirmOptions)
     return (

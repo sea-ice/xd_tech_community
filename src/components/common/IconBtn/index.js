@@ -13,9 +13,10 @@ function IconBtn ({
   iconColor,
   iconTheme,
   iconClassName,
+  bgImage,
   iconBtnText,
   btnPadding = '.3rem',
-  fontSize = ".24rem",
+  fontSize = "16px",
   iconBtnStyle = {},
   lineHeight,
   onClick
@@ -35,7 +36,7 @@ function IconBtn ({
               type={iconType}
               style={{ fontSize: iconSize, color: (iconColor || color) }}
               theme={iconTheme} /> :
-            <i className={iconClassName}></i>
+            <i className={iconClassName} style={{backgroundImage: `url(${bgImage})`}}></i>
       }
       <span
         className={styles.iconBtnText}

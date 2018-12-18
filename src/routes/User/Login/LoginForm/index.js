@@ -4,6 +4,7 @@ import {connect} from 'dva'
 import {routerRedux} from 'dva/router'
 
 import styles from './index.scss'
+import config from 'config/constants'
 
 class LoginForm extends Component {
   constructor (props) {
@@ -38,7 +39,7 @@ class LoginForm extends Component {
   }
   toRegister () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push('/login'))
+    dispatch(routerRedux.push(`/login`))
   }
   render () {
     let {getFieldDecorator} = this.props.form

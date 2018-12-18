@@ -5,8 +5,9 @@ import { Row, Col, Affix, Button, Popover, Tag, Avatar, Pagination, message } fr
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
+import config from 'config/constants'
 // import colorfulTags from 'config/colorfulTags.json'
-import {checkLogin} from 'utils'
+import { checkLogin } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
 import Confirm from 'components/common/Confirm'
@@ -124,7 +125,7 @@ class PostDetail extends Component {
       type: 'user/setLoginSuccessPage',
       payload: { page: pathname }
     })
-    dispatch(routerRedux.push('/login'))
+    dispatch(routerRedux.push(`/login`))
   }
   showCommentBox() {
     this.commentInput.current.focus()
@@ -133,7 +134,10 @@ class PostDetail extends Component {
     return () => {
       let { dispatch, postInfo } = this.props
       let { userId } = postInfo
-      dispatch(routerRedux.push(`/author/${userId}${tab ? `?tab=${tab}` : ''}`))
+      dispatch(routerRedux.push(
+        `/author/${userId}${
+          tab ? `?tab=${tab}` : ''
+        }`))
     }
   }
   onCommentContentChange(e) {
@@ -184,14 +188,13 @@ class PostDetail extends Component {
     // console.log(`liked=${liked}`)
     let commonFooterIconOpt = {
       type: 'icon',
-      iconSize: '.24rem',
-      fontSize: '.2rem',
+      iconSize: 24,
+      fontSize: 18,
       btnPadding: '.2rem',
       color: '#666'
     }
-    let commonOtherInfoIconOpt = Object.assign(commonFooterIconOpt, {iconSize: '.26rem', fontSize: '.24rem'})
-    let authorIconOpt = Object.assign(commonFooterIconOpt, {fontSize: '.24rem'})
-    let documentEleFontSize = document.documentElement.clientWidth * 50 / 1000
+    let commonOtherInfoIconOpt = Object.assign({}, commonFooterIconOpt, { iconSize: 20 })
+    let authorIconBtnOpt = Object.assign({}, commonOtherInfoIconOpt, { btnPadding: '.1rem' })
     return (
       <div className="app-container">
         <FixedHeader />
@@ -203,7 +206,9 @@ class PostDetail extends Component {
                   <header className={styles.postTitleWrapper}>
                     <h2 className="postTitle">{title}</h2>
                     <Popover content={this.reportAuthorTemplate} placement="bottomRight">
-                      <i className={styles.more}></i>
+                      <i
+                        className={styles.more}
+                        style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}></i>
                     </Popover>
                   </header>
                   <article className={styles.postContent}>
@@ -340,7 +345,7 @@ class PostDetail extends Component {
               </main>
             </Col>
             <Col span={8}>
-              <Affix offsetTop={1.8 * documentEleFontSize}>
+              <Affix offsetTop={40}>
                 <div className={styles.postOtherInfo}>
                   <ul className={styles.postTags}>
                     {
@@ -377,14 +382,14 @@ class PostDetail extends Component {
                             userId={loginUserId}
                             update={this.followAuthor}
                             btn={
-                              <IconBtn iconType="plus" {...authorIconOpt} />
+                              <IconBtn iconType="plus" {...authorIconBtnOpt} />
                             }
                           />
                           <ConfirmIfNotMeet
                             condition={!!loginUserId}
                             callbackWhenMeet={this.sendMessage}
                             btn={
-                              <IconBtn iconType="message" iconBtnText="私信" {...authorIconOpt} />
+                              <IconBtn iconType="message" iconBtnText="私信" {...authorIconBtnOpt} />
                             } />
                         </div>
                       ) : null
@@ -395,7 +400,7 @@ class PostDetail extends Component {
                       className={styles.avatarWrapper}
                       onClick={this.turnToAuthorHomePage}
                     >
-                      <Avatar src={avator} size="large" />
+                      <Avatar src={avator} size={40} />
                     </div>
                     <div className={styles.authorInfo}>
                       <p onClick={this.turnToAuthorHomePage}><strong>{nickName}</strong></p>
