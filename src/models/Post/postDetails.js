@@ -77,6 +77,16 @@ export default {
         return body
       }
     },
+    *addScanRecord({payload}, {call}) {
+      let { userId, postId, spentTime } = payload
+      yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/article/doScanRecord`, {
+          userId,
+          articleId: postId,
+          endTime: '' + Date.now(),
+          spentTime: '' + spentTime
+        }))
+    },
     *updateAuthorFollowState({ payload }, { put }) {
       let { userId, authorId } = payload
       yield put({

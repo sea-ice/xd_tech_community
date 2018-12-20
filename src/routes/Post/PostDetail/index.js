@@ -81,6 +81,23 @@ class PostDetail extends Component {
     this.state = { commentContent: '' }
   }
 
+  componentDidMount() {
+    this.scanStartTime = Date.now()
+  }
+
+  componentWillUnmount() {
+    let { dispatch, loginUserId, postInfo } = this.props
+    let { articleId } = postInfo
+    dispatch({
+      type: 'postDetails/addScanRecord',
+      payload: {
+        userId: loginUserId,
+        postId: articleId,
+        spentTime: Date.now() - this.scanStartTime
+      }
+    })
+  }
+
   starPost() {
     let { dispatch, postInfo } = this.props
     let { liked, approvalNum } = postInfo

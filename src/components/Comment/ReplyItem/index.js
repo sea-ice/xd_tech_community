@@ -139,18 +139,22 @@ class ReplyItem extends Component {
           <p className={styles.commentContent}>{content}</p>
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
-              <Debounce
-                btnProps={getIconBtnToggleProps(approvalNum, isAccept, '赞同', '#1890ff')}
-                actionType="userBehaviors/approval"
-                extraPayload={{ type: !!rootComment ? 2 : 3, objectId: replyId, like: !isAccept }}
-                userId={loginUserId}
-                update={this.updateReplyAcceptState}
-                btn={
-                  <IconBtn iconType="like" {...commonIconOpt} />
-                }
-              />
               {
-                !rootComment || (!!loginUserId && (loginUserId === userId)) ? null : (
+                !!rootComment ? (
+                  <Debounce
+                    btnProps={getIconBtnToggleProps(approvalNum, isAccept, '赞同', '#1890ff')}
+                    actionType="userBehaviors/approval"
+                    extraPayload={{ type: 2, objectId: replyId, like: !isAccept }}
+                    userId={loginUserId}
+                    update={this.updateReplyAcceptState}
+                    btn={
+                      <IconBtn iconType="like" {...commonIconOpt} />
+                    }
+                  />
+                ) : null
+              }
+              {
+                loginUserId === userId ? null : (
                   <ConfirmIfNotMeet
                     condition={!!loginUserId}
                     callbackWhenMeet={this.toggleCommentBox}
@@ -158,12 +162,8 @@ class ReplyItem extends Component {
                 )
               }
               {
-                (rootComment && commentNum) ? (
+                (!!rootComment && commentNum) ? (
                   <IconBtn
-                    // iconClassName={open ? styles.spreadIcon : styles.replyItemIcon}
-                    // bgImage={
-                    //   `${config.SUBDIRECTORY_PREFIX}/assets/collapse-gray.svg`
-                    // }
                     iconType={open ? 'caret-down' : 'caret-up'}
                     iconBtnText={`${open ? '收起' : '展开'}评论(共${commentNum}条)`}
                     onClick={this.toggleReplies}
