@@ -83,7 +83,7 @@ class Confirm extends Component {
 
     let footer = [
       <Button key="confirm" type="primary" loading={loading} onClick={this.handleOk}>
-        {confirmBtnText}
+        {loading ? '加载中' : confirmBtnText}
       </Button>
     ]
     if (!singleBtn) footer.unshift(

@@ -8,8 +8,7 @@ import { getIconBtnToggleProps } from 'utils'
 
 import styles from './index.scss'
 import config from 'config/constants'
-import Confirm from 'components/common/Confirm'
-import ReportUserForm from 'components/User/ReportUserForm'
+import ReportBtn from 'components/User/ReportBtn'
 import IconBtn from 'components/common/IconBtn'
 import CommentBox from '../CommentBox'
 import Debounce from 'components/common/Debounce'
@@ -30,20 +29,6 @@ class ReplyItem extends Component {
     this.updateReplyAcceptState = this.updateReplyAcceptState.bind(this)
     this.onReplyContentChange = this.onReplyContentChange.bind(this)
     this.publishReply = this.publishReply.bind(this)
-
-    this.reportAuthorTemplate = <ul className="no-margin">
-      <li>
-        <Confirm
-          triggerModalBtn={
-            <a href="javascript:void(0);" className={styles.popoverItem}>举报该用户</a>
-          }
-          modalTitle="请认真填写举报信息"
-          confirmBtnText="提交"
-        >
-          <ReportUserForm />
-        </Confirm>
-      </li>
-    </ul>
     this.replyInput = React.createRef()
   }
   toggleCommentBox () {
@@ -171,7 +156,16 @@ class ReplyItem extends Component {
                 ) : null
               }
             </div>
-            <Popover content={this.reportAuthorTemplate} placement="bottomRight">
+            <Popover content={
+              <ul className="no-margin">
+                <li>
+                  <ReportBtn
+                    userId={loginUserId}
+                    objectType={!!rootComment ? 2 : 3}
+                    objectId={!!rootComment ? commentsv1Id : commentsv2Id} />
+                </li>
+              </ul>
+            } placement="bottomRight">
               <i
                 className={styles.more}
                 style={{

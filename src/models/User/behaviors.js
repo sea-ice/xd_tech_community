@@ -136,8 +136,25 @@ export default {
         })
       }
     },
-    *hasFollowAuthorOrNot({ payload }, { call, put }) {
-
+    *reportUser({payload}, {call}) {
+      let {
+        objectId, objectType,
+        userId, reason,
+        successCallback, failCallback } = payload
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/accusation/doAccusation`, {
+          type: objectType,
+          objectId,
+          userId,
+          reason,
+          time: '' + Date.now()
+        }))
+      let { data: { code } } = res
+      if (code === 100) {
+        successCallback()
+      } else {
+        failCallback()
+      }
     }
   }
 }

@@ -10,14 +10,13 @@ import config from 'config/constants'
 import { checkLogin, getIconBtnToggleProps } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
-import Confirm from 'components/common/Confirm'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
-import ReportUserForm from 'components/User/ReportUserForm'
 import IconBtn from 'components/common/IconBtn'
 import Debounce from 'components/common/Debounce'
 import CollectionPanel from 'components/Post/CollectionPanel'
 import CommentItem from 'components/Comment/CommentItem'
 import CommentBox from 'components/Comment/CommentBox'
+import ReportBtn from 'components/User/ReportBtn'
 import UserFollowState from 'components/User/UserFollowState'
 
 @connect(state => ({
@@ -51,20 +50,6 @@ class PostDetail extends Component {
 
   constructor (props) {
     super(props)
-    let {match} = props
-    this.reportAuthorTemplate = <ul className="no-margin">
-      <li>
-        <Confirm
-          triggerModalBtn={
-            <a href="javascript:void(0);" className={styles.popoverItem}>举报该用户</a>
-          }
-          modalTitle="请认真填写举报信息"
-          confirmBtnText="提交"
-        >
-          <ReportUserForm />
-        </Confirm>
-      </li>
-    </ul>
     this.starPost = this.starPost.bind(this)
     this.updateCollectedState = this.updateCollectedState.bind(this)
     this.updateFollowAuthorState = this.updateFollowAuthorState.bind(this)
@@ -229,7 +214,13 @@ class PostDetail extends Component {
                 <section className={styles.postContentSection}>
                   <header className={styles.postTitleWrapper}>
                     <h2 className="postTitle">{title}</h2>
-                    <Popover content={this.reportAuthorTemplate} placement="bottomRight">
+                    <Popover content={
+                      <ul className="no-margin">
+                        <li>
+                          <ReportBtn userId={loginUserId} objectType={0} objectId={articleId} />
+                        </li>
+                      </ul>
+                    } placement="bottomRight">
                       <i
                         className={styles.more}
                         style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}></i>
