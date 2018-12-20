@@ -81,6 +81,9 @@ export default {
       let { data: { code, body } } = res
       console.log(body)
       if (code === 100) {
+        body = body.map(item => Object.assign(item, {
+          commentsv1Id: commentId
+        }))
         yield put({
           type: 'postDetails/setItem',
           payload: {
@@ -134,6 +137,9 @@ export default {
       let { data: { code, body } } = res
       console.log(body)
       if (code === 100) {
+        body = body.map(item => Object.assign(item, {
+          commentsv1Id: commentId
+        }))
         yield put({
           type: 'postDetails/setItem',
           payload: {
@@ -146,6 +152,39 @@ export default {
           }
         })
       }
+    },
+    *updateReplyAcceptState({ payload }, { call, put }) {
+      let { commentsv1Id, commentsv2Id, comments } = payload
+      let targetContainer
+      let targetIndex = comments.findIndex(item => item.commentsv1Id === commentsv1Id)
+      let saveUpdateCommentIndex
+      comments = comments.slice()
+      if (commentsv2Id) {
+        // 更新评论的评论
+        saveUpdateCommentIndex = targetIndex
+        targetContainer = targetContainer[targetIndex].replies
+        targetIndex = targetContainer.findIndex(item => item.commentsv2Id === commentsv2Id)
+      } else {
+        // 更新顶层评论
+        targetContainer = comments
+      }
+      let target = targetContainer[targetIndex]
+      let { isAccept, approvalNum } = target
+      targetContainer.splice(targetIndex, 1, Object.assign(
+        {}, target, {
+          isAccept: !isAccept,
+          approvalNum: isAccept ? (approvalNum - 1) : (approvalNum + 1)
+        }))
+      if (saveUpdateCommentIndex !== undefined) {
+        comments[saveUpdateCommentIndex].replies = targetContainer.slice()
+      }
+      console.log(comments)
+      yield put({
+        type: 'postDetails/setState',
+        payload: {
+          comments
+        }
+      })
     }
   }
 }

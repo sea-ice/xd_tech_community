@@ -12,14 +12,16 @@ export default {
   },
   effects: {
     *approval({ payload }, { call, put }) {
-      let { type, objectId, userId, state, successCallback, failCallback } = payload
-      let url = `${config.SERVER_URL_API_PREFIX}/approval/${state ? 'doApproval' : 'cancelApproval'}`
+      let { type, objectId, userId, like, successCallback, failCallback } = payload
+      let url = `${config.SERVER_URL_API_PREFIX}/approval/${like ? 'doApproval' : 'cancelApproval'}`
       let params = { type, objectId, userId }
-      if (state) params.time = '' + Date.now()
+      if (like) params.time = '' + Date.now()
 
       try {
         let res = yield call(() => postJSON(url, params))
         let { data: { code } } = res
+        console.log(res)
+
         if (code === 100) {
           successCallback()
         } else {
@@ -29,34 +31,60 @@ export default {
         failCallback()
       }
     },
-    *collectPost({payload}, {call,put}) {
-      let { userId, postId, collectionName, cancel } = payload
+    *collectPost({ payload }, { call, put }) {
+      // favoriteDir仅在收藏帖子的时候需要，取消收藏不需要传
+      let { userId, postId, favoriteDir, cancel, successCallback, failCallback } = payload
       if (!cancel) {
-        yield call(() => postJSON(
+        // 收藏帖子
+        let res = yield call(() => postJSON(
           `${config.SERVER_URL_API_PREFIX}/favorite/doFavorite`, {
-          userId, postId,
-          favoriteDir: collectionName
-        }))
+            userId, postId, favoriteDir
+          }
+        ))
+        let { data: { code, body } } = res
+        if (code === 100) {
+          successCallback()
+        } else {
+          failCallback()
+        }
       } else {
         // 取消收藏需要先获取帖子所在的收藏夹
-        let target = yield call(() => postJSON(
+        let res = yield call(() => postJSON(
           `${config.SERVER_URL_API_PREFIX}/favorite/getFavoriteDirInfo`, {
             userId,
             postId
           }))
-        console.log(target)
+        let { data: { code, body } } = res
+        if (code === 100) {
+          let collection = body.find(item => !!item.flag)
+          let { favoriteDir } = collection
+          let res = yield call(() => postJSON(
+            `${config.SERVER_URL_API_PREFIX}/favorite/cancelFavorite`, {
+              articleId: postId,
+              userId, favoriteDir
+            }))
+          let { data: { code } } = res
+          if (code === 100) {
+            successCallback()
+          } else {
+            failCallback()
+          }
+        } else {
+          failCallback()
+        }
+
       }
 
     },
     *followAuthor({ payload }, { call, put }) {
-      let { userId, authorId, state, successCallback, failCallback } = payload
+      let { userId, authorId, follow, successCallback, failCallback } = payload
       let url = `${config.SERVER_URL_API_PREFIX}/focus`
       let params = {
         from: userId,
         to: authorId,
         time: '' + Date.now()
       }
-      let res = yield call(() => state ?
+      let res = yield call(() => follow ?
         postJSON(url, params) :
         request(url, {
           method: 'DELETE',

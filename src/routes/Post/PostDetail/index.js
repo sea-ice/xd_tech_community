@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import styles from './index.scss'
 import config from 'config/constants'
 // import colorfulTags from 'config/colorfulTags.json'
-import { checkLogin } from 'utils'
+import { checkLogin, getIconBtnToggleProps } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
 import Confirm from 'components/common/Confirm'
@@ -18,7 +18,7 @@ import Debounce from 'components/common/Debounce'
 import CollectionPanel from 'components/Post/CollectionPanel'
 import CommentItem from 'components/Comment/CommentItem'
 import CommentBox from 'components/Comment/CommentBox'
-
+import UserFollowState from 'components/User/UserFollowState'
 
 @connect(state => ({
   loginUserId: state.user.userId,
@@ -52,7 +52,6 @@ class PostDetail extends Component {
   constructor (props) {
     super(props)
     let {match} = props
-    console.log(match)
     this.reportAuthorTemplate = <ul className="no-margin">
       <li>
         <Confirm
@@ -82,29 +81,36 @@ class PostDetail extends Component {
     this.state = { commentContent: '' }
   }
 
-  starPost(like) {
-    let {dispatch, postInfo} = this.props
-    let { approvalNum } = postInfo
+  starPost() {
+    let { dispatch, postInfo } = this.props
+    let { liked, approvalNum } = postInfo
+    let newApprovalNum = liked ? (approvalNum - 1) : (approvalNum + 1)
+
     dispatch({
       type: 'postDetails/setInfo',
       payload: {
         key: 'postInfo',
         newInfo: {
-          liked: like,
-          approvalNum: like ? (approvalNum + 1) : (approvalNum - 1)
+          liked: !liked,
+          approvalNum: newApprovalNum
         }
       }
     })
+    return getIconBtnToggleProps(newApprovalNum, !liked)
   }
-  updateCollectedState(state) {
-    let { dispatch } = this.props
+  updateCollectedState() {
+    let { dispatch, postInfo } = this.props
+    let { collected } = postInfo
     dispatch({
       type: 'postDetails/setInfo',
       payload: {
         key: 'postInfo',
-        newInfo: { collected: state }
+        newInfo: { collected: !collected }
       }
     })
+  }
+  getAuthorRelation() {
+
   }
   sharePost() {
 
@@ -180,8 +186,9 @@ class PostDetail extends Component {
   render () {
     // let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
-    let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum, commentNum, scanNum, liked, collected } = postInfo
-    let { hasFollowed } = authorInfo
+    let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
+    let { relationship } = authorInfo
+    console.log(`relationship: ${relationship}`)
     let { commentContent } = this.state
     let commentStart = (commentCurrentPage - 1) * 10
     comments = comments.slice(commentStart, commentStart + 10)
@@ -216,26 +223,21 @@ class PostDetail extends Component {
                   </article>
                   <footer className={styles.postInfoFooter}>
                     <Debounce
-                      active={liked}
-                      number={approvalNum}
-                      activeStyle={{ iconTheme: 'filled', iconColor: '#db2d43' }}
+                      btnProps={getIconBtnToggleProps(approvalNum, liked)}
                       actionType="userBehaviors/approval"
-                      extraPayload={{type: 0, objectId: articleId}}
+                      extraPayload={{ type: 0, objectId: articleId, like: !liked }}
                       userId={loginUserId}
                       update={this.starPost}
-                      btn={
-                        <IconBtn iconType="heart" {...commonFooterIconOpt} />
-                      }
+                      btn={<IconBtn iconType="heart" {...commonFooterIconOpt} />}
                     />
                     {
                       collected ? (
                         <Debounce
-                          active={true}
-                          normalText="收藏"
-                          activeText="已收藏"
-                          activeStyle={{ iconTheme: 'filled', iconColor: 'gold' }}
+                          btnProps={getIconBtnToggleProps(null, collected, '收藏', 'gold')}
                           actionType="userBehaviors/collectPost"
-                          extraPayload={{ cancel: true, postId: articleId }}
+                          extraPayload={{
+                            cancel: true, postId: articleId, page: 'postDetails'
+                          }}
                           userId={loginUserId}
                           update={this.updateCollectedState}
                           btn={
@@ -372,18 +374,11 @@ class PostDetail extends Component {
                     {
                       (!loginUserId || userId && (loginUserId !== userId)) ? (
                         <div className={styles.contactAuthorBtns}>
-                          <Debounce
-                            active={hasFollowed}
-                            activeStyle={{ type: 'user-delete', color: 'gold' }}
-                            normalText="关注"
-                            activeText="取消关注"
-                            actionType="userBehaviors/followAuthor"
-                            extraPayload={{ authorId: userId }}
+                          <UserFollowState
                             userId={loginUserId}
-                            update={this.followAuthor}
-                            btn={
-                              <IconBtn iconType="plus" {...authorIconBtnOpt} />
-                            }
+                            authorId={userId}
+                            followState={relationship}
+                            commonIconBtnProps={authorIconBtnOpt}
                           />
                           <ConfirmIfNotMeet
                             condition={!!loginUserId}

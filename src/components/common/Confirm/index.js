@@ -48,15 +48,19 @@ class Confirm extends Component {
   handleOk() {
     let { handleOk, doneCallback } = this.props
     handleOk = handleOk || (() => Promise.resolve())
-    doneCallback = doneCallback || (() => Promise.resolve(true))
+    // doneCallback = doneCallback || (() => Promise.resolve(true))
     this.setState({ loading: true })
     let res = handleOk()
     if (res && res.then) {
-      res.then(res => {
+      res.then(close => {
+        // doneCallback(res).then(hideConfirm => {
+        //   if (hideConfirm) this.setState({ show: false })
+        // })
+        if (close) {
+          this.setState({ show: false })
+        }
+      }).finally(() => {
         this.setState({ loading: false })
-        doneCallback(res).then(hideConfirm => {
-          if (hideConfirm) this.setState({ show: false })
-        })
       })
     } else {
       this.setState({ loading: false, show: false })
@@ -109,7 +113,7 @@ Confirm.propTypes = {
   confirmBtnText: PropTypes.string,
   cancelBtnText: PropTypes.string,
   handleOk: PropTypes.func, // 点击确认回调，需要返回一个Promise对象
-  doneCallback: PropTypes.func // 处理完成后回调，同样需要返回一个Promise对象
+  // doneCallback: PropTypes.func // 处理完成后回调，同样需要返回一个Promise对象
 };
 
 export default connect()(Confirm);

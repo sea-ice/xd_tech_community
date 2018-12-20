@@ -4,6 +4,8 @@ import { connect } from 'dva'
 import { Popover, message } from 'antd'
 import dayjs from 'dayjs'
 
+import { getIconBtnToggleProps } from 'utils'
+
 import styles from './index.scss'
 import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
@@ -13,7 +15,9 @@ import CommentBox from '../CommentBox'
 import Debounce from 'components/common/Debounce'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 
-@connect()
+@connect(state => ({
+  comments: state.postDetails.comments
+}))
 class ReplyItem extends Component {
   state = {
     showReplyBox: false,
@@ -23,7 +27,7 @@ class ReplyItem extends Component {
     super(props)
     this.toggleCommentBox = this.toggleCommentBox.bind(this)
     this.toggleReplies = this.toggleReplies.bind(this)
-    this.starReply = this.starReply.bind(this)
+    this.updateReplyAcceptState = this.updateReplyAcceptState.bind(this)
     this.onReplyContentChange = this.onReplyContentChange.bind(this)
     this.publishReply = this.publishReply.bind(this)
 
@@ -55,8 +59,17 @@ class ReplyItem extends Component {
     this.setState({ replyContent: '' }) // 清除输入框中的内容
     this.replyInput.current.focus()
   }
-  starReply() {
-
+  updateReplyAcceptState() {
+    let { dispatch, replyInfo, comments } = this.props
+    let { commentsv1Id, commentsv2Id } = replyInfo
+    dispatch({
+      type: 'comment/updateReplyAcceptState',
+      payload: {
+        commentsv1Id,
+        commentsv2Id,
+        comments
+      }
+    })
   }
   onReplyContentChange(e) {
     this.setState({ replyContent: e.target.value })
@@ -89,13 +102,19 @@ class ReplyItem extends Component {
       rootComment,
       open
     } = this.props
-    let { nickName, avator, commentNum, commentsv1Id, commentsv2Id, content, isAccept, approvalNum, time, userId } = replyInfo
+    // 如果是一级评论，则replyInfo只具有commentsv1Id，如果是评论的评论，
+    // 则同时具有commentsv1Id和commentsv2Id
+    let { nickName, avator, commentNum, commentsv1Id, commentsv2Id,
+      content, isAccept, approvalNum, time, userId } = replyInfo
     let replyId = !!rootComment ? commentsv1Id : commentsv2Id
+    console.log(this.props.comments)
 
     let commonIconOpt = {
+      type: 'icon',
       color: '#666',
       btnPadding: '.2rem',
-      fontSize: '16px'
+      iconSize: 20,
+      fontSize: 16
     }
     let { showReplyBox, replyContent } = this.state
     return (
@@ -121,20 +140,13 @@ class ReplyItem extends Component {
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
               <Debounce
-                active={!!isAccept}
-                number={approvalNum}
-                normalText="%n人赞同"
-                activeStyle={{ iconTheme: 'filled', iconColor: '#db2d43' }}
+                btnProps={getIconBtnToggleProps(approvalNum, isAccept, '赞同', '#1890ff')}
                 actionType="userBehaviors/approval"
-                extraPayload={{ type: 0, objectId: replyId }}
+                extraPayload={{ type: !!rootComment ? 2 : 3, objectId: replyId, like: !isAccept }}
                 userId={loginUserId}
-                update={this.starReply}
+                update={this.updateReplyAcceptState}
                 btn={
-                  <IconBtn
-                    iconClassName={styles.replyItemIcon}
-                    bgImage={
-                      `${config.SUBDIRECTORY_PREFIX}/assets/agree.svg`
-                    } {...commonIconOpt} />
+                  <IconBtn iconType="like" {...commonIconOpt} />
                 }
               />
               {
@@ -142,24 +154,20 @@ class ReplyItem extends Component {
                   <ConfirmIfNotMeet
                     condition={!!loginUserId}
                     callbackWhenMeet={this.toggleCommentBox}
-                    btn={<IconBtn
-                      iconClassName={styles.replyItemIcon}
-                      bgImage={
-                        `${config.SUBDIRECTORY_PREFIX}/assets/reply.svg`
-                      }
-                      iconBtnText="回复" {...commonIconOpt} />} />
+                    btn={<IconBtn iconType="message" iconBtnText="回复" {...commonIconOpt} />} />
                 )
               }
               {
                 (rootComment && commentNum) ? (
                   <IconBtn
-                    iconClassName={open ? styles.spreadIcon : styles.replyItemIcon}
-                    bgImage={
-                      `${config.SUBDIRECTORY_PREFIX}/assets/collapse-gray.svg`
-                    }
+                    // iconClassName={open ? styles.spreadIcon : styles.replyItemIcon}
+                    // bgImage={
+                    //   `${config.SUBDIRECTORY_PREFIX}/assets/collapse-gray.svg`
+                    // }
+                    iconType={open ? 'caret-down' : 'caret-up'}
                     iconBtnText={`${open ? '收起' : '展开'}评论(共${commentNum}条)`}
                     onClick={this.toggleReplies}
-                    {...commonIconOpt} />
+                    {...commonIconOpt} iconColor="#999" />
                 ) : null
               }
             </div>

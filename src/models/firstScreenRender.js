@@ -57,11 +57,16 @@ export default {
         })
       ])) // all类似于Promise.all返回一个Promise对象
       if (postDetails) {
+        console.log('..............')
+        console.log(postDetails)
         // 根据返回的帖子详情的userId获取用户详情
-        let {userId} = postDetails
+        let { userId } = postDetails
         yield put({
           type: 'postDetails/getAuthorInfo',
-          payload: { userId }
+          payload: {
+            authorId: userId,
+            userInfo
+          }
         })
       }
     }

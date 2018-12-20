@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux, withRouter } from 'dva/router'
+import { message } from 'antd'
 
 import styles from './index.scss'
 import config from 'config/constants'
@@ -16,47 +17,40 @@ class Debounce extends Component {
     this.disabled = false
   }
   changeState() {
-    let { dispatch, actionType, extraPayload, userId, active, update } = this.props
+    let { dispatch, actionType, extraPayload, userId, update } = this.props
     if (this.disabled) return
     this.disabled = true
+    let hideLoading = message.loading('加载中', 0)
     dispatch({
       type: actionType,
       payload: {
-        state: !active,
         userId,
         ...extraPayload,
         successCallback: () => {
-          update(!active)
+          update()
           this.disabled = false
+          hideLoading()
+          message.success('操作成功！')
         },
         failCallback: () => {
           this.disabled = false
+          hideLoading()
+          message.error('请稍后再试！')
         }
       }
     })
   }
   render() {
-    let { userId, dispatch, btn, active, number, normalText = '%n人喜欢', activeText, activeStyle } = this.props
-    let btnProps = active ? activeStyle : {}
-    activeText = activeText || normalText
-    let text = active ? activeText : normalText
-    let iconBtnText = (number === undefined) ? text : text.replace(/%n/g, number)
-
-    let { location: { pathname } } = this.props
+    let { userId, dispatch, btn, btnProps, location: { pathname } } = this.props
 
     return !!userId ? (
       React.cloneElement(btn, {
         onClick: this.changeState,
-        iconBtnText,
         ...btnProps
       })
     ) : (
         <Confirm
-          triggerModalBtn={
-            React.cloneElement(btn, {
-              iconBtnText
-            })
-          }
+          triggerModalBtn={React.cloneElement(btn, btnProps)}
           modalTitle="提示"
           confirmBtnText="去登录"
           children={<p>完成后续操作需要登录，是否继续？</p>}
@@ -74,14 +68,11 @@ class Debounce extends Component {
 
 Debounce.propTypes = {
   btn: PropTypes.element,
-  active: PropTypes.bool,
-  number: PropTypes.number,
-  normalText: PropTypes.string,
-  activeText: PropTypes.string,
-  activeStyle: PropTypes.object,
+  btnProps: PropTypes.object,
   actionType: PropTypes.string,
   extraPayload: PropTypes.object,
-  userId: PropTypes.number
+  userId: PropTypes.number,
+  update: PropTypes.func
 };
 
 export default Debounce;

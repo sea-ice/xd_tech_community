@@ -77,25 +77,53 @@ export default {
         return body
       }
     },
+    *updateAuthorFollowState({ payload }, { put }) {
+      let { userId, authorId } = payload
+      yield put({
+        type: 'author/getAuthorFollowState',
+        payload: {
+          userId, authorId,
+          *successCallback(res) {
+            yield put({
+              type: 'setInfo',
+              payload: {
+                key: 'authorInfo',
+                newInfo: {
+                  relationship: res.status
+                }
+              }
+            })
+          }
+        }
+      })
+    },
     *getAuthorInfo({payload}, {call, put}) {
-      let {userId, userInfo} = payload
+      let { authorId, userInfo } = payload
       let authorInfo = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/user/getUserInfo`, {
-          userId
+          userId: authorId
         }))
+      console.log('hello')
+      console.log(userInfo)
       if (userInfo) {
         // 对于已登录用户，获取是否已关注当前作者
         let { userId } = userInfo
-        // todo: 未找到对应的接口，待确定参数
         yield put({
-          type: 'userBehaviors/hasFollowAuthorOrNot',
-          payload: {}
+          type: 'updateAuthorFollowState',
+          payload: { userId, authorId }
         })
       }
       let { data: { code, body } } = authorInfo
       if (code === 100) {
         console.log(body)
-        yield put({type: 'setState', payload: {authorInfo: body}})
+        yield put({
+          type: 'setState',
+          payload: {
+            authorInfo: Object.assign(body, {
+              relationship: config.author.NO_RELATIONSHIP
+            })
+          }
+        })
         return body
       }
     },

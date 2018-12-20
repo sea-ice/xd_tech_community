@@ -19,7 +19,10 @@ function IconBtn ({
   fontSize = "16px",
   iconBtnStyle = {},
   lineHeight,
-  onClick
+  onClick,
+  onFocus,
+  onMouseEnter,
+  onMouseLeave
 }) {
   return (
     <a
@@ -27,6 +30,9 @@ function IconBtn ({
       className={styles.iconBtn}
       style={{padding: `0 ${btnPadding}`, ...iconBtnStyle}}
       onClick={onClick}
+      onFocus={onFocus}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {
         type === 'avatar' ?

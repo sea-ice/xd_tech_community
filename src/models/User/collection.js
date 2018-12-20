@@ -89,6 +89,32 @@ export default {
           })
         }
       }
+    },
+    *collectPost({payload}, {call, put}) {
+      let { page, userId, postId, favoriteDir, successCallback, failCallback } = payload
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/favorite/doFavorite`, {
+          userId, postId, favoriteDir
+        }
+      ))
+      let { data: { code, body } } = res
+      if (code === 100) {
+        successCallback()
+        if (page === 'postDetails') {
+          // 收藏成功之后需要将帖子详情中的收藏状态更新
+          yield put({
+            type: 'postDetails/setInfo',
+            payload: {
+              key: 'postInfo',
+              newInfo: {
+                collected: true
+              }
+            }
+          })
+        }
+      } else {
+        failCallback()
+      }
     }
   }
 }

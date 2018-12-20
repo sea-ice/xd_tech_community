@@ -47,8 +47,61 @@ class CollectionPanel extends Component {
     }
   }
   collectPost() {
+    return new Promise((resolve, reject) => {
+      let { dispatch, selectedIdx, collections, tempCollection } = this.props
+      let gatherCollections = collections.concat(tempCollection)
+      if (selectedIdx === null) {
+        message.error(
+          gatherCollections.length ?
+            '请选择一个文件夹然后再保存' : '请先新建一个文件夹')
+        return resolve()
+      }
 
+      let collectionName = gatherCollections[selectedIdx].favoriteDir.trim()
+      let saveSuccessCallback = () => {
+        message.success('保存成功！')
+        // 收藏成功之后需要将帖子详情中的收藏状态更新
+        dispatch({
+          type: 'postDetails/setInfo',
+          payload: {
+            key: 'postInfo',
+            newInfo: {
+              collected: true
+            }
+          }
+        })
+        resolve(true) // 隐藏对话框
+      }
+      let saveFailCallback = () => {
+        message.error('保存失败！')
+        reject()
+      }
+      if (selectedIdx === collections.length) {
+        // 选中当前正在编辑的收藏夹，需要先新建该收藏夹再保存
+        this.createCollection(() => {
+          this.savePostToCollection(
+            collectionName, saveSuccessCallback, saveFailCallback)
+        })
+      } else {
+        this.savePostToCollection(
+          collectionName, saveSuccessCallback, saveFailCallback)
+      }
+    })
   }
+  savePostToCollection(collectionName, successCallback, failCallback) {
+    let { dispatch, userId, postId } = this.props
+    dispatch({
+      type: 'userBehaviors/collectPost',
+      payload: {
+        userId,
+        postId,
+        favoriteDir: collectionName,
+        successCallback,
+        failCallback
+      }
+    })
+  }
+
   addNewCollection() {
     let { collections, tempCollection } = this.props
     if (tempCollection.length) {
@@ -123,9 +176,17 @@ class CollectionPanel extends Component {
     }
   }
   createCollection(successCallback) {
-    let { dispatch, userId, tempCollection } = this.props
-    let collectionName = tempCollection[0].favoriteDir
+    let { dispatch, userId, tempCollection, collections } = this.props
+    let collectionName = tempCollection[0].favoriteDir.trim()
     // todo: 检查输入的收藏夹名称合法性
+    if (!collectionName) {
+      return message.error('收藏夹名称不允许为空！')
+    }
+    let hasConflict = collections.find(
+      item => item.favoriteDir === collectionName)
+    if (hasConflict) {
+      return message.error('收藏夹名称存在冲突！')
+    }
     successCallback = successCallback || (() => {})
     dispatch({
       type: 'collection/new',
@@ -142,6 +203,7 @@ class CollectionPanel extends Component {
       <Confirm
         triggerModalBtn={btn}
         modalTitle="选择收藏夹"
+        confirmBtnText="保存"
         handleOk={this.collectPost}
         beforeShowModal={this.getCollections}
       >

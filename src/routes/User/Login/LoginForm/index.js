@@ -11,8 +11,11 @@ class LoginForm extends Component {
     super(props)
     this.toRegister = this.toRegister.bind(this)
     this.login = this.login.bind(this)
+    this.state = { logining: false }
   }
-  login () {
+  login() {
+    let { logining } = this.state
+    if (logining) return
     let {form, dispatch, loginSuccessPage} = this.props
 
     form.validateFields()
@@ -22,17 +25,20 @@ class LoginForm extends Component {
 
     let {username, password} = form.getFieldsValue()
     // console.log(username)
+    this.setState({ logining: true })
     dispatch({
       type: 'user/login',
       payload: {
         username,
         password,
         loginSuccessPage,
-        successCallback (msg) {
+        successCallback: msg => {
           message.success(msg)
+          this.setState({ logining: false })
         },
-        failCallback (msg) {
+        failCallback: msg => {
           message.error(msg)
+          this.setState({ logining: false })
         }
       }
     })
@@ -42,7 +48,9 @@ class LoginForm extends Component {
     dispatch(routerRedux.push(`/login`))
   }
   render () {
-    let {getFieldDecorator} = this.props.form
+    let { getFieldDecorator } = this.props.form
+    let { logining } = this.state
+
     return (
       <Form className={styles.loginForm}>
         <Form.Item>
@@ -72,7 +80,12 @@ class LoginForm extends Component {
           <div className={styles.forgetPassword}>
             <a href="javascript:void(0);">忘记密码？</a>
           </div>
-          <Button type="primary" className={styles.loginBtn} onClick={this.login}>登&nbsp;录</Button>
+          <Button
+            type="primary"
+            loading={logining}
+            className={styles.loginBtn}
+            onClick={this.login}
+          >{logining ? '登录中' : '登  录'}</Button>
           <p className={styles.registerTips}>还没有账号？<a href="javascript:void(0);" onClick={this.toRegister}>马上注册</a></p>
         </Form.Item>
       </Form>
