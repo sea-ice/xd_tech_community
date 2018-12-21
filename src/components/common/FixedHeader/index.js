@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Input, Badge, Icon, Avatar, message} from 'antd'
 import {connect} from 'dva'
-import {routerRedux, withRouter, Link} from 'dva/router'
+import { routerRedux, withRouter, Link } from 'dva/router'
 
 import config from 'config/constants'
 import IconBtn from '../IconBtn'
@@ -12,18 +12,20 @@ import styles from './index.css'
   userToken: state.user.userToken,
   userInfo: state.user.userInfo
 }))
+@withRouter
 class FixedHeader extends Component {
   constructor (props) {
     super(props)
     this.turnToIndexPage = this.turnToIndexPage.bind(this)
     this.handleUserSearch = this.handleUserSearch.bind(this)
+    this.turnToNotifyPage = this.turnToNotifyPage.bind(this)
     this.toRegister = this.toRegister.bind(this)
     this.toLogin = this.toLogin.bind(this)
     this.toLogout = this.toLogout.bind(this)
   }
   turnToIndexPage () {
     let {dispatch} = this.props
-    dispatch(routerRedux.push(`/`))
+    dispatch(routerRedux.push(`/author/115?tab=my-post`))
   }
   handleUserSearch () {
 
@@ -33,8 +35,16 @@ class FixedHeader extends Component {
     dispatch(routerRedux.push(`/register`))
   }
   toLogin () {
-    let {dispatch} = this.props
+    let { dispatch, location: { pathname } } = this.props
+    dispatch({
+      type: 'user/setLoginSuccessPage',
+      payload: { page: pathname }
+    })
     dispatch(routerRedux.push(`/login`))
+  }
+  turnToNotifyPage() {
+    let { dispatch } = this.props
+    dispatch(routerRedux.push(`/post/369`))
   }
   toLogout () {
     let {dispatch, userId} = this.props
@@ -60,7 +70,8 @@ class FixedHeader extends Component {
         <div className={styles.headerContent}>
           <h1
             className={styles.logo}
-            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.jpg)` }} onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
+            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.jpg)` }}
+            onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"
@@ -78,8 +89,14 @@ class FixedHeader extends Component {
             </div>
             <div className={styles.msgNotify}>
               <Badge count={4}>
-                <a href="javascript:void(0);" className={styles.msgNotifyIcon}>
-                  <Icon type="notification" theme="twoTone" style={{fontSize: '28px', padding: '.05rem'}} />
+                <a
+                  href="javascript:void(0);"
+                  className={styles.msgNotifyIcon}
+                  onClick={this.turnToNotifyPage}
+                >
+                  <Icon
+                    type="notification" theme="twoTone"
+                    style={{ fontSize: '28px', padding: '.05rem' }} />
                 </a>
               </Badge>
             </div>

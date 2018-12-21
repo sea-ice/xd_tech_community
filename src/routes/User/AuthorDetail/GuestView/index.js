@@ -3,30 +3,27 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
 
-import {Row, Col, Affix, Menu} from 'antd'
+import { Row, Col, Affix, Menu } from 'antd'
 
 import styles from './index.scss'
-import config from 'config/constants'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
-import DraftBin from 'AuthorDetail/SubPages/DraftBin'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
 import AuthorFollowing from 'AuthorDetail/SubPages/AuthorFollowing'
 import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
-import TagManage from 'AuthorDetail/SubPages/TagManage'
 import { getSearchObj } from 'utils'
 
 @withRouter
 @connect()
-class OwnerAuthorDetail extends Component {
-  constructor (props) {
+class GuestAuthorDetail extends Component {
+  constructor(props) {
     super(props)
-    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['tag-manage']];
+    this.authorDetailTabs = [['basic-info'], ['my-post'], ['my-collection'], ['my-follow'], ['follow-me']];
 
     this.state = this.getURLSearchState(props.history.location)
     this.changeTab = this.changeTab.bind(this)
   }
-  UNSAFE_componentWillReceiveProps () {
+  UNSAFE_componentWillReceiveProps() {
     let { location, history } = this.props
     if (
       // 用户刷新地址栏、点击前进后退均属于POP操作
@@ -39,10 +36,10 @@ class OwnerAuthorDetail extends Component {
       this.setState(this.getURLSearchState(history.location))
     }
   }
-  getURLSearchState (location) {
+  getURLSearchState(location) {
     let { tab } = getSearchObj(location)
     let selected = ['basic-info'],
-        subPage = 'basic-info'
+      subPage = 'basic-info'
     if (tab) {
       let targetTabs = this.authorDetailTabs.find(
         tabs => ~tabs.indexOf(tab))
@@ -52,42 +49,36 @@ class OwnerAuthorDetail extends Component {
       }
     }
     // console.log({selectedTab: selected, subPage})
-    return {selectedTab: selected, subPage}
+    return { selectedTab: selected, subPage }
   }
-  changeTab ({key}) {
-    let {dispatch, authorId} = this.props
+  changeTab({ key }) {
+    let { dispatch, authorId } = this.props
     dispatch(routerRedux.push({
       pathname: `/author/${authorId}`,
       search: `?tab=${key}`
     }))
   }
-  render () {
-    let {selectedTab, subPage} = this.state
+  render() {
+    let { selectedTab, subPage } = this.state
 
     switch (subPage) {
       case 'basic-info':
-        subPage = <AuthorBasicInfo guest={false} />
+        subPage = <AuthorBasicInfo guest={true} />
         break
       case 'my-post':
-        subPage = <AuthorPosts guest={false} />
-        break
-      case 'draft-bin':
-        subPage = <DraftBin />
+        subPage = <AuthorPosts guest={true} />
         break
       case 'my-collection':
-        subPage = <AuthorCollection guest={false} />
+        subPage = <AuthorCollection guest={true} />
         break
       case 'my-follow':
-        subPage = <AuthorFollowing guest={false} />
+        subPage = <AuthorFollowing guest={true} />
         break
       case 'follow-me':
-        subPage = <AuthorFollowed guest={false} />
-        break
-      case 'tag-manage':
-        subPage = <TagManage />
+        subPage = <AuthorFollowed guest={true} />
         break
       default:
-        subPage = <AuthorBasicInfo guest={false} />
+        subPage = <AuthorBasicInfo guest={true} />
         break
     }
     return (
@@ -97,11 +88,10 @@ class OwnerAuthorDetail extends Component {
             <aside className={styles.menuWrapper}>
               <Menu theme="light" defaultSelectedKeys={selectedTab} onClick={this.changeTab}>
                 <Menu.Item key="basic-info">基本信息</Menu.Item>
-                <Menu.Item key="my-post">我的帖子</Menu.Item>
-                <Menu.Item key="my-collection">我的收藏</Menu.Item>
-                <Menu.Item key="my-follow">我关注的人</Menu.Item>
-                <Menu.Item key="follow-me">关注我的人</Menu.Item>
-                <Menu.Item key="tag-manage">标签管理</Menu.Item>
+                <Menu.Item key="my-post">Ta的帖子</Menu.Item>
+                <Menu.Item key="my-collection">Ta的收藏</Menu.Item>
+                <Menu.Item key="my-follow">Ta关注的人</Menu.Item>
+                <Menu.Item key="follow-me">关注Ta的人</Menu.Item>
               </Menu>
             </aside>
           </Affix>
@@ -116,8 +106,8 @@ class OwnerAuthorDetail extends Component {
   }
 }
 
-OwnerAuthorDetail.propTypes = {
+GuestAuthorDetail.propTypes = {
   authorId: PropTypes.number,
 };
 
-export default OwnerAuthorDetail;
+export default GuestAuthorDetail;

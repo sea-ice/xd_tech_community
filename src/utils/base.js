@@ -22,5 +22,5 @@ export function hasSameElements (src, dest) {
 export function* safeCallback(fn, ...args) {
   let isGenerator = typeof fn === 'function' &&
     Object.getPrototypeOf(fn) !== Object.getPrototypeOf(Function)
-  return isGenerator ? (yield fn(...args)) : fn(...args)
+  return isGenerator ? (yield* fn(...args)) : fn(...args)
 }

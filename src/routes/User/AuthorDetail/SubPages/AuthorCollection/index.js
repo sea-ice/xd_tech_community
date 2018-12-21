@@ -80,12 +80,13 @@ class AuthorCollection extends Component {
     this.setState({collection})
   }
   render () {
-    let {collection} = this.state
+    let { collection } = this.state
+    let { guest } = this.props
     return (
       <div className={styles.listWithHeader}>
         <header className={styles.header}>
           <h4>收藏夹(4)</h4>
-          <Button icon="plus">新建收藏夹</Button>
+          {guest ? null : <Button icon="plus">新建收藏夹</Button>}
         </header>
         <div className={styles.collectionWrapper}>
           <Tree

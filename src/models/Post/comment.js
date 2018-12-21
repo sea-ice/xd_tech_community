@@ -58,7 +58,7 @@ export default {
     *getReplies({ payload }, { call, put }) {
       let { commentId, page, number, loadedNumber } = payload
       let itemFilter = (item) => item.commentsv1Id === commentId
-      if (loadedNumber && Math.ceil(loadedNumber / number) >= page) {
+      if (loadedNumber && Math.ceil(loadedNumber / number) > page) {
         yield put({
           type: 'postDetails/setItem',
           payload: {

@@ -72,6 +72,7 @@ class PostDetail extends Component {
 
   componentWillUnmount() {
     let { dispatch, loginUserId, postInfo } = this.props
+    if (!loginUserId) return
     let { articleId } = postInfo
     dispatch({
       type: 'postDetails/addScanRecord',
@@ -355,7 +356,7 @@ class PostDetail extends Component {
               </main>
             </Col>
             <Col span={8}>
-              <Affix offsetTop={40}>
+              <Affix offsetTop={108}>
                 <div className={styles.postOtherInfo}>
                   <ul className={styles.postTags}>
                     {

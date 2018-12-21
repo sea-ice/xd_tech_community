@@ -9,8 +9,8 @@ export function checkLogin (opt) {
     userId: state.user.userId
   }))(class extends Component {
     componentDidMount () {
-      let {dispatch, userToken, userId} = this.props
-      let {checkLoginFinish} = opt
+      let { dispatch, userToken, userId } = this.props
+      let { checkLoginFinish } = opt
       if (userToken && userId) {
         // 检查store中的token是否过期
         dispatch({
@@ -50,7 +50,7 @@ export function checkLogin (opt) {
       }
 
     }
-    render () {
+    render() {
       return (
         <C {...this.props} />
       )

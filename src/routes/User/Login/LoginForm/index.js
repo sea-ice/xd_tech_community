@@ -72,7 +72,13 @@ class LoginForm extends Component {
                 {required: true, message: '请填写登录密码！'}
               ]
             })(
-              <Input prefix={<Icon type="lock" />} type="password" placeholder="请填写登录密码" size="large" className={styles.input} />
+              <Input
+                className={styles.input}
+                prefix={<Icon type="lock" />}
+                type="password"
+                placeholder="请填写登录密码"
+                size="large"
+                onPressEnter={this.login} />
             )
           }
         </Form.Item>

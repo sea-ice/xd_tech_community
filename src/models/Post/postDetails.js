@@ -139,7 +139,7 @@ export default {
     },
     *getComments({ payload }, { call, put }) {
       let { postId, page, number, loadedNumber } = payload
-      if (loadedNumber && (Math.ceil(loadedNumber / number) >= page)) {
+      if (loadedNumber && (Math.ceil(loadedNumber / number) > page)) {
         yield put({
           type: 'setState',
           payload: { commentCurrentPage: page } // 更新当前page

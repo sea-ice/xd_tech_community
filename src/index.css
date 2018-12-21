@@ -15,10 +15,6 @@ a:active {
   text-decoration: none !important;
 }
 
-:global(.app-container) {
-  padding-top: 68px;
-}
-
 :global(.icon) {
   background-size: contain;
   background-repeat: no-repeat;
@@ -38,7 +34,7 @@ a:active {
 
 :global(.app-main) {
   width: 88%;
-  padding-top: 40px;
+  padding-top: 108px;
   margin: 0 auto;
 }
 
