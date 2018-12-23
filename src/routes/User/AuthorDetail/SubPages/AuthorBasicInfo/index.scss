@@ -1,0 +1,81 @@
+.authorBasicInfo{
+	padding: 30px;
+	display: flex;
+}
+.userHead{
+	flex:1;
+	text-align: center;
+  margin-right: 20px;
+}
+.headImg{
+  height: 100px;
+  width: 100px;
+}
+.big{
+  margin-top: 20px;
+}
+.introduce{
+	flex:4;
+}
+.list{
+	padding: 20px 0;
+	border-bottom: 1px solid #aaa;
+	display: flex;
+}
+.title{
+  padding: 20px 0;
+  border-bottom: 1px solid #aaa;
+  display: flex;
+  justify-content: space-between;
+}
+.left{
+  padding: 20px 0;
+  display: flex;
+}
+.tip{
+	flex:1;
+}
+.content{
+	flex:3;
+}
+.name{
+  font-size: 18px;
+  font-weight: 700;
+}
+.tipUl{
+  display: flex;
+  color: #1890ff;
+}
+.tipLi{
+  border: 1px solid #1890ff;
+  margin-right: .4rem;
+  padding: .06rem .2rem;
+  border-radius: 5px;
+}
+.levelIcon {
+  composes: icon from global;
+  display: inline-block;
+  width: .4rem;
+  height: .4rem;
+  background-image: url(/assets/level.svg);
+}
+.whyIcon {
+  composes: icon from global;
+  display: inline-block;
+  width: .4rem;
+  height: .4rem;
+  background-image: url(/assets/why.svg);
+}
+.writeIcon {
+  composes: icon from global;
+  display: inline-block;
+  width: .4rem;
+  height: .4rem;
+  background-image: url(/assets/write.svg);
+}
+.coin,.level{
+  flex:3;
+  display: flex;
+}
+
+
