@@ -1,0 +1,44 @@
+.listWithHeader {
+  &>header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 .3rem;
+    border-bottom: 1px solid #ccc;
+    &>h4 {
+      margin: 0;
+      line-height: 44px;
+    }
+  }
+  span[class*="ant-tree-switcher_open"],
+  span[class*="ant-tree-switcher_close"] {
+    margin-top: 12px !important;
+  }
+  span[class*="ant-tree-node-content-wrapper"] {
+    width: calc(100% - 44px);
+    height: auto !important;
+  }
+}
+
+.collectionWrapper {
+  padding: .2rem .3rem;
+}
+
+.rootNode {
+  composes: faic from global;
+  justify-content: space-between;
+  height: 44px;
+  padding-right: .4rem;
+  &>h4 {
+    margin: 0;
+  }
+  &:hover {
+    .delIcon {
+      display: block;
+    }
+  }
+  .delIcon {
+    display: none;
+    margin: 0;
+  }
+}

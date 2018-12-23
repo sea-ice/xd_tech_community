@@ -3,11 +3,6 @@
   &:not(:last-of-type) {
     border-bottom: 1px solid #ccc;
   }
-  &:hover {
-    .editIcon {
-      opacity: 1;
-    }
-  }
 }
 
 .header {
@@ -16,15 +11,8 @@
 }
 
 .title {
-  composes: faic from global;
   h4 {
     margin: 0;
-    cursor: pointer;
-  }
-  .editIcon {
-    opacity: 0;
-    transition: opacity .2s ease-in-out;
-    margin-left: .1rem;
     cursor: pointer;
   }
 }
@@ -46,6 +34,7 @@
   }
 }
 
+
 .popoverItem {
   display: block;
   line-height: 24px;
@@ -60,14 +49,13 @@
   }
 }
 
-
 .footer {
   composes: faic from global;
   padding: .1rem 0 .06rem;
   time {
     margin-right: .4rem;
   }
-  & > .wordCount {
+  &>.wordCount {
     margin: 0;
     color: #888;
   }
@@ -76,3 +64,4 @@
 .iconBtnWrapper {
   composes: faic from global;
 }
+

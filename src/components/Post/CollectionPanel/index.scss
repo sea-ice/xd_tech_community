@@ -33,6 +33,12 @@
   border-color: #1890ff;
 }
 
+.disabledItem {
+  composes: item;
+  cursor: not-allowed;
+  background-color: #ccc;
+}
+
 .none {
   padding: .2rem 0 .4rem;
 }

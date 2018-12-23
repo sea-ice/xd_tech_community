@@ -1,4 +1,8 @@
 .reportBtn {
-  padding: .1rem .2rem;
+  display: block;
+  line-height: 24px;
   color: #666;
+  &:hover {
+    color: #333;
+  }
 }

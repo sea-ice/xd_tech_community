@@ -75,12 +75,18 @@ class AuthorPosts extends Component {
                     !total ? (
                       <div className={styles.iconWrapper}>
                         <Icon type="inbox" style={iconStyle} />
-                          {guest ? <p>Ta还没有发布过分享帖</p> : <p>你还没有发布过分享帖，<a href="javascript:void(0);">去发布</a></p>}
+                          {guest ?
+                            <p>Ta还没有发布过分享帖</p> :
+                            <p>你还没有发布过分享帖，<a href="javascript:void(0);">去发布</a></p>}
                       </div>
                     ) : (
                       <React.Fragment>
                         {posts.map(item => (
-                          <PostItem key={item.articleId} guest={guest} {...item} />))}
+                          <PostItem
+                            key={item.articleId}
+                            guest={guest} {...item}
+                            updateCurrentPage={() => this.onSharePostPageChange(currentPage)}
+                          />))}
                         {
                           total > 10 ? (
                             <div className={styles.paginatorWrapper}>
@@ -111,12 +117,18 @@ class AuthorPosts extends Component {
                     !total ? (
                       <div className={styles.iconWrapper}>
                         <Icon type="inbox" style={iconStyle} />
-                          {guest ? <p>Ta还没有发布过求助帖</p> : <p>你还没有发布过求助帖，<a href="javascript:void(0);">去发布</a></p>}
+                          {guest ?
+                            <p>Ta还没有发布过求助帖</p> :
+                            <p>你还没有发布过求助帖，<a href="javascript:void(0);">去发布</a></p>}
                       </div>
                     ) : (
                       <React.Fragment>
                         {posts.map(item => (
-                          <PostItem key={item.articleId} guest={guest} {...item} />))}
+                          <PostItem
+                            key={item.articleId}
+                            guest={guest} {...item}
+                            updateCurrentPage={() => this.onAppealPostPageChange(currentPage)}
+                          />))}
                         {
                           total > 10 ? (
                             <div className={styles.paginatorWrapper}>

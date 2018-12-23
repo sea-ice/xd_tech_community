@@ -157,7 +157,7 @@ class ReplyItem extends Component {
               }
             </div>
             <Popover content={
-              <ul className="no-margin">
+              <ul className={styles.popoverBtns}>
                 <li>
                   <ReportBtn
                     userId={loginUserId}

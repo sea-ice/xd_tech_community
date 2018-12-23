@@ -1,39 +1,65 @@
 .listWithHeader {
-  & > header {
+  &>header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 .3rem;
     border-bottom: 1px solid #ccc;
-    & > h4 {
+    &>h4 {
       margin: 0;
       line-height: 44px;
     }
   }
-
-  span[class*="ant-tree-switcher_open"],
-  span[class*="ant-tree-switcher_close"] {
-    margin-top: 12px !important;
-  }
-
-  span[class*="ant-tree-node-content-wrapper"] {
-    width: calc(100% - 44px);
-    height: auto !important;
-  }
 }
 
-.collectionWrapper {
+.colorRed {
+  color: red;
+  font-size: 18px;
+}
+
+.main {
   padding: .2rem .3rem;
 }
 
-.rootNode {
+.collectionWrapper {
+  border: 1px solid #d1d1d1;
+}
+
+.collectionItem {
+  &:not(:last-child) {
+    border-bottom: 1px solid #d1d1d1;
+  }
+  .header {
+    position: relative;
+    padding: 10px 30px;
+    cursor: pointer;
+  }
+  .postListWrapper {
+    max-height: 0;
+  }
+}
+
+.openCollectionItem {
+  composes: collectionItem;
+  .header {
+    border-bottom: 1px solid #d1d1d1;
+  }
+  .postListWrapper {
+    max-height: 800px;
+  }
+}
+
+
+.caretWrapper {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translate(-50%, -50%);
+}
+
+.titleWrapper {
   composes: faic from global;
   justify-content: space-between;
-  height: 44px;
-  padding-right: .4rem;
-  & > h4 {
-    margin: 0;
-  }
   &:hover {
     .delIcon {
       display: block;
@@ -44,3 +70,51 @@
     margin: 0;
   }
 }
+
+.title {
+  composes: faic from global;
+  h4 {
+    margin: 0;
+    line-height: 36px;
+    cursor: pointer;
+  }
+  .editIcon {
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+    margin-left: .1rem;
+    cursor: pointer;
+  }
+}
+
+.postListWrapper {
+  overflow: hidden;
+  transition: max-height .5s ease-in-out;
+}
+
+.postList {
+  background-color: #f1f1f1;
+  padding: 5px 20px;
+}
+
+.iconWrapper {
+  padding: .8rem 0;
+  text-align: center;
+  &>p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    color: #999;
+  }
+}
+
+.spinWrapper {
+  padding: .4rem 0;
+  text-align: center;
+}
+
+.paginatorWrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+

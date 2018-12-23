@@ -97,7 +97,7 @@ class UserFollowState extends Component {
         />
       ) : (
         <Popover content={
-          <ul className="no-margin">
+          <ul className={styles.popoverBtns}>
             <li>
               <a
                 href="javascript:void(0);"

@@ -6,41 +6,29 @@ import {Modal, Button} from 'antd'
 class Confirm extends Component {
   constructor (props) {
     super(props)
-    let {triggerModalBtn} = props
-    this.triggerModalBtnClickHandler = this.triggerModalBtnClickHandler.bind(this)
     this.handleOk = this.handleOk.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
+    this.triggerModalBtnClickHandler = this.triggerModalBtnClickHandler.bind(this)
 
     this.state = {
       show: false,
-      loading: false,
-      triggerModalBtn: this.bindClickHandler(triggerModalBtn)
+      loading: false
     }
-  }
-
-  UNSAFE_componentWillReceiveProps(newProps) {
-    let { triggerModalBtn } = newProps
-    if (triggerModalBtn !== this.state.triggerModalBtn) {
-      this.setState({ triggerModalBtn: this.bindClickHandler(triggerModalBtn) })
-    }
-  }
-
-  bindClickHandler(c) {
-    console.log('bind trigger')
-    return React.cloneElement(c, {
-      onClick: this.triggerModalBtnClickHandler
-    })
   }
 
   triggerModalBtnClickHandler () {
     let { beforeShowModal } = this.props
     beforeShowModal = beforeShowModal || (() => Promise.resolve())
     let res = beforeShowModal()
+    console.log(`triggerModalBtnClickHandler`)
+    console.log(res)
     if (res && res.then) {
-      beforeShowModal().then(res => {
+      res.then(res => {
         this.setState({ show: true })
       })
     } else {
+      console.log('to show')
+      console.log(this.state.show)
       this.setState({ show: true })
     }
   }
@@ -68,7 +56,7 @@ class Confirm extends Component {
   }
 
   handleCancel () {
-    this.setState({show: false})
+    this.setState({ show: false })
   }
 
   render () {
@@ -77,9 +65,12 @@ class Confirm extends Component {
       children,
       singleBtn,
       confirmBtnText = '确定',
-      cancelBtnText = '取消'
+      cancelBtnText = '取消',
+      triggerModalBtn
     } = this.props
-    let { show, loading, triggerModalBtn} = this.state
+    let { show, loading } = this.state
+    console.log(`show`)
+    console.log(show)
 
     let footer = [
       <Button key="confirm" type="primary" loading={loading} onClick={this.handleOk}>
@@ -90,8 +81,10 @@ class Confirm extends Component {
       <Button key="back" onClick={this.handleCancel}>{cancelBtnText}</Button>
     )
     return (
-      <div className="confirm">
-        {triggerModalBtn}
+      <React.Fragment>
+        {React.cloneElement(triggerModalBtn, {
+          onClick: this.triggerModalBtnClickHandler
+        })}
         <Modal
           visible={show}
           title={modalTitle}
@@ -100,7 +93,7 @@ class Confirm extends Component {
         >
           {children}
         </Modal>
-      </div>
+      </React.Fragment>
     );
   }
 }

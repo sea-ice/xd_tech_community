@@ -52,6 +52,8 @@ class PostDetail extends Component {
     super(props)
     this.starPost = this.starPost.bind(this)
     this.updateCollectedState = this.updateCollectedState.bind(this)
+    this.saveSuccessCallback = this.saveSuccessCallback.bind(this) // 收藏成功的回调
+
     this.updateFollowAuthorState = this.updateFollowAuthorState.bind(this)
 
     this.sharePost = this.sharePost.bind(this)
@@ -111,6 +113,29 @@ class PostDetail extends Component {
         newInfo: { collected: !collected }
       }
     })
+  }
+  saveSuccessCallback(resolve) {
+    let { dispatch } = this.props
+    return () => {
+      message.success('保存成功！')
+      // 收藏成功之后需要将帖子详情中的收藏状态更新
+      dispatch({
+        type: 'postDetails/setInfo',
+        payload: {
+          key: 'postInfo',
+          newInfo: {
+            collected: true
+          }
+        }
+      })
+      resolve(true) // 隐藏对话框
+    }
+  }
+  saveFailCallback(reject) {
+    return () => {
+      message.error('保存失败！')
+      reject()
+    }
   }
   getAuthorRelation() {
 
@@ -216,7 +241,7 @@ class PostDetail extends Component {
                   <header className={styles.postTitleWrapper}>
                     <h2 className="postTitle">{title}</h2>
                     <Popover content={
-                      <ul className="no-margin">
+                      <ul className={styles.popoverBtns}>
                         <li>
                           <ReportBtn userId={loginUserId} objectType={0} objectId={articleId} />
                         </li>
@@ -254,14 +279,18 @@ class PostDetail extends Component {
                           }
                         />
                       ) : (
-                          !!loginUserId ? (
-                            <CollectionPanel userId={loginUserId} postId={articleId} btn={
+                        !!loginUserId ? (
+                          <CollectionPanel
+                            userId={loginUserId} postId={articleId} btn={
                               <IconBtn iconType="star" iconBtnText="收藏" {...commonFooterIconOpt} />
-                            } />
-                          ) : (
-                            <ConfirmIfNotMeet
-                              condition={ false }
-                              btn={ <IconBtn iconType="star" iconBtnText="收藏" {...commonFooterIconOpt} />} />
+                            }
+                            saveSuccessCallback={this.saveSuccessCallback}
+                            saveFailCallback={this.saveFailCallback}
+                          />
+                        ) : (
+                          <ConfirmIfNotMeet
+                            condition={ false }
+                            btn={ <IconBtn iconType="star" iconBtnText="收藏" {...commonFooterIconOpt} />} />
                         )
                       )
                     }

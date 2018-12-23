@@ -35,14 +35,6 @@ class AuthorDetail extends Component {
   constructor (props) {
     super(props)
   }
-  UNSAFE_componentWillMount() {
-    let { dispatch, match: { params }, validAuthorId } = this.props
-    if (validAuthorId === Number(params.id)) return
-    dispatch({
-      type: 'author/setState',
-      payload: { checkingAuthorId: true }
-    })
-  }
   UNSAFE_componentWillReceiveProps(nextProps) {
     let {
       dispatch, match: { params }, history,
@@ -69,12 +61,17 @@ class AuthorDetail extends Component {
     let {
       loginUserId,
       checkingAuthorId,
-      validAuthorId
+      validAuthorId,
+      match: { params }
     } = this.props
-    console.log(`checkingAuthorId:${checkingAuthorId}`)
+    console.log(`checkingAuthorId:${checkingAuthorId || (
+      validAuthorId !== Number(params.id)
+    )}`)
 
     return (
-      checkingAuthorId ? (
+      checkingAuthorId || (
+        validAuthorId !== Number(params.id)
+      ) ? (
         <div className={styles.spinWrapper}>
           <Spin tip="加载中..." />
         </div>

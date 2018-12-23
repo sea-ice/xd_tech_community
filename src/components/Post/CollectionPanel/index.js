@@ -28,13 +28,18 @@ class CollectionPanel extends Component {
     this.resetTempCollection() // 清空temp
   }
   getCollections() {
-    let { dispatch, userId } = this.props
+    let { dispatch, noLoading, userId } = this.props
     dispatch({
       type: 'collection/getAll',
-      payload: { userId }
+      payload: {
+        userId,
+        noLoading
+      }
     })
   }
   selectItem(e) {
+    let { disabled } = e.currentTarget.dataset
+    if (disabled === 'true') return
     let { dispatch, selectedIdx } = this.props
     let clickItemIdx = Number(e.currentTarget.dataset.itemIdx)
     if (selectedIdx !== clickItemIdx) {
@@ -48,34 +53,20 @@ class CollectionPanel extends Component {
   }
   collectPost() {
     return new Promise((resolve, reject) => {
-      let { dispatch, selectedIdx, collections, tempCollection } = this.props
+      let { selectedIdx, collections, tempCollection } = this.props
       let gatherCollections = collections.concat(tempCollection)
       if (selectedIdx === null) {
         message.error(
           gatherCollections.length ?
-            '请选择一个文件夹然后再保存' : '请先新建一个文件夹')
+            '请选择一个收藏夹然后再保存' : '请先新建一个收藏夹')
         return resolve()
       }
 
       let collectionName = gatherCollections[selectedIdx].favoriteDir.trim()
-      let saveSuccessCallback = () => {
-        message.success('保存成功！')
-        // 收藏成功之后需要将帖子详情中的收藏状态更新
-        dispatch({
-          type: 'postDetails/setInfo',
-          payload: {
-            key: 'postInfo',
-            newInfo: {
-              collected: true
-            }
-          }
-        })
-        resolve(true) // 隐藏对话框
-      }
-      let saveFailCallback = () => {
-        message.error('保存失败！')
-        reject()
-      }
+      let { saveSuccessCallback, saveFailCallback } = this.props
+      saveSuccessCallback = saveSuccessCallback(resolve, collectionName)
+      saveFailCallback = saveFailCallback(reject)
+
       if (selectedIdx === collections.length) {
         // 选中当前正在编辑的收藏夹，需要先新建该收藏夹再保存
         this.createCollection(() => {
@@ -90,6 +81,7 @@ class CollectionPanel extends Component {
   }
   savePostToCollection(collectionName, successCallback, failCallback) {
     let { dispatch, userId, postId } = this.props
+
     dispatch({
       type: 'userBehaviors/collectPost',
       payload: {
@@ -187,7 +179,6 @@ class CollectionPanel extends Component {
     if (hasConflict) {
       return message.error('收藏夹名称存在冲突！')
     }
-    successCallback = successCallback || (() => {})
     dispatch({
       type: 'collection/new',
       payload: {
@@ -198,7 +189,11 @@ class CollectionPanel extends Component {
     })
   }
   render() {
-    let { btn, collections = [], selectedIdx, tempCollection } = this.props
+    let {
+      btn, collections = [],
+      selectedIdx, tempCollection,
+      disabledFavoriteDir = []
+    } = this.props
     return (
       <Confirm
         triggerModalBtn={btn}
@@ -215,18 +210,25 @@ class CollectionPanel extends Component {
             (collections.length || tempCollection.length) ? (
               <ul className={styles.list}>
                 {
-                  collections.map((item, i) => (
-                    <li
-                      className={i === selectedIdx ? styles.selectedItem : styles.item}
-                      key={item.favoriteDir}
-                      data-item-idx={i}
-                      onClick={this.selectItem}
-                    >
-                      <Checkbox checked={i === selectedIdx}>
-                        {item.favoriteDir}({item.articleNum})
-                      </Checkbox>
-                    </li>
-                  ))
+                  collections.map((item, i) => {
+                    let isDisabled = !!(~disabledFavoriteDir.indexOf(item.favoriteDir))
+                    return (
+                      <li
+                        className={
+                          isDisabled ? styles.disabledItem :
+                            (i === selectedIdx ? styles.selectedItem : styles.item)
+                        }
+                        key={item.favoriteDir}
+                        data-item-idx={i}
+                        data-disabled={isDisabled}
+                        onClick={this.selectItem}
+                      >
+                        <Checkbox checked={i === selectedIdx} disabled={isDisabled}>
+                          {item.favoriteDir}({item.articleNum})
+                        </Checkbox>
+                      </li>
+                    )
+                  })
                 }
                 {
                   tempCollection.length ? (
@@ -280,9 +282,14 @@ class CollectionPanel extends Component {
 }
 
 CollectionPanel.propTypes = {
+  initSelectedFavoriteDir: PropTypes.string,
+  noLoading: PropTypes.bool,
   btn: PropTypes.element,
   userId: PropTypes.number,
-  postId: PropTypes.number
+  postId: PropTypes.number,
+  disabledFavoriteDir: PropTypes.arrayOf(PropTypes.string),
+  saveSuccessCallback: PropTypes.func,
+  saveFailCallback: PropTypes.func
 };
 
 export default CollectionPanel;

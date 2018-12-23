@@ -14,5 +14,12 @@ export default {
     HAS_FOLLOWED: 2,
     MUTUAL_FOLLOW: 3,
     NO_RELATIONSHIP: 4
+  },
+  postType: {
+    SHARE: 2,
+    APPEAL: 3
+  },
+  objectType: {
+    POST: 0
   }
 }

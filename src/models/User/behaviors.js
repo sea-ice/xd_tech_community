@@ -36,43 +36,46 @@ export default {
       let { userId, postId, favoriteDir, cancel, successCallback, failCallback } = payload
       if (!cancel) {
         // 收藏帖子
+        console.log(`add ${postId} to ${favoriteDir}`)
         let res = yield call(() => postJSON(
           `${config.SERVER_URL_API_PREFIX}/favorite/doFavorite`, {
             userId, postId, favoriteDir
           }
         ))
-        let { data: { code, body } } = res
+        let { data: { code } } = res
         if (code === 100) {
-          successCallback()
+          if (successCallback) successCallback()
         } else {
-          failCallback()
+          if (failCallback) failCallback()
         }
       } else {
-        // 取消收藏需要先获取帖子所在的收藏夹
-        let res = yield call(() => postJSON(
-          `${config.SERVER_URL_API_PREFIX}/favorite/getFavoriteDirInfo`, {
-            userId,
-            postId
-          }))
-        let { data: { code, body } } = res
-        if (code === 100) {
-          let collection = body.find(item => !!item.flag)
-          let { favoriteDir } = collection
+        // 取消收藏时如果没有指定帖子所在的收藏夹，需要先获取帖子所在的收藏夹
+        console.log(`remove ${postId} from ${favoriteDir}`)
+        if (!favoriteDir) {
           let res = yield call(() => postJSON(
-            `${config.SERVER_URL_API_PREFIX}/favorite/cancelFavorite`, {
-              articleId: postId,
-              userId, favoriteDir
+            `${config.SERVER_URL_API_PREFIX}/favorite/getFavoriteDirInfo`, {
+              userId,
+              postId
             }))
-          let { data: { code } } = res
+          let { data: { code, body } } = res
           if (code === 100) {
-            successCallback()
+            let collection = body.find(item => !!item.flag)
+            ;({ favoriteDir } = collection)
           } else {
-            failCallback()
+            if (failCallback) return failCallback()
           }
-        } else {
-          failCallback()
         }
-
+        let res = yield call(() => postJSON(
+          `${config.SERVER_URL_API_PREFIX}/favorite/cancelFavorite`, {
+            articleId: postId,
+            userId, favoriteDir
+          }))
+        let { data: { code } } = res
+        if (code === 100) {
+          if (successCallback) successCallback()
+        } else {
+          if (failCallback) failCallback()
+        }
       }
 
     },

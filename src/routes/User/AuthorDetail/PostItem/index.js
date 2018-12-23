@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { Icon, Popover } from 'antd'
+import { routerRedux } from 'dva/router'
+import { Icon, Popover, message } from 'antd'
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
@@ -12,9 +13,33 @@ import IconBtn from "components/common/IconBtn";
 class PostItem extends Component {
   constructor (props) {
     super(props)
+    this.turnToPostDetails = this.turnToPostDetails.bind(this)
+    this.deletePost = this.deletePost.bind(this)
+  }
+  turnToPostDetails() {
+    let { dispatch, articleId } = this.props
+    dispatch(routerRedux.push(`/post/${articleId}`))
+  }
+  deletePost() {
+    let { dispatch, articleId, userId } = this.props
+    dispatch({
+      type: 'postCURD/delete',
+      payload: {
+        userId,
+        postId: articleId,
+        successCallback: () => {
+          message.success('删除成功！')
+          this.props.updateCurrentPage()
+        },
+        failCallback() {
+          message.error('删除失败，请稍后再试！')
+        }
+      }
+    })
   }
   render () {
-    let { isDraft, guest, title, time, approvalNum, scanNum, commentNum } = this.props
+    let { isDraft, guest, type, title, time, approvalNum, scanNum, commentNum } = this.props
+
     let commonIconOpt = {
       type: 'icon',
       iconSize: '.24rem',
@@ -26,17 +51,20 @@ class PostItem extends Component {
       <div className={styles.postItem}>
         <header className={styles.header}>
           <div className={styles.title}>
-            <h4>[求助]{title}</h4>
+            <h4 onClick={this.turnToPostDetails}>
+              {isDraft ? `[${type === config.postType.SHARE ? '分享' : '求助'}]` : ''}{title}
+            </h4>
             {guest ? null : <i className={styles.editIcon}><Icon type="edit" /></i>}
           </div>
           {
             guest ? null : (
               <Popover content={
-                <ul className="no-margin">
+                <ul className={styles.popoverBtns}>
                   <li>
                     <Confirm
-                      triggerModalBtn={<a href="javascript:void(0);" className={styles.popoverItem}>删除</a>}
+                      triggerModalBtn={<a href="javascript:void(0);" className={styles.deleteBtn}>删除</a>}
                       modalTitle="提示"
+                      handleOk={this.deletePost}
                     >
                       <p>确定删除该帖子吗？</p>
                     </Confirm>
