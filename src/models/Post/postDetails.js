@@ -138,7 +138,7 @@ export default {
       }
     },
     *getComments({ payload }, { call, put }) {
-      let { postId, page, number, loadedNumber } = payload
+      let { postId, loginUserId, page, number, loadedNumber } = payload
       if (loadedNumber && (Math.ceil(loadedNumber / number) > page)) {
         yield put({
           type: 'setState',
@@ -147,11 +147,12 @@ export default {
         return
       }
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/Update`, {
+        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/WebUpdate`, {
         id: postId,
         page, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id
-        number: page * number
+        number: page * number,
+        userId: loginUserId
       }))
       let { data: { code, body } } = res
       console.log('comments')

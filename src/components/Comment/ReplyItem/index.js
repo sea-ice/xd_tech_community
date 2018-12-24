@@ -60,14 +60,14 @@ class ReplyItem extends Component {
     this.setState({ replyContent: e.target.value })
   }
   publishReply(content) {
-    let { dispatch, loginUserId, replyInfo } = this.props
-    let { commentsv1Id, commentNum } = replyInfo
+    let { dispatch, rootComment, loginUserId, replyInfo } = this.props
+    let { commentsv1Id, commentsv2Id, commentNum } = replyInfo
 
     dispatch({
       type: 'comment/publishComment',
       payload: {
-        // objectId: !!rootComment ? commentsv1Id : commentsv2Id,
-        objectId: commentsv1Id,
+        objectId: !!rootComment ? commentsv1Id : commentsv2Id,
+        // objectId: commentsv1Id,
         userId: loginUserId,
         content,
         reply: true,
@@ -90,7 +90,7 @@ class ReplyItem extends Component {
     // 如果是一级评论，则replyInfo只具有commentsv1Id，如果是评论的评论，
     // 则同时具有commentsv1Id和commentsv2Id
     let { nickName, avator, commentNum, commentsv1Id, commentsv2Id,
-      content, isAccept, approvalNum, time, userId } = replyInfo
+      content, isAccept, isApproval, approvalNum, time, userId } = replyInfo
     let replyId = !!rootComment ? commentsv1Id : commentsv2Id
     console.log(this.props.comments)
 
@@ -127,9 +127,9 @@ class ReplyItem extends Component {
               {
                 !!rootComment ? (
                   <Debounce
-                    btnProps={getIconBtnToggleProps(approvalNum, isAccept, '赞同', '#1890ff')}
+                    btnProps={getIconBtnToggleProps(approvalNum, isApproval, '赞同', '#1890ff')}
                     actionType="userBehaviors/approval"
-                    extraPayload={{ type: 2, objectId: replyId, like: !isAccept }}
+                    extraPayload={{ type: 2, objectId: replyId, like: !isApproval }}
                     userId={loginUserId}
                     update={this.updateReplyAcceptState}
                     btn={
@@ -139,12 +139,10 @@ class ReplyItem extends Component {
                 ) : null
               }
               {
-                loginUserId === userId ? null : (
-                  <ConfirmIfNotMeet
-                    condition={!!loginUserId}
-                    callbackWhenMeet={this.toggleCommentBox}
-                    btn={<IconBtn iconType="message" iconBtnText="回复" {...commonIconOpt} />} />
-                )
+                <ConfirmIfNotMeet
+                  condition={!!loginUserId}
+                  callbackWhenMeet={this.toggleCommentBox}
+                  btn={<IconBtn iconType="message" iconBtnText={loginUserId === userId ? '我要追评' : '回复'} {...commonIconOpt} />} />
               }
               {
                 (!!rootComment && commentNum) ? (
@@ -177,7 +175,7 @@ class ReplyItem extends Component {
         </main>
         <div className={showReplyBox ? styles.replyBoxSpread : styles.replyBoxCollapse}>
           <div className="replyBoxContainer">
-            <h3>回复&nbsp;<span className="reply-to-commentator">Jack&nbsp;:</span></h3>
+            <h3>{loginUserId === userId ? '追加评论:' : `回复 ${nickName} :`}</h3>
             <CommentBox
               textareaRef={this.replyInput}
               content={replyContent}

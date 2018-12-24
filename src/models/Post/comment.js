@@ -18,7 +18,7 @@ export default {
     }
   },
   effects: {
-    *publishComment({ payload }, { all, call, put }) {
+    *publishComment({ payload }, { call, put }) {
       let { objectId, reply, userId, content, successCallback, failCallback, total } = payload
       let version = reply ? 2 : 1
       let url = `${config.SERVER_URL_API_PREFIX}/commentsv${version}/submitCommentsv${version}`
@@ -47,12 +47,13 @@ export default {
             type: 'getAllComments',
             payload: {
               postId: objectId,
-              total
+              total,
+              loginUserId: userId
             }
           })
         )
       } else {
-        failCallback()
+        if (failCallback) failCallback()
       }
     },
     *getReplies({ payload }, { call, put }) {
@@ -98,13 +99,14 @@ export default {
       }
     },
     *getAllComments({ payload }, { call, put }) {
-      let { postId, total } = payload
+      let { postId, loginUserId, total } = payload
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/Update`, {
+        `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/WebUpdate`, {
         id: postId,
         page: 0, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id
-        number: total
+        number: total,
+        userId: loginUserId
       }))
       let { data: { code, body } } = res
       if (code === 100) {
@@ -169,11 +171,11 @@ export default {
         targetContainer = comments
       }
       let target = targetContainer[targetIndex]
-      let { isAccept, approvalNum } = target
+      let { isApproval, approvalNum } = target // 未更新的状态
       targetContainer.splice(targetIndex, 1, Object.assign(
         {}, target, {
-          isAccept: !isAccept,
-          approvalNum: isAccept ? (approvalNum - 1) : (approvalNum + 1)
+          isApproval: !isApproval,
+          approvalNum: isApproval ? (approvalNum - 1) : (approvalNum + 1)
         }))
       if (saveUpdateCommentIndex !== undefined) {
         comments[saveUpdateCommentIndex].replies = targetContainer.slice()

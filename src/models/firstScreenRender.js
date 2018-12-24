@@ -52,7 +52,8 @@ export default {
           payload: {
             postId: id,
             page: 1,
-            number: 10
+            number: 10,
+            loginUserId: userInfo && userInfo.userId
           }
         })
       ])) // all类似于Promise.all返回一个Promise对象

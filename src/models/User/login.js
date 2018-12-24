@@ -53,7 +53,7 @@ export default {
         failCallback
       } = payload
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/user/doLogin`, {
+        `${config.SERVER_URL_API_PREFIX}/user/doLoginWeb`, {
           userName: username, password}
       ))
       console.log(res)
@@ -81,7 +81,7 @@ export default {
       try {
         // token验证失败时会返回html页面
         let res = yield call(() => postJSON(
-          `${config.SERVER_URL_API_PREFIX}/user/checkIdentity`, {
+          `${config.SERVER_URL_API_PREFIX}/user/checkIdentityWeb`, {
             token,
             userId
           }))

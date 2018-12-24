@@ -17,6 +17,7 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
       `${config.SERVER_URL_API_PREFIX}/article/getHelpRecommend/LoadMore`
     params.userId = userInfo.userId
     params.label = tags.length ? getFullTags(tags) : ''
+    params.cookie = ''
   } else {
     // params.label = ''
   }

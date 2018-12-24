@@ -197,7 +197,7 @@ class PostDetail extends Component {
     })
   }
   onCommentPageChange(page) {
-    let { dispatch, postInfo, commentCurrentPage, comments } = this.props
+    let { dispatch, loginUserId, postInfo, commentCurrentPage, comments } = this.props
     if (commentCurrentPage === page) return
     let { articleId } = postInfo
 
@@ -207,12 +207,12 @@ class PostDetail extends Component {
         postId: articleId,
         page,
         number: 10,
-        loadedNumber: comments.length
+        loadedNumber: comments.length,
+        loginUserId
       }
     })
   }
   render () {
-    // let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
     let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
     let { relationship } = authorInfo
