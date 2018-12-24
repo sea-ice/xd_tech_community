@@ -1,0 +1,53 @@
+.page{
+  padding: 10px;
+}
+.head{
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 10px;
+}
+.content{
+  display: flex;
+  flex-wrap:wrap;
+}
+.tag{
+  border: 1px solid #aaa;
+  margin-right: .2rem;
+  margin-top: .2rem;
+  padding: .06rem .2rem;
+  border-radius: 5px;
+}
+.tag:hover,.checkTag:hover{
+  cursor: pointer;
+}
+.checkTag{
+  border: 1px solid #1890ff;
+  color: #1890ff;
+  margin-right: .2rem;
+  margin-top: .2rem;
+  padding: .06rem .2rem;
+  border-radius: 5px;
+}
+.tags{
+  margin-top: .2rem;
+}
+.all{
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+.btnYl{
+  display: inline-block;
+  margin-bottom: 0;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  background: #1890ff;
+  color:#fff;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  width:100px;
+  height:32px;
+  line-height: 32px;
+  border-radius: 5px;
+}
