@@ -48,7 +48,7 @@ export default {
           })
         )
       } else {
-        failCallback()
+        if (failCallback) failCallback()
       }
     },
     *getReplies({ payload }, { call, put }) {

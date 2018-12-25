@@ -1,0 +1,25 @@
+.threePointIcon {
+   composes: icon from global;
+   display: inline-block;
+   width: .35rem;
+   height: .35rem;
+   background-image: url(/assets/threePoint.svg);
+ }
+.complainIcon {
+  composes: icon from global;
+  display: inline-block;
+  width: .35rem;
+  height: .35rem;
+  background-image: url(/assets/complain.svg);
+}
+.complain{
+
+}
+.down{
+ display: flex;
+}
+.text{
+  position: absolute;
+  /*top:1.1rem;*/
+  right:0.5rem;
+}

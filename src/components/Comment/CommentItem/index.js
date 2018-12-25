@@ -15,6 +15,7 @@ const commentSelector = createSelector(
 )
 
 @connect((state, ownProps) => ({
+  loginUserId: state.user.userId,
   replyInfo: commentSelector(state, ownProps)
 }))
 class CommentItem extends Component {
@@ -24,9 +25,8 @@ class CommentItem extends Component {
     this.onReplyPageChange = this.onReplyPageChange.bind(this)
   }
   toggleReplies() {
-    let { dispatch, commentId, replyInfo } = this.props
+    let { dispatch, commentId, replyInfo, loginUserId } = this.props
     let { open } = replyInfo
-
     if (!open) {
       dispatch({
         type: 'comment/getReplies',
