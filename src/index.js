@@ -30,6 +30,8 @@ function startApp() {
   app.model(require('./models/Post/curd').default);
   app.model(require('./models/Post/postDetails').default);
   app.model(require('./models/Post/comment').default);
+  app.model(require('./models/User/privateMsg').default);
+  app.model(require('./models/User/notification').default);
   app.model(require('./models/User/author').default);
   app.model(require('./models/User/behaviors').default);
   app.model(require('./models/User/collection').default);

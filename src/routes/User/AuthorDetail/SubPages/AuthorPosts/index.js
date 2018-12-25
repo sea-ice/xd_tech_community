@@ -103,7 +103,7 @@ class AuthorPosts extends Component {
             }
           </div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`${guest ? 'Ta' : '我'}的求助帖(${appealPosts.total})`} key="helpPosts">
+        <Tabs.TabPane tab={`${guest ? 'Ta' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
           <div className={styles.postList}>
             {
               (({ loading, error, total, posts, currentPage }) => (

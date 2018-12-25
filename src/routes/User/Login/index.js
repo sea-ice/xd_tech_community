@@ -12,7 +12,7 @@ class UserLoginPage extends Component {
   render () {
 
     return (
-      <div className="app-container">
+      <div>
         <FixedHeader />
         <main className="app-main">
           <div className={styles.loginForm}>

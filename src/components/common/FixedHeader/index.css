@@ -31,7 +31,7 @@
 }
 
 .appLink {
-  margin-left: 1rem;
+  margin-left: 40px;
 }
 
 .flyIcon {
@@ -42,7 +42,7 @@
 }
 
 .msgNotify {
-  margin-left: 1rem;
+  margin-left: 40px;
 }
 
 .msgNotifyIcon {
@@ -50,7 +50,7 @@
 }
 
 .loginUserInfo {
-  margin-left: .8rem;
+  margin-left: 30px;
   font-size: 0;
   line-height: .4rem;
   white-space: nowrap;

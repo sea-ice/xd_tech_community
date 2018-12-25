@@ -5,6 +5,7 @@ import { connect } from 'dva'
 import { Pagination } from 'antd'
 
 import styles from './index.scss'
+import RootReplyItem from '../RootReplyItem'
 import ReplyItem from '../ReplyItem'
 
 const commentSelector = createSelector(
@@ -68,10 +69,9 @@ class CommentItem extends Component {
       let replyPageStart = (replyCurrentPage - 1) * 5
       replies = replies.slice(replyPageStart, replyPageStart + 5)
     }
-
     return (
       <div className={styles.commentItem}>
-        <ReplyItem
+        <RootReplyItem
           rootComment={number}
           loginUserId={loginUserId}
           replyInfo={replyInfo}
@@ -79,33 +79,28 @@ class CommentItem extends Component {
           open={open} />
         <div className={open ? styles.replySpread : styles.replyCollapse}>
           {
-            !!replies ? (commentNum > 5 ? (
-              <React.Fragment>
-                {
-                  replies.map((item, i) => (
-                    <ReplyItem
-                      key={i}
-                      loginUserId={loginUserId}
-                      replyInfo={item} />
-                  ))
-                }
-                <div className={styles.paginatorWrapper}>
-                  <Pagination
-                    defaultCurrent={1}
-                    size="small"
-                    total={commentNum}
-                    pageSize={5}
-                    onChange={this.onReplyPageChange} />
-                </div>
-              </React.Fragment>
-            ) : (
-              replies.map((item, i) => (
-                <ReplyItem
-                  key={i}
-                  loginUserId={loginUserId}
-                  replyInfo={item} />
-              ))
-            )) : null
+            !!replies ? (<React.Fragment>
+              {
+                replies.map((item, i) => (
+                  <ReplyItem
+                    key={i}
+                    loginUserId={loginUserId}
+                    replyInfo={item} />
+                ))
+              }
+              {
+                commentNum > 5 ? (
+                  <div className={styles.paginatorWrapper}>
+                    <Pagination
+                      defaultCurrent={replyCurrentPage}
+                      size="small"
+                      total={commentNum}
+                      pageSize={5}
+                      onChange={this.onReplyPageChange} />
+                  </div>
+                ) : null
+              }
+            </React.Fragment>) : null
           }
         </div>
       </div>

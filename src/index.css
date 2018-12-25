@@ -2,6 +2,11 @@ body {
   background-color: #eee !important;
 }
 
+[id*="root"] {
+  height: 100%;
+  overflow: auto;
+}
+
 ul {
   list-style: none;
   padding-left: 0;

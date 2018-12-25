@@ -17,6 +17,7 @@ import CollectionPanel from 'components/Post/CollectionPanel'
 import CommentItem from 'components/Comment/CommentItem'
 import CommentBox from 'components/Comment/CommentBox'
 import ReportBtn from 'components/User/ReportBtn'
+import PrivateMsgBtn from 'components/User/PrivateMsgBtn'
 import UserFollowState from 'components/User/UserFollowState'
 
 @connect(state => ({
@@ -28,10 +29,8 @@ import UserFollowState from 'components/User/UserFollowState'
 }))
 @checkLogin({
   *checkLoginFinish(userInfo, { put }, props) {
-    console.log('......')
-    console.log(props)
     let { match: { params: { id } }, postInfo } = props
-    console.log(`last post id: ${postInfo.articleId}`)
+    // console.log(`last post id: ${postInfo.articleId}`)
     yield put({
       type: 'firstScreenRender/postDetails',
       payload: {
@@ -103,6 +102,7 @@ class PostDetail extends Component {
     })
     return getIconBtnToggleProps(newApprovalNum, !liked)
   }
+  /* 收藏帖子相关 */
   updateCollectedState() {
     let { dispatch, postInfo } = this.props
     let { collected } = postInfo
@@ -137,9 +137,7 @@ class PostDetail extends Component {
       reject()
     }
   }
-  getAuthorRelation() {
 
-  }
   sharePost() {
 
   }
@@ -179,7 +177,7 @@ class PostDetail extends Component {
   }
   publishComment(content) {
     let { dispatch, loginUserId, postInfo } = this.props
-    let { articleId, commentNum } = postInfo
+    let { articleId } = postInfo
 
     dispatch({
       type: 'comment/publishComment',
@@ -188,7 +186,6 @@ class PostDetail extends Component {
         userId: loginUserId,
         content,
         reply: false,
-        total: commentNum + 1,
         successCallback: () => {
           message.success('评论成功!')
           this.setState({ commentContent: '' })
@@ -197,7 +194,7 @@ class PostDetail extends Component {
     })
   }
   onCommentPageChange(page) {
-    let { dispatch, postInfo, commentCurrentPage, comments } = this.props
+    let { dispatch, loginUserId, postInfo, commentCurrentPage, comments } = this.props
     if (commentCurrentPage === page) return
     let { articleId } = postInfo
 
@@ -207,12 +204,12 @@ class PostDetail extends Component {
         postId: articleId,
         page,
         number: 10,
-        loadedNumber: comments.length
+        loadedNumber: comments.length,
+        loginUserId
       }
     })
   }
   render () {
-    // let {title, like = 0, tags, view = 225, signature = "素胚勾勒出青花笔锋浓转淡，瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半，釉色渲染仕女图韵味被私藏"} = this.state
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
     let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
     let { relationship } = authorInfo
@@ -220,6 +217,7 @@ class PostDetail extends Component {
     let { commentContent } = this.state
     let commentStart = (commentCurrentPage - 1) * 10
     comments = comments.slice(commentStart, commentStart + 10)
+
     // console.log(`liked=${liked}`)
     let commonFooterIconOpt = {
       type: 'icon',
@@ -231,7 +229,7 @@ class PostDetail extends Component {
     let commonOtherInfoIconOpt = Object.assign({}, commonFooterIconOpt, { iconSize: 20 })
     let authorIconBtnOpt = Object.assign({}, commonOtherInfoIconOpt, { btnPadding: '.1rem' })
     return (
-      <div className="app-container">
+      <div>
         <FixedHeader />
         <main className="app-main">
           <Row gutter={20}>
@@ -243,7 +241,7 @@ class PostDetail extends Component {
                     <Popover content={
                       <ul className={styles.popoverBtns}>
                         <li>
-                          <ReportBtn userId={loginUserId} objectType={0} objectId={articleId} />
+                          <ReportBtn objectType={0} objectId={articleId} />
                         </li>
                       </ul>
                     } placement="bottomRight">
@@ -309,66 +307,55 @@ class PostDetail extends Component {
                     {/* 评论数未超过5条正常显示 */}
                     {/* 未登录时只显示5条评论 */}
                     {
-                      commentNum > 5 ? (
+                      !!commentNum ? (
                         !!loginUserId ? (
-                          commentNum > 10 ? (
-                            <React.Fragment>
-                              {
-                                comments.map((item, i) => (
-                                  <CommentItem
-                                    key={i}
-                                    number={commentStart + i + 1}
-                                    loginUserId={loginUserId}
-                                    commentId={item.commentsv1Id} />
-                                ))
-                              }
+                          <React.Fragment>
+                            {
+                              comments.map((item, i) => (
+                                <CommentItem
+                                  key={i}
+                                  number={commentStart + i + 1}
+                                  loginUserId={loginUserId}
+                                  commentId={item.commentsv1Id} />
+                              ))
+                            }
+                            {commentNum > 10 ? (
                               <div className={styles.paginatorWrapper}>
                                 <Pagination
                                   defaultCurrent={1}
                                   total={commentNum}
                                   onChange={this.onCommentPageChange} />
                               </div>
-                            </React.Fragment>
-                          ): (
-                            comments.map((item, i) => (
-                              <CommentItem
-                                key={i}
-                                number={i + 1}
-                                loginUserId={loginUserId}
-                                commentId={item.commentsv1Id} />
-                            ))
-                          )
+                            ): null}
+                          </React.Fragment>
                         ) : (
-                          <div className={styles.notLoggedInComments}>
+                          <div className={commentNum > 5 ? styles.notLoggedInComments : ''}>
                             {comments.slice(0, 5).map((item, i) => (
                               <CommentItem
                                 key={i}
                                 number={i + 1}
                                 loginUserId={loginUserId}
                                 commentId={item.commentsv1Id} />))}
-                            <p className={styles.loginToComment}>
-                              <a href="javascript:void(0)" onClick={this.turnToLoginPage}>登录之后查看所有评论</a>
-                            </p>
+                            {commentNum > 5 ? (
+                              <p className={styles.loginToComment}>
+                                <a href="javascript:void(0)"
+                                    onClick={this.turnToLoginPage}>登录之后查看全部评论</a>
+                              </p>
+                            ) : null}
                           </div>
                         )
                       ) : (
-                        commentNum ? (
-                          comments.map((item, i) => (
-                            <CommentItem key={i} number={i + 1} loginUserId={loginUserId} replyInfo={item} />
-                          ))
-                        ) : (
-                          <div className={styles.noComment}>
-                            <IconBtn
-                              type="icon"
-                              iconType="inbox"
-                              iconBtnStyle={{ justifyContent: 'center', cursor: 'auto' }}
-                              iconSize={36}
-                              color="#999"
-                              fontSize={18}
-                              iconBtnText="暂无评论"
-                            />
-                          </div>
-                        )
+                        <div className={styles.noComment}>
+                          <IconBtn
+                            type="icon"
+                            iconType="inbox"
+                            iconBtnStyle={{ justifyContent: 'center', cursor: 'auto' }}
+                            iconSize={36}
+                            color="#999"
+                            fontSize={18}
+                            iconBtnText="暂无评论"
+                          />
+                        </div>
                       )
                     }
                   </main>
@@ -413,17 +400,19 @@ class PostDetail extends Component {
                       (!loginUserId || userId && (loginUserId !== userId)) ? (
                         <div className={styles.contactAuthorBtns}>
                           <UserFollowState
-                            userId={loginUserId}
                             authorId={userId}
                             followState={relationship}
                             commonIconBtnProps={authorIconBtnOpt}
                           />
-                          <ConfirmIfNotMeet
-                            condition={!!loginUserId}
-                            callbackWhenMeet={this.sendMessage}
+                          <PrivateMsgBtn
+                            receiverId={userId}
                             btn={
-                              <IconBtn iconType="message" iconBtnText="私信" {...authorIconBtnOpt} />
-                            } />
+                              <IconBtn
+                                iconType="message"
+                                iconBtnText="私信"
+                                {...authorIconBtnOpt} />
+                            }
+                          />
                         </div>
                       ) : null
                     }

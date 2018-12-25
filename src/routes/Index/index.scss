@@ -1,0 +1,28 @@
+.tabWrapper {
+  background-color: white;
+  [class*="ant-tabs-bar"] {
+    padding: 0 .4rem;
+  }
+}
+
+.filter {
+  composes: icon from global;
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.postList {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.spinWrapper {
+  padding: 20px 0;
+  text-align: center;
+}
+
+
+
+
+
+

@@ -96,7 +96,7 @@ class SharePostFilterByLabel extends Component {
   }
   getFilterPost () {
     // 检查selectedTags和confirmedTags是否一致
-    let {selectedTags, confirmedTags, dispatch, userInfo} = this.props
+    let { selectedTags, confirmedTags, dispatch, userInfo, resetPullup } = this.props
     if (hasSameElements(selectedTags, confirmedTags)) {
       this.setConfirmState('confirmed')
       return
@@ -106,12 +106,15 @@ class SharePostFilterByLabel extends Component {
       type: 'recommendPosts/getPostByNewTags',
       payload: {
         userInfo,
-        tags: selectedTags
+        tags: selectedTags,
+        successCallback() {
+          resetPullup()
+        }
       }
     })
   }
   resetSelectTags () {
-    let {selectedTags, confirmedTags, userInfo, dispatch} = this.props
+    let { selectedTags, confirmedTags, userInfo, dispatch, resetPullup } = this.props
     if (!confirmedTags.length) {
       if (selectedTags.length) {
         dispatch({
@@ -128,7 +131,10 @@ class SharePostFilterByLabel extends Component {
       type: 'recommendPosts/getPostByNewTags',
       payload: {
         userInfo,
-        tags: []
+        tags: [],
+        successCallback() {
+          resetPullup()
+        }
       }
     })
   }

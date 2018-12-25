@@ -1,14 +1,10 @@
 .replyItem {
-  background-color: #e8e8e8;
-  padding-left: 45px;
-  &:not(:last-child) {
-    border-bottom: 1px solid #e8e8e8;
-  }
+  padding-top: .4rem;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .replyMain {
-  padding: 15px 40px 10px 31px;
-  background-color: white;
+  padding: 0 40px;
 }
 
 .replyItemHeader,
@@ -19,7 +15,7 @@
 }
 
 .replyItemHeader {
-  & > p {
+  &>p {
     margin-bottom: 0;
   }
 }
@@ -27,24 +23,37 @@
 .publisherInfo {
   display: flex;
   align-items: center;
-  & > time {
+  &>time {
     margin-left: .4rem;
   }
 }
 
 .commentContent {
-  margin: .6em 0;
+  padding-top: .4rem;
   font-size: 16px;
   text-indent: 20px;
 }
 
 .replyItemFooter {
+  padding-bottom: .1rem;
   margin-left: -.2rem;
 }
 
 .iconBtns {
   display: flex;
   align-items: center;
+}
+
+.replyItemIcon {
+  composes: icon from global;
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.spreadIcon {
+  composes: replyItemIcon;
+  transform: rotate(180deg);
 }
 
 .more {
@@ -67,3 +76,25 @@
     border-top: 1px solid #ccc;
   }
 }
+
+.replyBoxWrapper {
+  background-color: #e6e6e6;
+  transition: max-height .5s ease-in-out;
+  overflow: hidden;
+  &>div {
+    width: 90%;
+    margin: 0 auto;
+    padding: .4rem 0;
+  }
+}
+
+.replyBoxCollapse {
+  composes: replyBoxWrapper;
+  max-height: 0;
+}
+
+.replyBoxSpread {
+  composes: replyBoxWrapper;
+  max-height: 300px;
+}
+

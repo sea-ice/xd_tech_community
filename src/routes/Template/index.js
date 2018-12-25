@@ -13,7 +13,7 @@ class PostDetail extends Component {
   render () {
 
     return (
-      <div className="app-container">
+      <div>
         <FixedHeader />
         <main className="app-main">
           <Row gutter={20}>

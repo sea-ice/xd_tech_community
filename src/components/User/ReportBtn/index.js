@@ -8,6 +8,9 @@ import Confirm from 'components/common/Confirm'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 import ReportUserForm from 'components/User/ReportUserForm'
 
+@connect(state => ({
+  userId: state.user.userId
+}))
 class ReportBtn extends Component {
   constructor(props) {
     super(props)
@@ -71,4 +74,4 @@ ReportBtn.propTypes = {
   userId: PropTypes.number,
 };
 
-export default connect()(ReportBtn);
+export default ReportBtn;

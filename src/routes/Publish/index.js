@@ -31,7 +31,7 @@ class Publish extends React.Component{
     }
     render(){
         return (
-            <div className="app-container">
+            <div>
                 <FixedHeader />
                 <div className={styles.richEditor}>
                     <Col span={12} offset={6}>
@@ -45,11 +45,11 @@ class Publish extends React.Component{
                     </Col>
                 </div>
             </div>
-                 
-            
+
+
         );
     }
-    
+
 }
 
 export default Publish;

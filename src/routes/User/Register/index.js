@@ -37,7 +37,7 @@ class UserRegisterPage extends Component {
         break
     }
     return (
-      <div className="app-container">
+      <div>
         <FixedHeader />
         <main className="app-main">
           <Row type="flex" justify="center">

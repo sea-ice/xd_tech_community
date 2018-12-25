@@ -67,7 +67,7 @@ export default {
     *new({ payload }, { all, call, put }) {
       let { userId, collectionName, successCallback, failCallback} = payload
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/favorite/newFavoritrDir`, {
+        `${config.SERVER_URL_API_PREFIX}/favorite/newFavoriteDir`, {
           userId,
           favoriteDir: collectionName
         }))

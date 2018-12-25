@@ -7,6 +7,7 @@ import IndexPage from './routes/Index';
 import RegisterPage from './routes/User/Register'
 import LoginPage from './routes/User/Login'
 import PostDetail from './routes/Post/PostDetail'
+import Notification from './routes/User/Notification'
 import AuthorDetail from './routes/User/AuthorDetail'
 import Error404 from './routes/Extra/404'
 
@@ -38,6 +39,7 @@ function appRouterConfig(app) {
         <Route path="/register" exact component={RegisterPage} />
         {/* <Route path="/publish" exact component={Publish} /> */}
         <Route path="/login" exact component={LoginPage} />
+        <Route path="/notify" exact component={Notification} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
         <Route path="/404" exact component={Error404} />

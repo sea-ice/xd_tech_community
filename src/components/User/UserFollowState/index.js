@@ -8,6 +8,9 @@ import styles from './index.scss'
 import Debounce from 'components/common/Debounce'
 import IconBtn from 'components/common/IconBtn'
 
+@connect(state => ({
+  userId: state.user.userId
+}))
 class UserFollowState extends Component {
   constructor(props) {
     super(props)
@@ -121,4 +124,4 @@ UserFollowState.propTypes = {
   commonIconBtnProps: PropTypes.object
 };
 
-export default connect()(UserFollowState);
+export default UserFollowState;

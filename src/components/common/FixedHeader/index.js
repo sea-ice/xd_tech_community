@@ -10,7 +10,8 @@ import styles from './index.css'
 @connect(state => ({
   userId: state.user.userId,
   userToken: state.user.userToken,
-  userInfo: state.user.userInfo
+  userInfo: state.user.userInfo,
+  notifyNum: state.notify.notifyNum
 }))
 @withRouter
 class FixedHeader extends Component {
@@ -24,14 +25,26 @@ class FixedHeader extends Component {
     this.toLogout = this.toLogout.bind(this)
   }
   turnToIndexPage () {
-    let {dispatch} = this.props
-    dispatch(routerRedux.push(`/author/115?tab=my-post`))
+    let { dispatch } = this.props
+    // dispatch(routerRedux.push(`/author/115?tab=my-post`))
+    dispatch(routerRedux.push(`/`))
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    let { dispatch, userId } = nextProps
+    if (userId && this.props.userId !== userId) {
+      dispatch({
+        type: 'notify/getNumber',
+        payload: {
+          userId
+        }
+      })
+    }
   }
   handleUserSearch () {
 
   }
   toRegister () {
-    let {dispatch} = this.props
+    let { dispatch } = this.props
     dispatch(routerRedux.push(`/register`))
   }
   toLogin () {
@@ -44,7 +57,7 @@ class FixedHeader extends Component {
   }
   turnToNotifyPage() {
     let { dispatch } = this.props
-    dispatch(routerRedux.push(`/post/369`))
+    dispatch(routerRedux.push(`/notify`))
   }
   toLogout () {
     let {dispatch, userId} = this.props
@@ -63,7 +76,7 @@ class FixedHeader extends Component {
   }
   render () {
     let Search = Input.Search
-    let {userId, userToken, userInfo} = this.props
+    let { userId, userToken, userInfo, notifyNum } = this.props
     let userLogined = !!(userId && userToken && userInfo)
     return (
       <header className={styles.header}>
@@ -85,21 +98,25 @@ class FixedHeader extends Component {
               <IconBtn
                 iconClassName={styles.flyIcon}
                 bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
-                iconBtnText="APP" color="#999" fontSize="18px" />
+                iconBtnText="APP" color="#999" fontSize="18px"  />
             </div>
-            <div className={styles.msgNotify}>
-              <Badge count={4}>
-                <a
-                  href="javascript:void(0);"
-                  className={styles.msgNotifyIcon}
-                  onClick={this.turnToNotifyPage}
-                >
-                  <Icon
-                    type="notification" theme="twoTone"
-                    style={{ fontSize: '28px', padding: '.05rem' }} />
-                </a>
-              </Badge>
-            </div>
+            {
+              !!userId ? (
+                <div className={styles.msgNotify}>
+                  <Badge count={notifyNum}>
+                    <a
+                      href="javascript:void(0);"
+                      className={styles.msgNotifyIcon}
+                      onClick={this.turnToNotifyPage}
+                    >
+                      <Icon
+                        type="notification" theme="twoTone"
+                        style={{ fontSize: '28px', padding: '.05rem' }} />
+                    </a>
+                  </Badge>
+                </div>
+              ) : null
+            }
             <div className={styles.loginUserInfo}>
               {/* <Avatar src='../../../assets/yay.jpg' /> */}
               {

@@ -4,14 +4,15 @@ import {fillPostListPayload} from 'utils'
 export default {
   namespace: 'recommendPosts',
   state: {
+    firstLoading: true,
     share: [],
-    help: [],
+    appeal: [],
     sharePostPage: 0,
-    helpPostPage: 0
+    appealPostPage: 0
   },
   reducers: {
-    putNextPage(state, {payload}) {
-      let {posts, postType, reset} = payload
+    putNextPage(state, { payload }) {
+      let { posts, postType, reset } = payload
       let pageKey = `${postType}PostPage`
 
       return Object.assign({}, state, {
@@ -19,18 +20,19 @@ export default {
         [pageKey]: state[pageKey] + 1
       }, reset ? {
         sharePostPage: 1,
-        helpPostPage: 1
+        appealPostPage: 1
       } : {})
+    },
+    setState(state, { payload }) {
+      return Object.assign({}, state, payload)
     }
   },
   effects: {
-    *getPageData({payload}, {call, put}) {
-      let {url, postType, params, reset} = payload
+    *getPageData({ payload }, { call, put }) {
+      let { url, postType, params, reset, successCallback } = payload
       let posts = yield call(() => postJSON(url, params))
       let { data: { code, body } } = posts
-      // console.log('----')
-      // console.log(body)
-      // console.log('----')
+
       if (code === 100) {
         yield put({
           type: 'putNextPage',
@@ -40,20 +42,21 @@ export default {
             reset
           }
         })
+        if (successCallback) successCallback(posts)
         return true
-      } else {
-        console.log(new Error('获取分页数据失败'))
-        return false
+      } else if (code === 216) {
+        if (successCallback) successCallback(posts)
       }
+      return false
     },
-    *getPostByNewTags ({payload}, {all, put}) {
-      let {userInfo, tags} = payload
+    *getPostByNewTags({ payload }, { all, put }) {
+      let { userInfo, tags, successCallback } = payload
       yield put({
         type: 'postFilterState/setState',
         payload: { confirmState: 'loading' }
       })
       // 同步刷新分享帖和求助帖列表
-      let res = yield all([
+      let res = yield (yield all([
         put({
           type: 'getPageData',
           payload: {
@@ -64,12 +67,11 @@ export default {
         put({
           type: 'getPageData',
           payload: {
-            ...fillPostListPayload(userInfo, 'help', 0, tags),
+            ...fillPostListPayload(userInfo, 'appeal', 0, tags),
             reset: true
           }
         })
-      ]) // 返回的res是由两个Promise对象构成的数组
-      res = yield Promise.all(res)
+      ]))
       console.log(res)
       if (res[0] && res[1]) {
         yield put({
@@ -80,6 +82,7 @@ export default {
             confirmedTags: tags.slice()
           }
         })
+        if (successCallback) successCallback()
       } else {
         yield put({
           type: 'postFilterState/setState',

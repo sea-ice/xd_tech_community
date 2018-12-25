@@ -4,7 +4,7 @@ export default {
   namespace: 'indexStickPosts',
   state: {
     share: [],
-    help: []
+    appeal: []
   },
   reducers: {
     putNextPage(state, {payload}) {
