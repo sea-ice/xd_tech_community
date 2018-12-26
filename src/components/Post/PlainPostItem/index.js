@@ -12,10 +12,16 @@ class PlainPostItem extends Component {
   constructor (props) {
     super(props)
     this.showPostDetail = this.showPostDetail.bind(this)
+    this.showAuthorHomepage = this.showAuthorHomepage.bind(this)
   }
   showPostDetail () {
     let {dispatch, articleId} = this.props
     dispatch(routerRedux.push(`/post/${articleId}`))
+  }
+  showAuthorHomepage(e) {
+    let { dispatch, userId } = this.props
+    dispatch(routerRedux.push(`/author/${userId}`))
+    e.stopPropagation()
   }
   render () {
     let {
@@ -31,7 +37,12 @@ class PlainPostItem extends Component {
       <li className={styles.postItem} onClick={this.showPostDetail}>
         <header className={styles.postItemHeader}>
           <div className={styles.avatarWrapper}>
-            <IconBtn type="avatar" avatarURL={avator} iconBtnText={nickName} btnPadding='0' color="#333" />
+            <IconBtn
+              type="avatar"
+              avatarURL={avator}
+              iconBtnText={nickName}
+              onClick={this.showAuthorHomepage}
+              btnPadding='0' color="#333" />
             <time className={styles.postItemPublishTime}>{
               dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
             }</time>

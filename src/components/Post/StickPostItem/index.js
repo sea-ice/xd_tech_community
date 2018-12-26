@@ -24,7 +24,10 @@ class StickPostItem extends Component {
       <li className={styles.postItem} onClick={this.showPostDetail}>
         <i
           className={styles.stickIcon}
-          style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/stick.svg)` }}></i>
+          style={{
+            backgroundImage: `url(${
+              config.SUBDIRECTORY_PREFIX}/assets/stick.svg)`
+          }}></i>
         <h2 className={styles.stickPostTitle}>[置顶]{title}</h2>
         <PostItemFooter {...postFooterInfo} />
       </li>

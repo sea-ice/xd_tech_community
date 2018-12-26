@@ -16,22 +16,22 @@ import Debounce from 'components/common/Debounce'
   comments: state.postDetails.comments
 }))
 class ReplyItem extends Component {
-  constructor (props) {
-    super(props)
-    this.updateReplyLikeState = this.updateReplyLikeState.bind(this)
-  }
-  updateReplyLikeState() {
-    let { dispatch, replyInfo, comments } = this.props
-    let { commentsv1Id, commentsv2Id } = replyInfo
-    dispatch({
-      type: 'comment/updateReplyLikeState',
-      payload: {
-        commentsv1Id,
-        commentsv2Id,
-        comments
-      }
-    })
-  }
+  // constructor (props) {
+  //   super(props)
+  //   this.updateReplyLikeState = this.updateReplyLikeState.bind(this)
+  // }
+  // updateReplyLikeState() {
+  //   let { dispatch, replyInfo, comments } = this.props
+  //   let { commentsv1Id, commentsv2Id } = replyInfo
+  //   dispatch({
+  //     type: 'comment/updateReplyLikeState',
+  //     payload: {
+  //       commentsv1Id,
+  //       commentsv2Id,
+  //       comments
+  //     }
+  //   })
+  // }
 
   render () {
     let {
@@ -65,9 +65,25 @@ class ReplyItem extends Component {
                 btnPadding={0} />
               <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
             </p>
+            <Popover content={
+              <ul className={styles.popoverBtns}>
+                <li>
+                  <ReportBtn
+                    objectType={3}
+                    objectId={commentsv2Id} />
+                </li>
+              </ul>
+            } placement="bottomRight">
+              <i
+                className={styles.more}
+                style={{
+                  backgroundImage: `url(${
+                    config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
+                }}></i>
+            </Popover>
           </header>
           <p className={styles.commentContent}>{content}</p>
-          <footer className={styles.replyItemFooter}>
+          {/* <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
               <Debounce
                 btnProps={getIconBtnToggleProps(approvalNum, isApproval, '赞同', '#1890ff')}
@@ -96,7 +112,7 @@ class ReplyItem extends Component {
                     config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
                 }}></i>
             </Popover>
-          </footer>
+          </footer> */}
         </main>
       </section>
     )

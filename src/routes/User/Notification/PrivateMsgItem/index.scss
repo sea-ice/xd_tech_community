@@ -1,0 +1,77 @@
+.notifyItem {
+  composes: faic from global;
+  position: relative;
+  padding: 15px 20px 15px 115px;
+  min-height: 110px;
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+.avatarWrapper {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+}
+
+.main {
+  width: 100%;
+  composes: faic from global;
+  justify-content: space-between;
+}
+
+.contentWrapper {
+  width: calc(100% - 100px);
+}
+
+.btnWrapper {
+  width: 80px;
+  margin-left: 20px;
+}
+
+.header {
+  display: flex;
+  h4 {
+    margin-bottom: 0;
+  }
+  time {
+    margin-left: 20px;
+  }
+}
+
+
+.summary {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.btn {
+  [class*="ant-btn"] {
+    padding: 0;
+  }
+}
+
+.btn:not(:first-child) {
+  margin-top: 10px;
+}
+
+.clickableSummary {
+  composes: summary;
+  cursor: pointer;
+}
+
+.read {
+  composes: notifyItem;
+  .summary, time {
+    color: #ccc;
+  }
+  .clickableSummary {
+    cursor: auto;
+  }
+}
+
+
+
+
+
+

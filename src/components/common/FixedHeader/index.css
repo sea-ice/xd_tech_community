@@ -85,10 +85,16 @@
   vertical-align: middle;
 }
 
+.avatarWrapper {
+  display: inline-block;
+  cursor: pointer;
+}
+
 .nickName {
   composes: loginInfo;
   margin-left: .1rem;
   font-size: 18px;
+  cursor: pointer;
 }
 
 .logout {

@@ -11,3 +11,30 @@
   width: 24px;
   height: 24px;
 }
+
+.spinWrapper {
+  padding: .4rem 0;
+  text-align: center;
+}
+
+.iconWrapper {
+  padding: .8rem 0;
+  text-align: center;
+  &>p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    color: #999;
+  }
+}
+
+.msgList {
+  margin-top: -1em;
+  margin-bottom: 0;
+}
+
+.paginatorWrapper {
+  padding: .2rem .3rem;
+  display: flex;
+  justify-content: flex-end;
+}
+

@@ -13,8 +13,7 @@
 
 .replyItemHeader,
 .replyItemFooter {
-  display: flex;
-  align-items: center;
+  composes: faic from global;
   justify-content: space-between;
 }
 

@@ -11,7 +11,7 @@ import styles from './index.css'
   userId: state.user.userId,
   userToken: state.user.userToken,
   userInfo: state.user.userInfo,
-  notifyNum: state.notify.notifyNum
+  unreadTotalNum: state.notify.unreadTotalNum
 }))
 @withRouter
 class FixedHeader extends Component {
@@ -20,6 +20,7 @@ class FixedHeader extends Component {
     this.turnToIndexPage = this.turnToIndexPage.bind(this)
     this.handleUserSearch = this.handleUserSearch.bind(this)
     this.turnToNotifyPage = this.turnToNotifyPage.bind(this)
+    this.turnToMyHomepage = this.turnToMyHomepage.bind(this)
     this.toRegister = this.toRegister.bind(this)
     this.toLogin = this.toLogin.bind(this)
     this.toLogout = this.toLogout.bind(this)
@@ -74,9 +75,13 @@ class FixedHeader extends Component {
       }
     })
   }
+  turnToMyHomepage() {
+    let { userId, dispatch } = this.props
+    dispatch(routerRedux.push(`/author/${userId}`))
+  }
   render () {
     let Search = Input.Search
-    let { userId, userToken, userInfo, notifyNum } = this.props
+    let { userId, userToken, userInfo, unreadTotalNum } = this.props
     let userLogined = !!(userId && userToken && userInfo)
     return (
       <header className={styles.header}>
@@ -103,7 +108,7 @@ class FixedHeader extends Component {
             {
               !!userId ? (
                 <div className={styles.msgNotify}>
-                  <Badge count={notifyNum}>
+                  <Badge count={unreadTotalNum}>
                     <a
                       href="javascript:void(0);"
                       className={styles.msgNotifyIcon}
@@ -122,8 +127,8 @@ class FixedHeader extends Component {
               {
                 userLogined ? (
                   <React.Fragment>
-                    <Avatar src={userInfo.avator} />
-                    <span className={styles.nickName}>{userInfo.nickName}</span>
+                    <span className={styles.avatarWrapper}><Avatar src={userInfo.avator} onClick={this.turnToMyHomepage} /></span>
+                    <span className={styles.nickName} onClick={this.turnToMyHomepage}>{userInfo.nickName}</span>
                     <a href="javascript:void(0);" className={styles.logout} onClick={this.toLogout}>退出</a>
                   </React.Fragment>
                 ) : (

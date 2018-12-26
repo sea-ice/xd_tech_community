@@ -4,6 +4,7 @@ import config from 'config/constants'
 export default {
   namespace: 'author',
   state: {
+    authorInfo: {},
     checkingAuthorId: true,
     validAuthorId: null,
     sharePosts: { posts: [], currentPage: 0, total: 0 },

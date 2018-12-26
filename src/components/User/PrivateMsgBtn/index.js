@@ -6,7 +6,6 @@ import { Input, message } from 'antd'
 import styles from './index.scss'
 import Confirm from 'components/common/Confirm'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
-import ReportUserForm from 'components/User/ReportUserForm'
 
 @connect(state => ({
   userId: state.user.userId
@@ -60,7 +59,7 @@ class PrivateMsgBtn extends Component {
           handleOk={this.sendMessage}
         >
           <p>有什么想对我说的，欢迎给我留言！</p>
-          <Input.TextArea placeholder="请输入私信内容！" value={msg} onChange={this.onMsgChange}></Input.TextArea>
+          <Input.TextArea placeholder="请输入私信内容" value={msg} onChange={this.onMsgChange}></Input.TextArea>
         </Confirm>
       ) : (
         <ConfirmIfNotMeet condition={false} btn={ btn } />

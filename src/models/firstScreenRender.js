@@ -12,13 +12,19 @@ export default {
       yield (yield all([
         put({ // 推荐分享帖
           type: 'recommendPosts/getPageData',
-          payload: fillPostListPayload(
-            userInfo, 'share', 0, userInfo && userInfo.label.split(','))
+          payload: {
+            ...fillPostListPayload(
+              userInfo, 'share', 0, userInfo && userInfo.label.split(',')),
+            reset: true
+          }
         }),
         put({ // 推荐求助帖
           type: 'recommendPosts/getPageData',
-          payload: fillPostListPayload(
-            userInfo, 'appeal', 0, userInfo && userInfo.label.split(','))
+          payload: {
+            ...fillPostListPayload(
+              userInfo, 'appeal', 0, userInfo && userInfo.label.split(',')),
+            reset: true
+          }
         }),
         // put({ // 分享置顶帖
         //   type: 'indexStickPosts/getPageData',
@@ -75,17 +81,18 @@ export default {
       }
     },
     *notifyMsgPage({ payload }, { all, call, put }) {
+      // 初始化消息列表页面
       let { userId } = payload
       yield all([
         put({
-          type: 'notify/getNumber',
-          payload: { userId }
-        }),
-        put({
-          type: 'privateMsg/getAll'
+          type: 'privateMsg/getPageData',
+          payload: {
+            userId,
+            page: 1,
+            number: 10
+          }
         })
       ])
-
     }
   }
 }
