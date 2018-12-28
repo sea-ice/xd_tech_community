@@ -44,8 +44,8 @@ class RegisterForm extends Component {
     })
   }
   render () {
-    let {getFieldDecorator} = this.props.form
-    let fieldLayout = {labelCol: {span: 4, offset: 4}, wrapperCol: {span: 8}}
+    let { getFieldDecorator } = this.props.form
+    let fieldLayout = { labelCol: { span: 4, offset: 4 }, wrapperCol: { span: 8 } }
 
     return (
       <Form>

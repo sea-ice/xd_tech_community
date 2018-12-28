@@ -143,6 +143,13 @@
   composes: faic from global;
 }
 
+.contactAuthorBtns {
+  .btn:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+
 .authorInfoMain {
   padding: .3rem .4rem;
   border-bottom: 1px solid #eee;

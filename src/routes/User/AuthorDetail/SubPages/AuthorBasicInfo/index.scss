@@ -1,81 +1,69 @@
-.authorBasicInfo{
-	padding: 30px;
-	display: flex;
+.infoWrapper {
+  padding: 15px;
 }
-.userHead{
-	flex:1;
-	text-align: center;
-  margin-right: 20px;
+
+.avatarWrapper {
+  position: relative;
+  padding-top: 100%;
+  & > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
-.headImg{
-  height: 100px;
-  width: 100px;
-}
-.big{
+
+.V_BtnWrapper {
   margin-top: 20px;
+  .btn:not(:first-child) {
+    margin-top: 10px;
+  }
 }
-.introduce{
-	flex:4;
+
+.H_BtnWrapper {
+  composes: faic from global;
+  .btn:not(:first-child) {
+    margin-left: 10px;
+  }
 }
-.list{
-	padding: 20px 0;
-	border-bottom: 1px solid #aaa;
-	display: flex;
+
+.section {
+  h3 {
+    line-height: 60px;
+    margin-bottom: 0;
+  }
+  ul {
+    padding-left: 30px;
+    li {
+      display: flex;
+      padding: 0 10px;
+      line-height: 50px;
+      border-bottom: 1px solid #eee;
+      label {
+        width: 80px;
+        text-align: right;
+        margin-right: 20px;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
 }
-.title{
-  padding: 20px 0;
-  border-bottom: 1px solid #aaa;
+
+.titleWrapper {
+  padding: 0 10px;
+  composes: faic from global;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+}
+
+
+.nickNameWrapper {
   display: flex;
   justify-content: space-between;
 }
-.left{
-  padding: 20px 0;
-  display: flex;
-}
-.tip{
-	flex:1;
-}
-.content{
-	flex:3;
-}
-.name{
-  font-size: 18px;
-  font-weight: 700;
-}
-.tipUl{
-  display: flex;
-  color: #1890ff;
-}
-.tipLi{
-  border: 1px solid #1890ff;
-  margin-right: .4rem;
-  padding: .06rem .2rem;
-  border-radius: 5px;
-}
-.levelIcon {
-  composes: icon from global;
-  display: inline-block;
-  width: .4rem;
-  height: .4rem;
-  background-image: url(/assets/level.svg);
-}
-.whyIcon {
-  composes: icon from global;
-  display: inline-block;
-  width: .4rem;
-  height: .4rem;
-  background-image: url(/assets/why.svg);
-}
-.writeIcon {
-  composes: icon from global;
-  display: inline-block;
-  width: .4rem;
-  height: .4rem;
-  background-image: url(/assets/write.svg);
-}
-.coin,.level{
-  flex:3;
-  display: flex;
-}
-
 

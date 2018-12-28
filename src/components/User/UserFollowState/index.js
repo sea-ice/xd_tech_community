@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { Popover, message } from 'antd'
+import { Popover, Button } from 'antd'
 
 import config from 'config/constants'
 import styles from './index.scss'
 import Debounce from 'components/common/Debounce'
-import IconBtn from 'components/common/IconBtn'
+
 
 @connect(state => ({
   userId: state.user.userId
 }))
 class UserFollowState extends Component {
+  state = {
+    loading: false
+  }
   constructor(props) {
     super(props)
-    this.unfollowAuthor = this.unfollowAuthor.bind(this)
+    this.getBtnLoadingState = this.getBtnLoadingState.bind(this)
     this.updateAuthorFollowState = this.updateAuthorFollowState.bind(this)
   }
   getBtnProps(state) {
+    let { loading } = this.state
+    if (loading) return { loading: true, children: '加载中...' }
     let {
       HAS_BEEN_FOLLOWED,
       NO_RELATIONSHIP,
@@ -25,69 +30,44 @@ class UserFollowState extends Component {
       MUTUAL_FOLLOW } = config.author
     switch (state) {
       case HAS_BEEN_FOLLOWED:
-        return { iconType: 'plus', iconBtnText: '关注' }
       case NO_RELATIONSHIP:
-        return { iconType: 'plus', iconBtnText: '关注' }
+        return { icon: 'plus', children: '关注' }
       case HAS_FOLLOWED:
-        return { iconType: 'user', iconBtnText: '已关注' }
+        return { icon: 'user', children: '已关注' }
       case MUTUAL_FOLLOW:
-        return { iconType: 'swap', iconBtnText: '互相关注' }
+        return { icon: 'swap', children: '互相关注' }
       default: break
     }
   }
+  getBtnLoadingState(loading) {
+    this.setState({ loading })
+  }
   updateAuthorFollowState(unfollow) {
-    let { dispatch, followState } = this.props
+    // 关注之后的回调不传参数，取消关注之后的回调传true以示区分
+    let { followState, updateSuccessCallback } = this.props
     let {
       HAS_BEEN_FOLLOWED,
       NO_RELATIONSHIP,
       HAS_FOLLOWED,
-      MUTUAL_FOLLOW } = config.author
+      MUTUAL_FOLLOW
+    } = config.author
     let newFollowState
-    if (unfollow) { // 当前是取消关注
+    if (unfollow) { // 当前是未关注
       newFollowState = followState === MUTUAL_FOLLOW ? HAS_BEEN_FOLLOWED : NO_RELATIONSHIP
     } else {
       newFollowState = followState === HAS_BEEN_FOLLOWED ? MUTUAL_FOLLOW : HAS_FOLLOWED
     }
-    dispatch({
-      type: 'postDetails/setInfo',
-      payload: {
-        key: 'authorInfo',
-        newInfo: {
-          relationship: newFollowState
-        }
-      }
-    })
+    if (updateSuccessCallback) updateSuccessCallback(newFollowState)
   }
-  unfollowAuthor() {
-    let { dispatch, userId, authorId } = this.props
-    if (!userId) {
-      // TODO: 未登录需要先跳转到登录页面
-      return
-    }
-    dispatch({
-      type: 'userBehaviors/followAuthor',
-      payload: {
-        userId,
-        authorId,
-        follow: false,
-        successCallback: () => {
-          this.updateAuthorFollowState(true) // 关注之后的回调不传参数，取消关注之后的回调传true以示区分
-          message.success('取消关注成功！')
-        },
-        failCallback() {
-          message.error('取消关注失败！')
-        }
-      }
-    })
-  }
+
   render() {
-    let { followState, authorId, userId, commonIconBtnProps = {} } = this.props
+    let { followState, authorId, userId, customBtnProps = {} } = this.props
     let { HAS_BEEN_FOLLOWED, NO_RELATIONSHIP } = config.author
 
     let toFollow = (followState === HAS_BEEN_FOLLOWED) ||
       (followState === NO_RELATIONSHIP)
     let newBtnProps = this.getBtnProps(followState)
-    console.log(toFollow)
+
     return (
       toFollow ? (
         <Debounce
@@ -95,22 +75,31 @@ class UserFollowState extends Component {
           userId={userId}
           actionType="userBehaviors/followAuthor"
           extraPayload={{ authorId, follow: true }}
+          notifyLoading={this.getBtnLoadingState}
           update={this.updateAuthorFollowState}
-          btn={<IconBtn type="plus" {...commonIconBtnProps} />}
+          btn={<Button {...customBtnProps}></Button>}
         />
       ) : (
         <Popover content={
           <ul className={styles.popoverBtns}>
             <li>
-              <a
-                href="javascript:void(0);"
-                className={styles.popoverItem}
-                onClick={this.unfollowAuthor}
-              >取消关注</a>
+              <Debounce
+                userId={userId}
+                actionType="userBehaviors/followAuthor"
+                extraPayload={{ authorId }}
+                notifyLoading={this.getBtnLoadingState}
+                update={() => this.updateAuthorFollowState(true)}
+                btn={
+                  <a
+                    href="javascript:void(0);"
+                    className={styles.popoverItem}
+                  >取消关注</a>
+                }
+              />
             </li>
           </ul>
         }>
-          <IconBtn {...commonIconBtnProps} {...newBtnProps} />
+          <Button {...customBtnProps} {...newBtnProps} />
         </Popover>
       )
     );
@@ -121,7 +110,7 @@ UserFollowState.propTypes = {
   userId: PropTypes.number,
   authorId: PropTypes.number,
   followState: PropTypes.number,
-  commonIconBtnProps: PropTypes.object
+  customBtnProps: PropTypes.object
 };
 
 export default UserFollowState;

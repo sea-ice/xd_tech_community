@@ -7,6 +7,7 @@ import { Row, Col, Tabs, Icon, Pagination, Spin } from 'antd'
 import styles from './index.scss'
 import config from 'config/constants'
 import FixedHeader from 'components/common/FixedHeader'
+import Confirm from 'components/common/Confirm'
 import IconBtn from 'components/common/IconBtn'
 import PrivateMsgItem from './PrivateMsgItem'
 import { checkLogin, privateMsgItemStandardProps } from 'utils'
@@ -43,7 +44,11 @@ class Notification extends Component {
     this.setState({ activeTabKey })
   }
   checkAllNotify() {
-
+    let { dispatch, loginUserId } = this.props
+    dispatch({
+      type: 'privateMsg/setAllMsgRead',
+      payload: { userId: loginUserId }
+    })
   }
   UNSAFE_componentWillMount() {
     let { dispatch } = this.props
@@ -83,11 +88,18 @@ class Notification extends Component {
               <div className={styles.tabWrapper}>
                 <Tabs tabBarExtraContent={
                   !!unReadNum ? (
-                    <IconBtn
-                      iconClassName={styles.checkIcon}
-                      bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/check.svg`}
-                      iconBtnText={`全部标为已读(未读:${unReadNum})`}
-                      {...checkIconOpt} />
+                    <Confirm
+                      triggerModalBtn={
+                        <IconBtn
+                          iconClassName={styles.checkIcon}
+                          bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/check.svg`}
+                          iconBtnText={`全部标为已读(未读:${unReadNum})`}
+                          {...checkIconOpt} />
+                      }
+                      modalTitle="提示"
+                      children={<p>确定要将所有的未读私信都设置为已读吗？</p>}
+                      handleOk={this.checkAllNotify}
+                    />
                   ) : null
                 } onChange={this.onTabsChange}>
                   <Tabs.TabPane tab="私信" key="private">

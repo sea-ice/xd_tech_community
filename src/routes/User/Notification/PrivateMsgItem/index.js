@@ -106,7 +106,7 @@ class NotifyItem extends Component {
     } = this.props
     let { showComplete, replyContent } = this.state
     return (
-      <div className={isRead ? styles.read : styles.notifyItem}>
+      <div className={(isReceiver && isRead) ? styles.read : styles.notifyItem}>
         <div className={styles.avatarWrapper}>
           <Avatar
             style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}

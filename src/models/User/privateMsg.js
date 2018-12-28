@@ -27,6 +27,14 @@ export default {
       } else {
         return state
       }
+    },
+    setAllItems(state, { payload }) {
+      let { key, newItem } = payload
+      let items = state[key].map(
+        item => Object.assign({}, item, newItem))
+      return Object.assign({}, state, {
+        [key]: items
+      })
     }
   },
   effects: {
@@ -87,8 +95,8 @@ export default {
             `${config.SERVER_URL_API_PREFIX}/secretMsg/getMsg`, {
               lastId: 0,
               userId,
-              page: currentPage - 1,
-              number: number
+              page: 0,
+              number: currentPage * number
             }))
           let { data: { code, body } } = res
           if (code === 100) {
@@ -126,6 +134,30 @@ export default {
               isRead: true
             }
           }
+        })
+        if (successCallback) successCallback()
+      }
+    },
+    *setAllMsgRead({ payload }, { call, put }) {
+      let { userId, successCallback } = payload
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/secretMsg/setAllSecretMsgRead`, {
+          userId
+        }))
+      let { data: { code } } = res
+      if (code === 100) {
+        yield put({
+          type: 'setAllItems',
+          payload: {
+            key: 'msgs',
+            newItem: {
+              isRead: true
+            }
+          }
+        })
+        yield put({
+          type: 'setState',
+          payload: { unReadNum: 0 }
         })
         if (successCallback) successCallback()
       }

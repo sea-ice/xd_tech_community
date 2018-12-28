@@ -141,13 +141,15 @@ class PostDetail extends Component {
   sharePost() {
 
   }
-  updateFollowAuthorState(state) {
+  updateFollowAuthorState(newFollowState) {
     let { dispatch } = this.props
     dispatch({
       type: 'postDetails/setInfo',
       payload: {
         key: 'authorInfo',
-        newInfo: { hasFollowed: state }
+        newInfo: {
+          relationship: newFollowState
+        }
       }
     })
   }
@@ -399,20 +401,20 @@ class PostDetail extends Component {
                     {
                       (!loginUserId || userId && (loginUserId !== userId)) ? (
                         <div className={styles.contactAuthorBtns}>
-                          <UserFollowState
-                            authorId={userId}
-                            followState={relationship}
-                            commonIconBtnProps={authorIconBtnOpt}
-                          />
-                          <PrivateMsgBtn
-                            receiverId={userId}
-                            btn={
-                              <IconBtn
-                                iconType="message"
-                                iconBtnText="私信"
-                                {...authorIconBtnOpt} />
-                            }
-                          />
+                          <div className={styles.btn}>
+                            <UserFollowState
+                              authorId={userId}
+                              followState={relationship}
+                              customBtnProps={{ type: 'primary' }}
+                              updateSuccessCallback={this.updateFollowAuthorState}
+                            />
+                          </div>
+                          <div className={styles.btn}>
+                            <PrivateMsgBtn
+                              receiverId={userId}
+                              btn={<Button icon="message">私信</Button>}
+                            />
+                          </div>
                         </div>
                       ) : null
                     }

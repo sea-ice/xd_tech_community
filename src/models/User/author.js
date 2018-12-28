@@ -26,9 +26,7 @@ export default {
     *getAuthorFollowState({ payload }, { call, put }) {
       let { userId, authorId, successCallback } = payload
       let res = yield call(() => request(
-        `${
-          config.SERVER_URL_API_PREFIX
-        }/user/other/detail?myId=${userId}&otherId=${authorId}`
+        `${config.SERVER_URL_API_PREFIX}/user/other/detail?myId=${userId}&otherId=${authorId}`
       ))
       let { data: { code, body } } = res
       if (code === 100) {
@@ -55,7 +53,7 @@ export default {
           payload: {
             checkingAuthorId: false,
             validAuthorId: authorId,
-            authorInfo: body,
+            authorInfo: { userId: authorId, ...body },
             sharePosts: { posts: [], currentPage: 0, total: 0, loading: false },
             appealPosts: { posts: [], currentPage: 0, total: 0, loading: false },
           }
@@ -123,6 +121,60 @@ export default {
           [`${type}Posts`]: newInfo
         }
       })
+    },
+    *getAuthorLevel({ payload }, { call, put }) {
+      let {authorId} = payload
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/user/getUserTitle`, {
+          userId: authorId
+        }))
+      let { data: { code, body } } = res
+      if (code === 100) {
+        yield put({
+          type: 'setInfo',
+          payload: {
+            key: 'authorInfo',
+            newInfo: { userLevel: body.replace('userTitle:', '') }
+          }
+        })
+      }
+    },
+    *saveAuthorInfo({ payload }, { call, put }) {
+      let { authorInfo, successCallback } = payload
+      let {
+        userId,
+        avator,
+        label,
+        nickName,
+        gender,
+        school,
+        education,
+        location = '',
+        introduction
+      } = authorInfo
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/user/modifyUserInfo`, {
+          userId,
+          avator,
+          label,
+          nickName,
+          gender: Number(gender),
+          school,
+          education,
+          location,
+          introduction
+        }))
+      let { data: { code } } = res
+      if (code === 100) {
+        yield put({
+          type: 'setInfo',
+          payload: {
+            key: 'authorInfo',
+            newInfo: authorInfo
+          }
+        })
+        if (successCallback) successCallback()
+      }
     }
   }
 }

@@ -17,10 +17,15 @@ class Debounce extends Component {
     this.disabled = false
   }
   changeState() {
-    let { dispatch, actionType, extraPayload, userId, update } = this.props
+    let { dispatch, actionType, extraPayload, notifyLoading, userId, update } = this.props
     if (this.disabled) return
     this.disabled = true
-    let hideLoading = message.loading('加载中', 0)
+    let hideLoading
+    if (notifyLoading) {
+      notifyLoading(true)
+    } else {
+      hideLoading = message.loading('加载中', 0)
+    }
     dispatch({
       type: actionType,
       payload: {
@@ -29,19 +34,19 @@ class Debounce extends Component {
         successCallback: () => {
           update()
           this.disabled = false
-          hideLoading()
+          notifyLoading ? notifyLoading(false) : hideLoading()
           message.success('操作成功！')
         },
         failCallback: () => {
           this.disabled = false
-          hideLoading()
+          notifyLoading ? notifyLoading(false) : hideLoading()
           message.error('请稍后再试！')
         }
       }
     })
   }
   render() {
-    let { userId, dispatch, btn, btnProps, location: { pathname } } = this.props
+    let { userId, dispatch, btn, btnProps = {}, location: { pathname } } = this.props
 
     return !!userId ? (
       React.cloneElement(btn, {
@@ -72,7 +77,8 @@ Debounce.propTypes = {
   actionType: PropTypes.string,
   extraPayload: PropTypes.object,
   userId: PropTypes.number,
-  update: PropTypes.func
+  notifyLoading: PropTypes.func,
+  update: PropTypes.func,
 };
 
 export default Debounce;

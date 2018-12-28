@@ -1,142 +1,196 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { Affix, Row, Col, Avatar } from 'antd'
+import { Row, Col, Avatar, Button, message } from 'antd'
 
-import IconBtn from '../../../../../components/common/IconBtn'
 import styles from './index.scss'
+import AuthorInfoList from './AuthorInfoList'
+import AuthorInfoForm from './AuthorInfoForm'
 import UserFollowState from 'components/User/UserFollowState'
 import PrivateMsgBtn from 'components/User/PrivateMsgBtn'
 
 @connect(state => ({
-  loginUserId: state.user.authorId,
+  loginUserId: state.user.userId,
   authorId: state.author.validAuthorId,
   authorInfo: state.author.authorInfo
 }))
 class AuthorBasicInfo extends Component {
-  constructor (props) {
-    super(props);
-    // this.state={
-		// name:"西电颜值巅峰",
-		// level:7,
-		// gender:"女",
-		// school:"西安电子科技大学",
-		// education:"研究生",
-		// slogan:"无趣之人",
-		// following:33,
-		// followed:5,
-		// coins:123,
-		// resolve:3,
-    //   headImg:"http://b-ssl.duitang.com/uploads/item/201601/26/20160126100524_5sAiT.jpeg",
-    //   tip:["html","css","js"]
-    // }
+  state = {
+    personalInfoEditState: 'saved' // 有三种状态，分别是'edit', 'saving', 'saved'
   }
-  bigImg=()=>{
-    console.log(this.state.headImg)
+  static getDerivedStateFromProps(nextProps, state) {
+    let { authorInfo } = nextProps
+    if (!state.authorInfo && authorInfo.userId) {
+      return { authorInfo }
+    }
+    return null
+  }
+  constructor (props) {
+    super(props)
+    this.editPersonalInfo = this.editPersonalInfo.bind(this)
+    this.savePersonalInfo = this.savePersonalInfo.bind(this)
+    this.cancelEditPersonalInfo = this.cancelEditPersonalInfo.bind(this)
+    this.updateFollowAuthorState = this.updateFollowAuthorState.bind(this)
+  }
+
+  componentDidMount() {
+    let { dispatch, authorId } = this.props
+    // 获取用户等级
+    dispatch({
+      type: 'author/getAuthorLevel',
+      payload: {
+        authorId
+      }
+    })
+  }
+  editPersonalInfo() {
+    this.setState({ personalInfoEditState: 'edit' })
+  }
+  cancelEditPersonalInfo() {
+    this.setState({ personalInfoEditState: 'saved' })
+  }
+  savePersonalInfo() {
+    if (!this.authorInfoForm.checkValid()) return
+    // this.setState({ personalInfoEditState: 'saving' })
+    let { dispatch } = this.props
+    let { authorInfo } = this.state
+    let fieldValues = this.authorInfoForm.getFieldValues()
+    console.log(fieldValues)
+    // dispatch({
+    //   type: 'author/saveAuthorInfo',
+    //   payload: {
+    //     authorInfo: Object.assign(authorInfo, fieldValues),
+    //     successCallback: () => {
+    //       message.success('修改成功')
+    //       this.setState({
+    //         personalInfoEditState: 'saved'
+    //       })
+    //     }
+    //   }
+    // })
+  }
+  updateFollowAuthorState(newFollowState) {
+    let { dispatch } = this.props
+    dispatch({
+      type: 'author/setInfo',
+      payload: {
+        key: 'authorInfo',
+        newInfo: {
+          status: newFollowState
+        }
+      }
+    })
   }
   render () {
-    let { loginUserId, authorId, authorInfo } = this.props
-    let { relationship } = authorInfo
-    relationship = 1
-    let authorIconBtnOpt = {
-      type: 'icon',
-      iconSize: 20,
-      fontSize: 18,
-      btnPadding: '.2rem',
-      color: '#666'
-    }
+    let { guest, loginUserId, authorId, authorInfo } = this.props
+    let { avator, userLevel = 0, status, coin, fans, focus, solvedProblem } = authorInfo
+    let { personalInfoEditState } = this.state
+    let isSaved = personalInfoEditState === 'saved'
     return (
       <div className={styles.infoWrapper}>
         <Row gutter={15}>
           <Col span={6}>
-            <Avatar src='/assets/yay.jpg' size={120} shape="square" />
+            <div className={styles.avatarWrapper}>
+              <Avatar src='/assets/yay.jpg' shape="square" />
+            </div>
             {
               (!loginUserId || authorId && (loginUserId !== authorId)) ? (
-                <div className={styles.btnWrapper}>
-                  <UserFollowState
-                    authorId={authorId}
-                    followState={relationship}
-                    commonIconBtnProps={authorIconBtnOpt}
-                  />
-                  <PrivateMsgBtn
-                    receiverId={authorId}
-                    btn={
-                      <IconBtn
-                        iconType="message"
-                        iconBtnText="私信"
-                        {...authorIconBtnOpt} />
-                    }
-                  />
+                <div className={styles.V_BtnWrapper}>
+                  <div className={styles.btn}>
+                    <UserFollowState
+                      authorId={authorId}
+                      followState={status}
+                      customBtnProps={{ type: 'primary', block: true }}
+                      updateSuccessCallback={this.updateFollowAuthorState}
+                    />
+                  </div>
+                  <div className={styles.btn}>
+                    <PrivateMsgBtn
+                      receiverId={authorId}
+                      btn={<Button icon="message" block>私信</Button>}
+                    />
+                  </div>
+                </div>
+              ) : null
+            }
+            {
+              loginUserId === authorId ? (
+                <div className={styles.V_BtnWrapper}>
+                  <div className={styles.btn}>
+                    <Button icon="upload" block>
+                      {avator ? '更换' : '上传'}头像
+                    </Button>
+                  </div>
                 </div>
               ) : null
             }
           </Col>
           <Col span={18}>
+            <section className={styles.section}>
+              <div className={styles.titleWrapper}>
+                <h3>个人信息</h3>
+                {
+                  guest ? null : (
+                    isSaved ? (
+                      <Button icon="edit" onClick={this.editPersonalInfo}>修改</Button>
+                    ): (
+                      personalInfoEditState === 'saving' ? (
+                        <Button type="primary" loading>保存中</Button>
+                      ): (
+                        <div className={styles.H_BtnWrapper}>
+                          <div className={styles.btn}>
+                            <Button onClick={this.cancelEditPersonalInfo}>取消</Button>
+                          </div>
+                          <div className={styles.btn}>
+                            <Button type="primary" icon="save"
+                              onClick={this.savePersonalInfo}>保存</Button>
+                          </div>
+                        </div>
+                      )
+                    )
+                  )
+                }
+              </div>
+              {
+                isSaved ? (
+                  <AuthorInfoList {...authorInfo} />
+                ) : (
+                  <AuthorInfoForm
+                    authorInfo={authorInfo}
+                    onRef={form => this.authorInfoForm = form} />
+                )
+              }
+            </section>
+            <section className={styles.section}>
+              <div className={styles.titleWrapper}>
+                <h3>个人成就</h3>
+              </div>
+              <ul>
+                <li>
+                  <label>用户等级</label>
+                  <p>{userLevel}</p>
+                </li>
+                <li>
+                  <label>关注Ta的人</label>
+                  <p>{fans}</p>
+                </li>
+                <li>
+                  <label>Ta关注的人</label>
+                  <p>{focus}</p>
+                </li>
+                <li>
+                  <label>金币</label>
+                  <p>{coin}</p>
+                </li>
+                <li>
+                  <label>已回答</label>
+                  <p>{solvedProblem}</p>
+                </li>
+              </ul>
+            </section>
           </Col>
         </Row>
       </div>
-      // <div className={styles.authorBasicInfo}>
-      // 	<div className={styles.userHead}>
-      // 		<img className={styles.headImg} src={this.state.headImg} alt=""/>
-      // 		<button onClick={this.bigImg} className={styles.big}>查看大图</button>
-      // 	</div>
-		  //   <div className={styles.introduce}>
-			//     <div className={styles.title}>
-      //       <div className={styles.left}>
-      //         <div className={styles.name}>{this.state.name}</div>
-      //         <IconBtn iconClassName={styles.writeIcon} color="#999" fontSize=".28rem" />
-      //         <div>备注</div>
-      //       </div>
-      //       <Complain></Complain>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>用户等级</div>
-      //       <div className={styles.level}>{this.state.level}<IconBtn iconClassName={styles.levelIcon} color="#999" fontSize=".28rem" /></div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>标签</div>
-      //       <div className={styles.content}>
-      //         <ul className={styles.tipUl}>
-      //         {this.state.tip.map(function(value,key){
-      //           return <li key={key} className={styles.tipLi}>{value}</li>
-      //         })}
-      //         </ul>
-      //       </div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>性别</div>
-      //       <div className={styles.content}>{this.state.gender}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>学校</div>
-      //       <div className={styles.content}>{this.state.school}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>签名</div>
-      //       <div className={styles.content}>{this.state.slogan}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>她关注的人</div>
-      //       <div className={styles.content}>{this.state.following}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>关注她的人</div>
-      //       <div className={styles.content}>{this.state.followed}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>金币</div>
-      //       <div className={styles.coin}>{this.state.coins}<IconBtn iconClassName={styles.whyIcon} color="#999" fontSize=".28rem" /></div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>已解答</div>
-      //       <div className={styles.content}>{this.state.resolve}</div>
-      //     </div>
-      //     <div className={styles.list}>
-      //       <div className={styles.tip}>学历</div>
-      //       <div className={styles.content}>{this.state.education}</div>
-      //     </div>
-      //   </div>
-      // </div>
     );
   }
 }

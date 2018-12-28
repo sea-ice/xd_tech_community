@@ -1,0 +1,17 @@
+.infoList {
+  padding-left: 30px;
+  li {
+    display: flex;
+    padding: 0 10px;
+    line-height: 50px;
+    border-bottom: 1px solid #eee;
+    label {
+      width: 80px;
+      text-align: right;
+      margin-right: 20px;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}
