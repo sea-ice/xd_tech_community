@@ -43,10 +43,6 @@ import UserFollowState from 'components/User/UserFollowState'
 })
 @withRouter
 class PostDetail extends Component {
-  state = {
-    tags: ['JavaScript', 'HTML']
-  };
-
   constructor (props) {
     super(props)
     this.starPost = this.starPost.bind(this)
@@ -215,7 +211,7 @@ class PostDetail extends Component {
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
     let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
     let { relationship } = authorInfo
-    console.log(`relationship: ${relationship}`)
+    // console.log(`relationship: ${relationship}`)
     let { commentContent } = this.state
     let commentStart = (commentCurrentPage - 1) * 10
     comments = comments.slice(commentStart, commentStart + 10)
@@ -229,7 +225,6 @@ class PostDetail extends Component {
       color: '#666'
     }
     let commonOtherInfoIconOpt = Object.assign({}, commonFooterIconOpt, { iconSize: 20 })
-    let authorIconBtnOpt = Object.assign({}, commonOtherInfoIconOpt, { btnPadding: '.1rem' })
     return (
       <div>
         <FixedHeader />

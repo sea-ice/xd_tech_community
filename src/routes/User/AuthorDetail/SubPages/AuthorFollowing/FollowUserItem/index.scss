@@ -1,0 +1,58 @@
+.followItem {
+  position: relative;
+  padding: 15px .3rem 15px calc(.3rem + 75px);
+  min-height: 90px;
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+.avatarWrapper {
+  position: absolute;
+  top: 15px;
+  left: .3rem;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  &>span {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.header,
+.main {
+  composes: faic from global;
+  justify-content: space-between
+}
+
+.nickNameWrapper {
+  composes: faic from global;
+  h4 {
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .btn {
+    margin-left: 20px;
+  }
+}
+
+
+.more {
+  composes: icon from global;
+  display: block;
+  width: 20px;
+  height: 20px;
+  padding: 5px 0 5px 10px;
+  box-sizing: content-box;
+  background-origin: content-box;
+  cursor: pointer;
+}
+
+
+.main {
+  p {
+    margin-bottom: 0;
+    line-height: 30px;
+  }
+}

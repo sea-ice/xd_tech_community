@@ -58,7 +58,7 @@ class AuthorInfoList extends Component {
           <p>{location}</p>
         </li>
         <li>
-          <label>个性签名</label>
+          <label>个人介绍</label>
           <p>{introduction || <i>暂未填写</i>}</p>
         </li>
       </ul>

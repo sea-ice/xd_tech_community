@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "antd": "^3.10.7",
-    "china-division": "^2.1.1",
     "dayjs": "^1.7.7",
     "dva": "^2.4.1",
+    "fast-memoize": "^2.5.1",
     "history": "^4.7.2",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.2.0",

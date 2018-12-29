@@ -9,6 +9,8 @@ export default {
     validAuthorId: null,
     sharePosts: { posts: [], currentPage: 0, total: 0 },
     appealPosts: { posts: [], currentPage: 0, total: 0 },
+    followedUsers: { users: [], currentPage: 0, total: 0 },
+    followingUsers: { users: [], currentPage: 0, total: 0 }
   },
   reducers: {
     setState(state, { payload }) {
@@ -24,13 +26,15 @@ export default {
   },
   effects: {
     *getAuthorFollowState({ payload }, { call, put }) {
-      let { userId, authorId, successCallback } = payload
+      let { userId, authorId, successCallback, failCallback } = payload
       let res = yield call(() => request(
-        `${config.SERVER_URL_API_PREFIX}/user/other/detail?myId=${userId}&otherId=${authorId}`
+        `${config.SERVER_URL_API_PREFIX}/user/other/detail?myId=${userId || authorId}&otherId=${authorId}`
       ))
       let { data: { code, body } } = res
       if (code === 100) {
         yield* safeCallback(successCallback, body)
+      } else {
+        if (failCallback) yield* safeCallback(failCallback)
       }
     },
     *checkAuthorExists({ payload }, { call, put }) {
@@ -175,6 +179,60 @@ export default {
         })
         if (successCallback) successCallback()
       }
+    },
+    *getFollowUserList({ payload }, { call, put }) {
+      let { authorId, followed, page, number } = payload
+      // 先获取当前用户的关注者人数或者关注该用户的人数
+      let stateKey = followed ? 'followedUsers' : 'followingUsers'
+      yield put({
+        type: 'setInfo',
+        payload: {
+          key: stateKey,
+          newInfo: { loading: true }
+        }
+      })
+      yield put({
+        type: 'getAuthorFollowState',
+        payload: {
+          authorId, // 注意这里的authorId是当前正在访问的个人主页对应的用户id
+          *successCallback(body) {
+            let { fans, focus } = body
+            let followTotal = followed ? fans : focus
+            let newState
+            if (followTotal) {
+              let currentPage = Math.max(Math.ceil(followTotal / number), page)
+              let url = `${
+                config.SERVER_URL_API_PREFIX
+                }/user/${
+                followed ? 'fans' : 'focus'
+                }?userId=${authorId}&lastId=0&number=${currentPage * number}&type=1`
+              let res = yield call(() => request(url))
+              let { data: { code, body } } = res
+              if (code === 100) {
+                newState = { loading: false, users: body, currentPage, total: followTotal }
+              } else {
+                newState = { loading: false, error: true }
+              }
+            } else {
+              newState = { loading: false, users: [], currentPage: 0, total: 0 }
+            }
+            yield put({
+              type: 'setState',
+              payload: {
+                [stateKey]: newState
+              }
+            })
+          },
+          *failCallback() {
+            yield put({
+              type: 'setState',
+              payload: {
+                [stateKey]: { loading: false, error: true }
+              }
+            })
+          }
+        }
+      })
     }
   }
 }

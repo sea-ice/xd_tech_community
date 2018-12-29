@@ -2,98 +2,107 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import {Input, Badge, Icon, Avatar, message} from 'antd';
+import { Input, Icon, Pagination, Spin } from 'antd';
 
 import styles from './index.scss'
+import FollowUserItem from './FollowUserItem'
 
-class AuthorPosts extends Component {
-  constructor (props) {
-    super(props);
-    this.state={
-      following:22,
-      list:[
-        {head:"http://b-ssl.duitang.com/uploads/item/201601/26/20160126100524_5sAiT.jpeg",
-          name:"用户昵称",
-          beizhu:"备注",
-          slogan:"签名",
-          following:true,
-          id:1
-        },
-        {head:"http://b-ssl.duitang.com/uploads/item/201601/26/20160126100524_5sAiT.jpeg",
-          name:"用户昵称",
-          beizhu:"",
-          slogan:"签名",
-          following:false,
-          id:2
-        },
-
-      ]
+class AuthorFollow extends Component {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    let { followed } = nextProps
+    if (followed !== this.props.followed) {
+      let { dispatch, authorId } = this.props
+      dispatch({
+        type: 'author/getFollowUserList',
+        payload: {
+          authorId,
+          followed,
+          page: 1,
+          number: 10
+        }
+      })
     }
   }
-  // 搜索
-  handleUserSearch=(e)=>{
-
+  UNSAFE_componentWillMount() {
+    let { dispatch, authorId, followed } = this.props
+    // 这里的authorId是当前正在访问的个人主页对应的用户id
+    dispatch({
+      type: 'author/getFollowUserList',
+      payload: {
+        authorId,
+        followed,
+        page: 1,
+        number: 10
+      }
+    })
   }
-  //鼠标移入
-  mouseEnter=()=>{
-    console.log(123)
-}
-mouseLeave=(e)=>{
-
-}
   render () {
-    let Search = Input.Search
+    let { guest, followed, followingUsers, followedUsers } = this.props
+    let targetAuthorFollowInfo = followed ? followedUsers : followingUsers
+    let iconStyle = { fontSize: 60, color: '#999' }
+    let { users, currentPage, total = 0, loading, error } = targetAuthorFollowInfo
+
     return (
-      <div className={styles.page}>
-        <div className={styles.head}>
-          <div className={styles.left}>关注：{this.state.following}</div>
-          <Search className={styles.search}
-            placeholder="输入备注或昵称"
-            onSearch={this.handleUserSearch}
-            enterButton />
-        </div>
-        <div>
-          <ul>
-          {this.state.list.map(function(value,key){
-            return (
-              <div key={key}>
-                <li className={styles.list}>
-                  <div className={styles.left}>
-                    <img className={styles.headImg} src={value.head} alt=""/>
-                    <div className={styles.info}>
-                      <div className={styles.top}>
-                        <div>{value.name}</div>
-                        <div>{value.beizhu}</div>
-                      </div>
-                      <div className={styles.down}>
-                        <div>{value.slogan}</div>
-                      </div>
+      <div className={styles.listWithHeader}>
+        <header className={styles.header}>
+          <h4>{followed ? `关注${guest ? 'Ta' : '我'}的` : `${guest ? 'Ta' : '我'}关注的`}({total})</h4>
+          {guest ? null : (
+            <div className={styles.searchWrapper}>
+              <Input.Search
+                placeholder="输入昵称搜索"
+                onSearch={this.handleUserSearch}
+                enterButton />
+            </div>
+          )}
+        </header>
+        <div className="followItemWrapper">
+          {
+            loading ? <div className={styles.spinWrapper}><Spin tip="加载中..." /></div> : (
+              error ? (
+                <div className={styles.iconWrapper}>
+                  <Icon type="frown" style={iconStyle} />
+                  <p>加载失败，请稍后再试！</p>
+                </div>
+              ) : (
+                  !total ? (
+                    <div className={styles.iconWrapper}>
+                      <Icon type="inbox" style={iconStyle} />
+                      {followed ? (
+                        <p>还没有关注{guest ? 'Ta' : '你'}</p>
+                      ) : (
+                        <p>{guest ? 'Ta' : '你'}还没有关注任何人</p>
+                      )}
                     </div>
-                  </div>
-                  <div>
-                    <i className={styles.more}></i>
-                    {/*{(()=>{*/}
-                      {/*if (value.following) {*/}
-                        {/*return <div>已关注</div>*/}
-                      {/*} else {*/}
-                        {/*return <div>未关注</div>*/}
-                      {/*}*/}
-                    {/*})()}*/}
-                    <div>{value.following?'已关注':'取消关注'}</div>
-                  </div>
-                </li>
-              </div>
+                  ) : (
+                      <React.Fragment>
+                        {users.map(item => (
+                          <FollowUserItem key={item.userId} {...item} />))}
+                        {
+                          total > 10 ? (
+                            <div className={styles.paginatorWrapper}>
+                              <Pagination total={total} defaultCurrent={currentPage}
+                                onChange={this.onSharePostPageChange} />
+                            </div>
+                          ) : null
+                        }
+                      </React.Fragment>
+                    )
+                )
             )
-          })}
-          </ul>
+          }
         </div>
       </div>
     );
   }
 }
 
-AuthorPosts.propTypes = {
+AuthorFollow.propTypes = {
   guest: PropTypes.bool
 };
 
-export default connect()(AuthorPosts);
+export default connect(state => ({
+  loginUserId: state.user.userId,
+  authorId: state.author.validAuthorId,
+  followingUsers: state.author.followingUsers,
+  followedUsers: state.author.followedUsers
+}))(AuthorFollow);

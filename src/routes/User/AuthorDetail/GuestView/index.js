@@ -9,8 +9,8 @@ import styles from './index.scss'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
-import AuthorFollowing from 'AuthorDetail/SubPages/AuthorFollowing'
-import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
+import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollowing'
+// import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
 import { getSearchObj } from 'utils'
 
 @withRouter
@@ -72,10 +72,10 @@ class GuestAuthorDetail extends Component {
         subPage = <AuthorCollection guest={true} />
         break
       case 'my-follow':
-        subPage = <AuthorFollowing guest={true} />
+        subPage = <AuthorFollow followed={false} guest={true} />
         break
       case 'follow-me':
-        subPage = <AuthorFollowed guest={true} />
+        subPage = <AuthorFollow followed={true}  guest={true} />
         break
       default:
         subPage = <AuthorBasicInfo guest={true} />

@@ -11,8 +11,7 @@ import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import DraftBin from 'AuthorDetail/SubPages/DraftBin'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
-import AuthorFollowing from 'AuthorDetail/SubPages/AuthorFollowing'
-import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
+import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollowing'
 import TagManage from 'AuthorDetail/SubPages/TagManage'
 import { getSearchObj } from 'utils'
 
@@ -78,10 +77,10 @@ class OwnerAuthorDetail extends Component {
         subPage = <AuthorCollection guest={false} />
         break
       case 'my-follow':
-        subPage = <AuthorFollowing guest={false} />
+        subPage = <AuthorFollow followed={false} guest={false} />
         break
       case 'follow-me':
-        subPage = <AuthorFollowed guest={false} />
+        subPage = <AuthorFollow followed={true} guest={false} />
         break
       case 'tag-manage':
         subPage = <TagManage />

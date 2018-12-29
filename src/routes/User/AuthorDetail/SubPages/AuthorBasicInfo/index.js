@@ -51,23 +51,21 @@ class AuthorBasicInfo extends Component {
   }
   savePersonalInfo() {
     if (!this.authorInfoForm.checkValid()) return
-    // this.setState({ personalInfoEditState: 'saving' })
+    this.setState({ personalInfoEditState: 'saving' })
     let { dispatch } = this.props
     let { authorInfo } = this.state
     let fieldValues = this.authorInfoForm.getFieldValues()
     console.log(fieldValues)
-    // dispatch({
-    //   type: 'author/saveAuthorInfo',
-    //   payload: {
-    //     authorInfo: Object.assign(authorInfo, fieldValues),
-    //     successCallback: () => {
-    //       message.success('修改成功')
-    //       this.setState({
-    //         personalInfoEditState: 'saved'
-    //       })
-    //     }
-    //   }
-    // })
+    dispatch({
+      type: 'author/saveAuthorInfo',
+      payload: {
+        authorInfo: Object.assign(authorInfo, fieldValues),
+        successCallback: () => {
+          message.success('修改成功')
+          this.setState({ personalInfoEditState: 'saved' })
+        }
+      }
+    })
   }
   updateFollowAuthorState(newFollowState) {
     let { dispatch } = this.props
