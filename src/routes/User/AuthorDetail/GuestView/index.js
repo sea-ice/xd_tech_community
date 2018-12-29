@@ -9,8 +9,7 @@ import styles from './index.scss'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
-import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollowing'
-// import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
+import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollow'
 import { getSearchObj } from 'utils'
 
 @withRouter

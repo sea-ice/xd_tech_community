@@ -11,7 +11,7 @@ import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import DraftBin from 'AuthorDetail/SubPages/DraftBin'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
-import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollowing'
+import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollow'
 import TagManage from 'AuthorDetail/SubPages/TagManage'
 import { getSearchObj } from 'utils'
 
