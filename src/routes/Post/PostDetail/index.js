@@ -210,7 +210,7 @@ class PostDetail extends Component {
   render () {
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
     let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
-    let { relationship } = authorInfo
+    let { relationship, fans = 0, introduction } = authorInfo
     // console.log(`relationship: ${relationship}`)
     let { commentContent } = this.state
     let commentStart = (commentCurrentPage - 1) * 10
@@ -423,12 +423,12 @@ class PostDetail extends Component {
                     </div>
                     <div className={styles.authorInfo}>
                       <p onClick={this.turnToAuthorHomePage}><strong>{nickName}</strong></p>
-                      <span onClick={this.showAuthorFollowed}>关注Ta的人：1102</span>
+                      <span onClick={this.showAuthorFollowed}>关注Ta的人：{fans}</span>
                     </div>
                   </main>
                   <div className={styles.signature}>
-                    <strong>签名：</strong>
-                    {/* {signature} */}
+                    <strong>个人介绍：</strong>
+                    {introduction ? <span>{introduction}</span> : <i>暂无说明</i>}
                   </div>
                 </section>
               </Affix>

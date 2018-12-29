@@ -53,6 +53,7 @@ export default {
 
       // 重置redux store中的帖子详情
       yield put({ type: 'postDetails/reset' })
+      // todo: 需要先检查当前帖子是否存在
       let [postDetails, _] = yield (yield all([
         put({
           type: 'postDetails/getDetails',
