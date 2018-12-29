@@ -1,84 +1,101 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import categories from '../../../../../config/categoryTags.json'
-import styles from './index.scss'
+import { Button, message } from 'antd'
 
-class AuthorPosts extends Component {
+import styles from './index.scss'
+import { hasSameElements } from 'utils'
+import LabelSelector from 'components/common/LabelSelector'
+
+class TagManage extends Component {
   constructor (props) {
     super(props)
-    this.state= {
-      myTag: ["Python", "Material Design", "Android Studio"],
-      categories,
-      myTagNumber:0
+    this.getSelectedTags = this.getSelectedTags.bind(this)
+    this.saveSelectedTags = this.saveSelectedTags.bind(this)
+    this.resetSelectedTags = this.resetSelectedTags.bind(this)
+    this.state = {
+      selectedTags: props.label
     }
   }
-  check=(e)=>{
-    var clickObj=e.target.getAttribute("data-name");
-    var myTag=this.state.myTag;
-    var exist=myTag.findIndex(function(value){
-        return value==clickObj;
-      })
-    if(exist!=-1){
-      myTag.splice(exist,1);
-    }else{
-      if(myTag.length>2){
-        alert("只能添加3个标签哦~")
-      }else{
-        myTag.push(clickObj);
-      }
-    }
+  getSelectedTags(tags) {
     this.setState({
-      myTag
+      selectedTags: tags
     })
   }
-  render(){
-    var obj=this;
-    return(
-      <div className={styles.page}>
-        <div className={styles.head}>
-          <div>我的标签（3/3）：</div>
-          <div className={styles.content}>{
-            this.state.myTag.map(function(value,key){
-              return <div key={key} className={styles.checkTag} data-name={value} onClick={(e)=>{obj.check(e)}}>{value}</div>
-            })
-          }</div>
-        </div>
-        <div className={styles.all}>
-          <div>全部标签：</div>
-          <button className={styles.btnYl}>确认</button>
-        </div>
-        {
-          this.state.categories.map(function(value,key){
-            return(
-              <div key={key}>
-                <div className={styles.tags}>
-                  {value.name}
-                  <div className={styles.content}>
+  saveSelectedTags() {
+    let { dispatch, authorInfo } = this.props
+    let { selectedTags } = this.state
+    dispatch({
+      type: 'author/saveAuthorInfo',
+      payload: {
+        authorInfo: Object.assign(authorInfo, {
+          label: selectedTags.join(',')
+        }),
+        successCallback: () => {
+          message.success('修改成功')
+        }
+      }
+    })
+  }
+  resetSelectedTags() {
+    let { label } = this.props
+    this.setState({ selectedTags: label })
+  }
+  render() {
+    let { label } = this.props
+    let { selectedTags } = this.state
+    let noUpdate = hasSameElements(selectedTags, label)
+
+    return (
+      <div className={styles.listWithHeader}>
+        <header className={styles.header}>
+          <h4>我的标签({label.length})</h4>
+        </header>
+        <main className={styles.main}>
+          <div className={styles.tagsWrapper}>
+            <header>
+              {!selectedTags.length ? (
+                <p className={styles.tips} style={{color: '#ccc'}}>请选择你感兴趣的标签</p>
+              ) : (
+                <ul className={styles.categoryTagsList}>
+                  <li className={styles.listItem}><p className={styles.tips}>已选标签：</p></li>
                   {
-                    value.tags.map(function(item,index){
-                      return(
-                        <div key={index} className={styles.tag}>
-                            <div data-name={item.name} onClick={(e)=>{obj.check(e)}}>
-                              {item.name}
-                            </div>
-                        </div>
-                      )
-                    })
+                    selectedTags.map(tag => (
+                      <li
+                        key={tag}
+                        className={styles.categoryTagActive}>
+                        <a href="javascript:void(0);">{tag}</a>
+                      </li>
+                    ))
                   }
+                </ul>
+              )}
+              {noUpdate ? null : (
+                <div className={styles.btnWrapper}>
+                  <div className={styles.btn}>
+                    <Button block type="primary" onClick={this.saveSelectedTags}>保存</Button>
+                  </div>
+                  <div className={styles.btn}>
+                    <Button block onClick={this.resetSelectedTags}>取消</Button>
                   </div>
                 </div>
-              </div>
-            )
-          })
-        }
+              )}
+            </header>
+            <main>
+              <LabelSelector selectedTags={selectedTags} notifySelectedTags={this.getSelectedTags} />
+            </main>
+          </div>
+        </main>
       </div>
     )
   }
 }
 
-AuthorPosts.propTypes = {
+TagManage.propTypes = {
   guest: PropTypes.bool
 };
 
-export default connect()(AuthorPosts);
+export default connect(state => ({
+  label: state.author.authorInfo.label.split(','),
+  authorInfo: state.author.authorInfo
+}))(TagManage);

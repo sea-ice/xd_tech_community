@@ -1,0 +1,39 @@
+.category {
+  padding: 10px 0;
+  h4 {
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+}
+
+.categoryTagsList {
+  margin-left: -15px;
+}
+
+.categoryTagsList:after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: left;
+}
+
+.categoryTag {
+  float: left;
+  margin-top: 10px;
+  margin-left: 15px;
+  border: 1px solid #ccc;
+  padding: .06rem .2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  a {
+    color: #ccc;
+  }
+}
+
+.categoryTagActive {
+  composes: categoryTag;
+  border-color: #1890ff;
+  a {
+    color: #1890ff;
+  }
+}
