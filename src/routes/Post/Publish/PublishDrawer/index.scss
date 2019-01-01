@@ -1,13 +1,32 @@
-.category {
-  padding: 10px 0;
-  h4 {
-    line-height: 20px;
-    margin-bottom: 0;
+.selectTagTitle {
+  margin-bottom: 0;
+}
+
+
+.selectTagMain {
+  padding: 5px .3rem 0;
+  line-height: 1.5;
+}
+
+.tagsWrapper {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  &>header {
+    padding: 10px 20px 10px;
+    border-bottom: 1px solid #ccc;
+    .tips {
+      line-height: calc(.12rem + 21px);
+      margin-bottom: 0;
+    }
+  }
+  &>main {
+    padding: 5px 20px;
   }
 }
 
 .categoryTagsList {
   margin-left: -15px;
+  margin-top: -10px;
   margin-bottom: 0;
 }
 
@@ -18,10 +37,14 @@
   clear: left;
 }
 
-.categoryTag {
+.listItem {
   float: left;
   margin-top: 10px;
   margin-left: 15px;
+}
+
+.categoryTag {
+  composes: listItem;
   border: 1px solid #ccc;
   padding: .06rem .2rem;
   border-radius: 5px;

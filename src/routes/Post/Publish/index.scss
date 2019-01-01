@@ -1,0 +1,50 @@
+.fixedHeader {
+  composes: faic from global;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  padding: 0 80px;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  z-index: 1;
+}
+
+.returnBtn {
+  display: block;
+  line-height: 67px;
+  padding: 0 20px;
+  cursor: pointer;
+  &:hover {
+    background-color: #eee;
+  }
+}
+
+.draftSaveTips {
+  flex-grow: 1;
+  color: #999;
+  padding-left: 80px;
+  margin-bottom: 0;
+}
+
+
+.settingWrapper {
+  margin-right: 40px;
+  cursor: pointer;
+}
+
+
+.publishBtn {
+
+}
+
+/* header样式结束 */
+
+
+
+
+
+
+
+

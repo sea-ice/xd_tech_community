@@ -1,0 +1,270 @@
+.editor {
+  padding: 80px 200px;
+}
+
+
+.toolbarWrapper {
+  display: flex;
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: #f1f1f1;
+  box-shadow: 0 5px 10px #ddd;
+  padding-left: 80px;
+  z-index: 1;
+}
+
+.toolbar {
+  composes: faic from global;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  .toolIconGroup {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding-left: 4px;
+  }
+  .toolIconGroup:not(:first-child) {
+    border-left: 1px solid #ccc;
+  }
+}
+
+.headingExample {
+  .headingText {
+    line-height: 32px;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 0;
+  }
+}
+
+.selectHeadingBtn {
+  display: block;
+  line-height: 40px;
+  padding: 0 10px;
+  color: rgba(0, 0, 0, 0.65);
+  &>span {
+    margin-right: 15px;
+  }
+}
+
+.toolIcon {
+  line-height: 30px;
+  padding: 0 8px;
+  cursor: pointer;
+  margin-right: 4px;
+  border: 1px solid transparent;
+  .arrowIcon {
+    margin-left: 5px;
+  }
+}
+
+.activeToolIcon {
+  composes: toolIcon;
+  border-color: #ccc;
+  border-radius: 4px;
+  background-color: #eee;
+}
+
+.main {
+  font-size: 16px;
+  padding: 168px 0 60px;
+}
+
+.editorWrapper {
+  padding: 60px 80px;
+  background-color: white;
+}
+
+.titleInputWrapper {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #999;
+  margin-bottom: 20px;
+  input {
+    display: block;
+    width: 100%;
+    font-size: 32px;
+    border: none;
+    outline: none;
+  }
+}
+
+.mainContentWrapper {
+  min-height: 400px;
+  cursor: text;
+}
+
+.article {
+  blockquote {
+    padding: .9375rem 1.875rem;
+    margin-top: .625rem;
+    border-left: .375rem solid #8785A2;
+    background-color: #F7F5F1;
+  }
+
+  p {
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace,"Helvetica Neue",Arial,"Hiragino Sans GB",STHeiti,"Microsoft YaHei";
+    line-height: 1.5rem; // text-align: justify;
+  }
+
+  &>p {
+    margin: .9375rem 0;
+    color: #666;
+    font-size: .875rem;
+  }
+
+  strong,
+  em {
+    padding: 0 .375rem;
+    color: #515151;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Hiragino Sans GB",STHeiti,"Microsoft YaHei";;
+    color: #313131;
+  }
+
+  h2 {
+    line-height: 2rem;
+    margin: 1.25rem 0 0;
+    padding-bottom: .625rem;
+    border-bottom: 2px solid #ddd;
+  }
+
+  h3 {
+    line-height: 1.75rem;
+    margin: 1.125rem 0 .625rem;
+    &+h4 {
+      margin-top: 0;
+    }
+  }
+
+  h4 {
+    line-height: 1.625rem;
+    margin: 1rem 0 .625rem;
+    &+h5 {
+      margin-top: 0;
+    }
+  }
+
+  h5 {
+    line-height: 1.5rem;
+    margin: .875rem 0 .625rem;
+    &+h6 {
+      margin-top: 0;
+    }
+  }
+
+  h6 {
+    line-height: 1.375rem;
+    margin: .75rem 0 .625rem;
+  }
+
+  figure {
+    margin-top: .9375rem;
+    text-align: center;
+    img {
+      vertical-align: top;
+      border-radius: .3125rem;
+    }
+    figcaption {
+      padding-top: .625rem;
+      .figure-caption {
+        font-size: .75rem;
+        color: #bfbfbf;
+      }
+    }
+  }
+
+  .code-wrapper {
+    line-height: 1.25rem;
+    font-size: .75rem;
+  }
+
+  /* 列表样式 */
+
+  li {
+    font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace,"Helvetica Neue",Arial,"Hiragino Sans GB",STHeiti,"Microsoft YaHei";
+    color: #666;
+    font-size: .875rem;
+    line-height: 1.25rem;
+    padding-top: .625rem;
+  }
+
+  li:first-child {
+    padding-top: 0px;
+  }
+
+  &>ol {
+    margin-top: .9375rem;
+  }
+
+  li>ul,
+  li>ol {
+    position: relative;
+    background-color: white;
+    padding-left: 1.875rem;
+  }
+
+  &>ul {
+    margin-top: .9375rem;
+    &>li {
+      &:before {
+        content: '';
+        float: left;
+        width: .3125rem;
+        height: .3125rem;
+        background-color: #8a8a8a;
+        margin: .4375rem .4375rem 0;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  li>ul>li {
+    &:before {
+      content: '';
+      float: left;
+      width: .25rem;
+      height: .25rem;
+      border: 1px solid #8a8a8a;
+      margin: .375rem .4375rem 0;
+      border-radius: 50%;
+    }
+  }
+
+  /* 列表样式end */
+
+  .emphasize {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 .3125rem;
+    border-radius: .3125rem;
+    color: #E76C23;
+    background-color: #f8f8f8;
+    margin: 0 .3125rem;
+  }
+
+  a {
+    color: #00BBF0;
+    font-size: .875rem;
+    margin: 0 5px;
+    &:hover {
+      color: #FF63B5;
+    }
+  }
+
+}

@@ -11,6 +11,7 @@ class TagManage extends Component {
   constructor (props) {
     super(props)
     this.getSelectedTags = this.getSelectedTags.bind(this)
+    this.removeTag = this.removeTag.bind(this)
     this.saveSelectedTags = this.saveSelectedTags.bind(this)
     this.resetSelectedTags = this.resetSelectedTags.bind(this)
     this.state = {
@@ -21,6 +22,13 @@ class TagManage extends Component {
     this.setState({
       selectedTags: tags
     })
+  }
+  removeTag(e) {
+    let { selectedTags } = this.state
+    let tagIdx = selectedTags.indexOf(e.target.innerText)
+    selectedTags = selectedTags.slice()
+    selectedTags.splice(tagIdx, 1)
+    this.setState({ selectedTags })
   }
   saveSelectedTags() {
     let { dispatch, authorInfo } = this.props
@@ -63,8 +71,9 @@ class TagManage extends Component {
                     selectedTags.map(tag => (
                       <li
                         key={tag}
-                        className={styles.categoryTagActive}>
-                        <a href="javascript:void(0);">{tag}</a>
+                        className={styles.categoryTagActive}
+                      >
+                        <a href="javascript:void(0);" onClick={this.removeTag}>{tag}</a>
                       </li>
                     ))
                   }
