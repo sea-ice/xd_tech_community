@@ -1,5 +1,20 @@
+.spinWrapper {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  &>div {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .fixedHeader {
   composes: faic from global;
+  justify-content: space-between;
   position: fixed;
   top: 0;
   left: 0;
@@ -10,6 +25,12 @@
   background-color: white;
   z-index: 1;
 }
+
+.leftSide,
+.rightSide {
+  composes: faic from global;
+}
+
 
 .returnBtn {
   display: block;
@@ -22,10 +43,12 @@
 }
 
 .draftSaveTips {
-  flex-grow: 1;
   color: #999;
   padding-left: 80px;
   margin-bottom: 0;
+  span {
+    margin-left: 10px;
+  }
 }
 
 
@@ -40,6 +63,62 @@
 }
 
 /* header样式结束 */
+
+.main {
+  font-size: 16px;
+  padding: 138px 0 60px;
+}
+
+.editorWrapper {
+  padding: 60px 80px;
+  background-color: white;
+}
+
+.titleInputWrapper {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #999;
+  input {
+    display: block;
+    width: 100%;
+    font-size: 32px;
+    border: none;
+    outline: none;
+  }
+}
+
+.mainContentWrapper {
+  & > div {
+    box-shadow: none;
+    overflow: visible;
+  }
+  [class*=sc-gzVnrw] {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding-left: 80px;
+    & > :first-child {
+      border-left: 1px solid #ebebeb;
+    }
+  }
+
+  [class*=sc-brqgnP] {
+    min-height: 400px;
+    margin: 0 -25px;
+  }
+
+  [class*=sc-chPdSV] {
+    overflow: visible;
+  }
+
+  div[title*=Help] {
+    border-left: 0.5px solid #ebebeb;
+    border-right: 0.5px solid #ebebeb;
+    border-bottom: none;
+    vertical-align: top;
+  }
+}
 
 
 

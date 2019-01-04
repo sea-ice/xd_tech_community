@@ -11,7 +11,6 @@ import OwnerView from './OwnerView'
 import GuestView from './GuestView'
 
 @connect(state => ({
-  checkingAuthorId: state.author.checkingAuthorId,
   validAuthorId: state.author.validAuthorId,
   loginUserId: state.user.userId,
 }))
@@ -20,27 +19,25 @@ import GuestView from './GuestView'
   // 先验证用户是否登录，再验证跳转的用户主页是否存在
   *checkLoginFinish(userInfo, { put }, props) {
     let { match: { params }, loginUserId, validAuthorId } = props
+    let authorId = Number(params.id)
+    if (validAuthorId === authorId) return
 
     yield put({
       type: 'author/checkAuthorExists',
       payload: {
-        authorId: Number(params.id),
-        validAuthorId,
+        authorId,
         loginUserId
       }
     })
   }
 })
 class AuthorDetail extends Component {
-  constructor (props) {
-    super(props)
-  }
   UNSAFE_componentWillReceiveProps(nextProps) {
     let {
       dispatch, match: { params }, history,
       validAuthorId, loginUserId } = nextProps
     if (nextProps.validAuthorId === false) {
-      dispatch(routerRedux.push('/404'))
+      return dispatch(routerRedux.push('/404'))
     }
     if (
       history.action === 'PUSH' &&
@@ -60,18 +57,12 @@ class AuthorDetail extends Component {
   render () {
     let {
       loginUserId,
-      checkingAuthorId,
       validAuthorId,
       match: { params }
     } = this.props
-    console.log(`checkingAuthorId:${checkingAuthorId || (
-      validAuthorId !== Number(params.id)
-    )}`)
 
     return (
-      checkingAuthorId || (
-        validAuthorId !== Number(params.id)
-      ) ? (
+      (validAuthorId !== Number(params.id)) ? (
         <div className={styles.spinWrapper}>
           <Spin tip="加载中..." />
         </div>

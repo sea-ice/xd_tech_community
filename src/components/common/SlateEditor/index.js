@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Icon, Dropdown, Menu, Popover } from 'antd'
-import { CompactPicker } from 'react-color'
+import { Row, Col, Icon, Dropdown, Menu } from 'antd'
 import { Editor } from 'slate-react'
-import { Value } from 'slate'
+import { Value, Data } from 'slate'
 import { isKeyHotkey } from 'is-hotkey'
 
 
 import styles from './index.scss'
 import IconFont from 'components/common/IconFont'
+import ColorMarkButton from './ColorMarkButton'
 
 const initialState = {
   document: {
@@ -21,6 +21,10 @@ const initialState = {
 }
 
 const DEFAULT_BLOCK_TYPE = 'paragraph'
+const DEFAULT_COLORS = {
+  'font-color': '#000000',
+  'bg-color': '#ffffff'
+}
 
 const headingTypes = [{
   blockType: DEFAULT_BLOCK_TYPE,
@@ -59,6 +63,9 @@ export default class extends Component {
     this.onChange = this.onChange.bind(this)
     this.focus = this.focus.bind(this)
     this.onRef = this.onRef.bind(this)
+
+    /* 和颜色操作相关的方法 */
+    this.onColorSelectPanelToggle = this.onColorSelectPanelToggle.bind(this)
   }
   onChange(state) {
     let { value } = state
@@ -72,8 +79,9 @@ export default class extends Component {
   }
   onKeyDown(event, editor, next) {
     if (isEnterKey(event)) {
-      console.log('enter')
       editor.insertBlock(DEFAULT_BLOCK_TYPE) // 默认情况（包括当前行为标题）下，换行时插入新的p元素
+    } else {
+      next()
     }
   }
 
@@ -87,7 +95,6 @@ export default class extends Component {
   }
   renderMark(props, editor, next) {
     const { children, mark, attributes } = props
-
     switch (mark.type) {
       case 'bold':
         return <strong {...attributes}>{children}</strong>
@@ -99,6 +106,12 @@ export default class extends Component {
         return <del {...attributes}>{children}</del>
       case 'code':
         return <code {...attributes}>{children}</code>
+      case 'font-color':
+        let color = mark.data.get('font-color')
+        return <span {...attributes} style={{ color }}>{children}</span>
+      case 'bg-color':
+        let backgroundColor = mark.data.get('bg-color')
+        return <span {...attributes} style={{ backgroundColor }}>{children}</span>
       default:
         return next()
     }
@@ -116,6 +129,52 @@ export default class extends Component {
       </div>
     )
   }
+  /**
+   * 渲染修改颜色的按钮
+   * @param {string} markType
+   * @param {string} iconType
+   */
+  renderColorMarkButton(markType, iconType) {
+    let { value: { activeMarks } } = this.state
+    let mark = activeMarks.find(mark => !!mark.data.get(markType))
+    console.log(mark)
+    return (
+      <ColorMarkButton
+        color={mark ? mark.data.get(markType) : DEFAULT_COLORS[markType]}
+        markType={markType}
+        iconType={iconType}
+        onColour={color => this.onColour(color, markType)}
+        onPanelToggle={this.onColorSelectPanelToggle}
+        onColorChange={color => this.onColour(color, markType)}
+      />
+    )
+  }
+  onColour(color, markType) {
+    let { value: { activeMarks } } = this.state
+    let mark = activeMarks.find(mark => !!mark.data.get(markType))
+
+    if (mark) {
+      this.editor.removeMark(markType)
+    }
+    this.editor.toggleMark({
+      type: markType,
+      data: Data.create({ [markType]: color })
+    })
+  }
+  onColorSelectPanelToggle(show) {
+    if (show) {
+      // 需要确定选中的范围是否包含block
+      this.editor.focus() // 保持选中范围
+    }
+  }
+  // onColorChange(color, markType) {
+  //   this.onColour(color)
+  // }
+  /**
+   * 渲染标题按钮
+   * @param {*} headingNum
+   * @param {*} selectedHeadingType
+   */
   renderHeadingToolButton(headingNum, selectedHeadingType) {
     let { blockType, headingExample, children } = headingTypes[headingNum]
 
@@ -137,7 +196,7 @@ export default class extends Component {
 
     const { editor } = this
 
-    editor.setBlocks(blockType)
+    editor.setBlocks(blockType).focus()
   }
   getSelectedHeading() {
     let headings = headingTypes.slice(1)
@@ -203,38 +262,8 @@ export default class extends Component {
               {this.renderMarkToolButton('italic', 'italic')}
               {this.renderMarkToolButton('underline', 'underline')}
               {this.renderMarkToolButton('del', 'strikethrough')}
-              <div className={styles.toolIcon}>
-                <Popover
-                  content={<CompactPicker />}
-                  title="Title"
-                  trigger="click"
-                // visible={this.state.visible}
-                // onVisibleChange={this.handleVisibleChange}
-                >
-                  <div className={styles.colorSelectTool}>
-                    <Icon type="font-colors" />
-                    <span className={styles.arrowIcon}>
-                      <Icon type="caret-down" style={{ fontSize: 12 }} />
-                    </span>
-                  </div>
-                </Popover>
-              </div>
-              <div className={styles.toolIcon}>
-                <Popover
-                  content={<CompactPicker />}
-                  title="Title"
-                  trigger="click"
-                // visible={this.state.visible}
-                // onVisibleChange={this.handleVisibleChange}
-                >
-                  <div className={styles.colorSelectTool}>
-                    <Icon type="bg-colors" />
-                    <span className={styles.arrowIcon}>
-                      <Icon type="caret-down" style={{ fontSize: 12 }} />
-                    </span>
-                  </div>
-                </Popover>
-              </div>
+              {this.renderColorMarkButton('font-color', 'font-colors')}
+              {this.renderColorMarkButton('bg-color', 'bg-colors')}
             </div>
             <div className={styles.toolIconGroup}>
               <div className={styles.toolIcon}>

@@ -5,7 +5,6 @@ export default {
   namespace: 'author',
   state: {
     authorInfo: {},
-    checkingAuthorId: true,
     validAuthorId: null,
     sharePosts: { posts: [], currentPage: 0, total: 0 },
     appealPosts: { posts: [], currentPage: 0, total: 0 },
@@ -38,12 +37,8 @@ export default {
       }
     },
     *checkAuthorExists({ payload }, { call, put }) {
-      let { authorId, loginUserId, validAuthorId } = payload
-      if (validAuthorId === authorId) return
-      yield put({
-        type: 'setState',
-        payload: { checkingAuthorId: true }
-      })
+      let { authorId, loginUserId } = payload
+
       let res = yield call(() => request(
         `${
           config.SERVER_URL_API_PREFIX
@@ -55,7 +50,6 @@ export default {
         yield put({
           type: 'setState',
           payload: {
-            checkingAuthorId: false,
             validAuthorId: authorId,
             authorInfo: { userId: authorId, ...body },
             sharePosts: { posts: [], currentPage: 0, total: 0, loading: false },
@@ -66,7 +60,6 @@ export default {
         yield put({
           type: 'setState',
           payload: {
-            checkingAuthorId: false,
             validAuthorId: false, // 值为false表示用户不存在
           }
         })

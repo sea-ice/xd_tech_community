@@ -4,10 +4,11 @@ import { connect } from 'dva';
 import { Row, Col, Drawer, Form, Select, Checkbox, Input } from 'antd'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import LabelSelector from 'components/common/LabelSelector'
 
-const SHARE_POST_TYPE = '0'
-const APPEAL_POST_TYPE = '1'
+// const SHARE_POST_TYPE = '0'
+// const APPEAL_POST_TYPE = '1'
 
 @connect(state => ({
   editPost: state.postCURD.editPost
@@ -72,8 +73,8 @@ class PublishDrawer extends Component {
                     initialValue: type
                   })(
                     <Select size="large" placeholder="请选择帖子类型">
-                      <Select.Option value={SHARE_POST_TYPE}>分享帖</Select.Option>
-                      <Select.Option value={APPEAL_POST_TYPE}>求助帖</Select.Option>
+                      <Select.Option value={config.postType.SHARE}>分享帖</Select.Option>
+                      <Select.Option value={config.postType.APPEAL}>求助帖</Select.Option>
                     </Select>
                   )
                 }
@@ -112,7 +113,7 @@ class PublishDrawer extends Component {
           <Form.Item>
             <h4>设置金币</h4>
             {
-              type === SHARE_POST_TYPE ? getFieldDecorator('setShareCoins', {
+              type === config.postType.SHARE ? getFieldDecorator('setShareCoins', {
                 initialValue: setShareCoins
               })(
                 <Checkbox>我要散金币</Checkbox>

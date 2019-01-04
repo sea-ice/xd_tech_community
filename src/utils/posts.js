@@ -24,3 +24,31 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
   }
   return payload
 }
+/**
+ * 将应用中正在编辑的帖子状态转化为后端所需要的字段格式
+ *
+ * @export
+ * @param {any} payload
+ */
+export function getFormatPostFields(payload) {
+  let { articleId, userId, type, title, content, selectedTags, setShareCoins, setAppealCoins, coinsForAcceptedUser, coinsPerJointUser, jointUsers } = payload
+  let postTypes = config.postType
+  if (type === config.postType.SHARE) {
+    type = postTypes[setShareCoins ? 'SHARE_WITH_COINS' : 'SHARE_PLAIN']
+  } else if (type === config.postType.APPEAL) {
+    type = postTypes[setAppealCoins ? 'APPEAL_WITH_COINS' : 'APPEAL_PLAIN']
+  }
+  return {
+    articleId,
+    userId,
+    type,
+    title,
+    content, // html字符串
+    label: getFullTags(selectedTags),
+    image: '-1',
+    createTime: '' + Date.now(),
+    coin: coinsPerJointUser,
+    coinPersonNum: jointUsers,
+    reward: coinsForAcceptedUser
+  }
+}

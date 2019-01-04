@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import dynamic from 'dva/dynamic'
+import { LocaleProvider } from 'antd'
+import zhCN from 'antd/lib/locale-provider/zh_CN'
 
 function appRouterConfig(app) {
   const IndexPage = dynamic({
@@ -25,22 +27,23 @@ function appRouterConfig(app) {
   })
   const Notification = dynamic({
     app,
-    component: () =>
-      import ('./routes/User/Notification')
+    component: () => import ('./routes/User/Notification')
   })
   const AuthorDetail = dynamic({
     app,
-    component: () =>
-      import ('./routes/User/AuthorDetail')
+    component: () => import ('./routes/User/AuthorDetail')
   })
   const Error404 = dynamic({
     app,
-    component: () =>
-      import ('./routes/Extra/404')
+    component: () => import ('./routes/Extra/404')
+  })
+  const Error500 = dynamic({
+    app,
+    component: () => import('./routes/Extra/500')
   })
 
 
-  return ({history}) => (
+  return ({ history }) => (
     <Router history={history}>
       <Switch>
         <Route path="/" exact component={IndexPage} />
@@ -51,6 +54,7 @@ function appRouterConfig(app) {
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
         <Route path="/404" exact component={Error404} />
+        <Route path="/500" exact component={Error500} />
       </Switch>
     </Router>
   )
