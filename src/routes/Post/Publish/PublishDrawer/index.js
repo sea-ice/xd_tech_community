@@ -81,6 +81,7 @@ class PublishDrawer extends Component {
               </Col>
             </Row>
           </Form.Item>
+          {/* 可以考虑设置摘要 */}
           <Form.Item>
             <h4 className={styles.selectTagTitle}>标签</h4>
             <main className={styles.selectTagMain}>

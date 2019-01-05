@@ -1,6 +1,8 @@
 import { request, postJSON, safeCallback } from "utils"
 import config from 'config/constants'
 
+let searchUserTask = null
+
 export default {
   namespace: 'author',
   state: {
@@ -173,59 +175,128 @@ export default {
         if (successCallback) successCallback()
       }
     },
-    *getFollowUserList({ payload }, { call, put }) {
-      let { authorId, followed, page, number } = payload
+    *getFollowUserList({ payload }, { call, put, fork, cancel, cancelled }) {
+      let { followed } = payload
       // 先获取当前用户的关注者人数或者关注该用户的人数
+      let stateKey = followed ? 'followedUsers' : 'followingUsers'
+      if (!!searchUserTask) {
+        yield cancel(searchUserTask)
+      }
+      searchUserTask = yield fork(getFollowUserList, payload)
+      function* getFollowUserList({ authorId, followed, page, number, keywords }) {
+        try {
+          yield put({
+            type: 'setInfo',
+            payload: {
+              key: stateKey,
+              newInfo: { loading: true }
+            }
+          })
+          if (!!keywords) {
+            let url = `${config.SERVER_URL_API_PREFIX}/focus/search${followed ? 'Fans' : 'Focus'}ByKeyWords`
+            let searchResult = yield call(() => postJSON(url, {
+              userId: authorId,
+              keyword: keywords,
+              page: 0,
+              lastId: 0,
+              number: 9999
+            }))
+            console.log(`search Result:`)
+            console.log(searchResult)
+            searchUserTask = null
+            let { data: { code, body } } = searchResult
+            let newInfo
+            if (code === 100) {
+              newInfo = { loading: false, searchError: null, searchResult: body, searchKeywords: keywords }
+            } else if ((code === 0) && (body === 216)) {
+              newInfo = { loading: false, searchError: null, searchResult: [], searchKeywords: keywords }
+            } else {
+              newInfo = { loading: false, searchError: true, searchResult: null, searchKeywords: keywords }
+            }
+            yield put({
+              type: 'setInfo',
+              payload: {
+                key: stateKey,
+                newInfo
+              }
+            })
+          } else {
+            yield put({
+              type: 'getAuthorFollowState',
+              payload: {
+                authorId, // 注意这里的authorId是当前正在访问的个人主页对应的用户id
+                *successCallback(body) {
+                  let { fans, focus } = body
+                  let followTotal = followed ? fans : focus
+                  let newState
+                  if (followTotal) {
+                    let currentPage = Math.min(Math.ceil(followTotal / number), page)
+                    let url = `${
+                      config.SERVER_URL_API_PREFIX
+                      }/user/${
+                      followed ? 'fans' : 'focus'
+                      }?userId=${authorId}&lastId=0&number=${currentPage * number}&type=1`
+                    let res = yield call(() => request(url))
+                    let { data: { code, body } } = res
+                    if (code === 100) {
+                      let pageStart = (currentPage - 1) * number
+                      newState = { loading: false, users: body.slice(pageStart), currentPage, total: followTotal }
+                    } else {
+                      newState = { loading: false, error: true }
+                    }
+                  } else {
+                    newState = { loading: false, users: [], currentPage: 0, total: 0 }
+                  }
+                  searchUserTask = null
+                  yield put({
+                    type: 'setState',
+                    payload: {
+                      [stateKey]: newState
+                    }
+                  })
+                },
+                *failCallback() {
+                  searchUserTask = null
+                  yield put({
+                    type: 'setState',
+                    payload: {
+                      [stateKey]: { loading: false, error: true }
+                    }
+                  })
+                }
+              }
+            })
+          }
+        } finally {
+          if (yield cancelled()) {
+            console.log(`search ${keywords} task cancelled`)
+            yield put({
+              type: 'setInfo',
+              payload: {
+                key: stateKey,
+                newInfo: { loading: false }
+              }
+            })
+          }
+        }
+      }
+    },
+    *clearSearchResult({ payload }, { put, cancel }) {
+      let { followed } = payload
       let stateKey = followed ? 'followedUsers' : 'followingUsers'
       yield put({
         type: 'setInfo',
         payload: {
           key: stateKey,
-          newInfo: { loading: true }
-        }
-      })
-      yield put({
-        type: 'getAuthorFollowState',
-        payload: {
-          authorId, // 注意这里的authorId是当前正在访问的个人主页对应的用户id
-          *successCallback(body) {
-            let { fans, focus } = body
-            let followTotal = followed ? fans : focus
-            let newState
-            if (followTotal) {
-              let currentPage = Math.max(Math.ceil(followTotal / number), page)
-              let url = `${
-                config.SERVER_URL_API_PREFIX
-                }/user/${
-                followed ? 'fans' : 'focus'
-                }?userId=${authorId}&lastId=0&number=${currentPage * number}&type=1`
-              let res = yield call(() => request(url))
-              let { data: { code, body } } = res
-              if (code === 100) {
-                newState = { loading: false, users: body, currentPage, total: followTotal }
-              } else {
-                newState = { loading: false, error: true }
-              }
-            } else {
-              newState = { loading: false, users: [], currentPage: 0, total: 0 }
-            }
-            yield put({
-              type: 'setState',
-              payload: {
-                [stateKey]: newState
-              }
-            })
-          },
-          *failCallback() {
-            yield put({
-              type: 'setState',
-              payload: {
-                [stateKey]: { loading: false, error: true }
-              }
-            })
+          newInfo: {
+            searchResult: null,
+            searchKeywords: ''
           }
         }
       })
+      if (!!searchUserTask) {
+        yield cancel(searchUserTask)
+      }
     }
   }
 }
