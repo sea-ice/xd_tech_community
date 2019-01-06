@@ -9,6 +9,7 @@ import config from 'config/constants'
 class LoginForm extends Component {
   constructor (props) {
     super(props)
+    this.toResetPassword = this.toResetPassword.bind(this)
     this.toRegister = this.toRegister.bind(this)
     this.login = this.login.bind(this)
     this.state = { logining: false }
@@ -43,9 +44,13 @@ class LoginForm extends Component {
       }
     })
   }
-  toRegister () {
-    let {dispatch} = this.props
-    dispatch(routerRedux.push(`/login`))
+  toRegister() {
+    let { dispatch } = this.props
+    dispatch(routerRedux.push(`/register`))
+  }
+  toResetPassword() {
+    let { dispatch } = this.props
+    dispatch(routerRedux.push(`/reset_password`))
   }
   render () {
     let { getFieldDecorator } = this.props.form
@@ -84,7 +89,7 @@ class LoginForm extends Component {
         </Form.Item>
         <Form.Item>
           <div className={styles.forgetPassword}>
-            <a href="javascript:void(0);">忘记密码？</a>
+            <a href="javascript:void(0);" onClick={this.toResetPassword}>忘记密码？</a>
           </div>
           <Button
             type="primary"

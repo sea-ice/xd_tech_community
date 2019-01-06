@@ -27,7 +27,7 @@ class CheckPhone extends Component {
     // 然后再验证是否已经注册
     let username = form.getFieldValue('username')
     dispatch({
-      type: 'register/checkRegister',
+      type: 'register/checkUserExist',
       payload: {
         username,
         checkFailCallback: (msg) => {
@@ -39,8 +39,8 @@ class CheckPhone extends Component {
         },
         sendSuccessCallback: () => {
           let timeout = () => {
-            let {getCodeTimeout} = this.state
-            this.setState({getCodeTimeout: getCodeTimeout - 1})
+            let { getCodeTimeout } = this.state
+            this.setState({ getCodeTimeout: getCodeTimeout - 1 })
             if (getCodeTimeout === 0) {
               clearTimeout(this.timeout)
             } else {
@@ -50,7 +50,7 @@ class CheckPhone extends Component {
           this.setState({
             getSmsCode: true,
             getCodeTimeout: 59
-          }, () => {this.timeout = setTimeout(timeout, 1000)})
+          }, () => { this.timeout = setTimeout(timeout, 1000) })
         }
       }
     })
@@ -76,7 +76,7 @@ class CheckPhone extends Component {
           dispatch({
             type: 'register/setState',
             payload: {
-              saveRegisterName: phone
+              saveResetPasswordName: phone
             }
           })
           this.props.onComplete()

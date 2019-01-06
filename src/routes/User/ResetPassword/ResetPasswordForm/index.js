@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, message } from 'antd'
-import { connect } from 'dva'
+import { connect } from 'dva';
 
 // import styles from './index.scss'
 
-class RegisterForm extends Component {
+class ResetPasswordForm extends Component {
   constructor (props) {
     super(props)
-    this.register = this.register.bind(this)
+    this.modifyPassword = this.modifyPassword.bind(this)
     this.onPasswordChange = this.onInputChange.bind(this, 'password')()
     this.onConfirmPasswordChange = this.onInputChange.bind(this, 'confirmPassword')()
   }
@@ -18,13 +18,17 @@ class RegisterForm extends Component {
       let anotherField = fieldName === fields[0] ? fields[1] : fields[0]
       let fieldValue = form.getFieldValue(fieldName)
       let anotherFieldValue = form.getFieldValue(anotherField)
-
+      console.log(!!anotherFieldValue &&
+        (form.getFieldValue(fields[0]).length >= 6) &&
+        (anotherFieldValue !== fieldValue))
       if (
         !!anotherFieldValue &&
         (form.getFieldValue(fields[0]).length >= 6) &&
-        (anotherFieldValue !== fieldValue)
+        (anotherFieldValue !== fieldValue) &&
+        !form.getFieldError(fieldName)
       ) {
         console.log(fieldName)
+
         form.setFields({
           [fieldName]: {
             errors: [new Error('两次输入的密码不一致！')]
@@ -33,7 +37,7 @@ class RegisterForm extends Component {
       }
     }
   }
-  register () {
+  modifyPassword () {
     let { dispatch, form, username } = this.props
     form.validateFields()
     let validateErr = form.getFieldsError()
@@ -51,7 +55,7 @@ class RegisterForm extends Component {
       return
     }
     dispatch({
-      type: 'register/register',
+      type: 'register/resetPassword',
       payload: {
         username,
         password,
@@ -59,7 +63,7 @@ class RegisterForm extends Component {
           this.props.onComplete()
         },
         failCallback: (msg) => {
-          message.error(`注册失败！${msg}`)
+          message.error(`重置失败！${msg}`)
         }
       }
     })
@@ -74,7 +78,7 @@ class RegisterForm extends Component {
           {
             getFieldDecorator('password', {
               rules: [
-                { required: true, message: '请填写密码！' },
+                { required: true, message: '请填写新密码！' },
                 { min: 6, message: '密码长度不得少于6位！' }
               ]
             })(
@@ -96,19 +100,19 @@ class RegisterForm extends Component {
           }
         </Form.Item>
         <Form.Item wrapperCol={{span: 8, offset: 7}}>
-          <Button type="primary" block onClick={this.register}>立即注册</Button>
+          <Button type="primary" block onClick={this.modifyPassword}>确认重置</Button>
         </Form.Item>
       </Form>
     );
   }
 }
 
-RegisterForm.propTypes = {
+ResetPasswordForm.propTypes = {
 };
 
 export default connect(state => ({
-  username: state.register.saveRegisterName
+  username: state.register.saveResetPasswordName
 }))(Form.create({
-  // 此处的props是增强后的RegisterForm的props，而非被增强的原组件，意味着props.form并不能访问到内部的this.props.form
+  // 此处的props是增强后的ResetPasswordForm的props，而非被增强的原组件，意味着props.form并不能访问到内部的this.props.form
   onValuesChange (props, changedValues) {}
-})(RegisterForm));
+})(ResetPasswordForm));

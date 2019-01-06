@@ -50,9 +50,13 @@ class FixedHeader extends Component {
   }
   toLogin () {
     let { dispatch, location: { pathname } } = this.props
+    if (!!pathname.match(/\/login/)) return
+
+    let loginSuccessPage = !!(['/register', '/reset_password'].find(
+      path => !!~pathname.indexOf(path))) ? '/' : pathname // 当前如果是数组中列出的路径，则登录成功后跳转到首页
     dispatch({
       type: 'user/setLoginSuccessPage',
-      payload: { page: pathname }
+      payload: { page: loginSuccessPage }
     })
     dispatch(routerRedux.push(`/login`))
   }

@@ -17,6 +17,10 @@ function appRouterConfig(app) {
     app,
     component: () => import('./routes/User/Login')
   })
+  const ResetPasswordPage = dynamic({
+    app,
+    component: () => import('./routes/User/ResetPassword')
+  })
   const Publish = dynamic({
     app,
     component: () => import('./routes/Post/Publish')
@@ -49,6 +53,7 @@ function appRouterConfig(app) {
         <Route path="/" exact component={IndexPage} />
         <Route path="/register" exact component={RegisterPage} />
         <Route path="/login" exact component={LoginPage} />
+        <Route path="/reset_password" exact component={ResetPasswordPage} />
         <Route path="/publish" exact component={Publish} />
         <Route path="/notify" exact component={Notification} />
         <Route path="/post/:id" exact component={PostDetail} />
