@@ -51,7 +51,7 @@ class OwnerAuthorDetail extends Component {
       }
     }
     // console.log({selectedTab: selected, subPage})
-    return {selectedTab: selected, subPage}
+    return { selectedTab: selected, subPage }
   }
   changeTab ({key}) {
     let {dispatch, authorId} = this.props
@@ -61,7 +61,7 @@ class OwnerAuthorDetail extends Component {
     }))
   }
   render () {
-    let {selectedTab, subPage} = this.state
+    let { selectedTab, subPage } = this.state
 
     switch (subPage) {
       case 'basic-info':

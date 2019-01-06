@@ -109,7 +109,7 @@ console.log(targetAuthorFollowInfo)
     return (
       <div className={styles.listWithHeader}>
         <header className={styles.header}>
-          <h4>{followed ? `关注${guest ? 'Ta' : '我'}的` : `${guest ? 'Ta' : '我'}关注的`}({total})</h4>
+          <h4>{followed ? `关注${guest ? 'TA' : '我'}的` : `${guest ? 'TA' : '我'}关注的`}({total})</h4>
           {(guest || !total) ? null : (
             <div className={styles.searchWrapper}>
               <Input
@@ -164,9 +164,9 @@ console.log(targetAuthorFollowInfo)
                   <div className={styles.iconWrapper}>
                     <Icon type="inbox" style={iconStyle} />
                     {followed ? (
-                      <p>还没有关注{guest ? 'Ta' : '你'}</p>
+                      <p>还没有关注{guest ? 'TA' : '你'}</p>
                     ) : (
-                      <p>{guest ? 'Ta' : '你'}还没有关注任何人</p>
+                      <p>{guest ? 'TA' : '你'}还没有关注任何人</p>
                     )}
                   </div>
                 )

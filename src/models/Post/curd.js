@@ -90,6 +90,20 @@ export default {
           payload: { draftSaveState: 'error' }
         })
       }
+    },
+    *publish({ payload }, { call, put }) {
+      let { successCallback, failCallback } = payload
+      payload = getFormatPostFields(payload)
+
+      let { articleId, ...rest } = payload
+      // todo:发表帖子接口后面需要换成发表草稿的接口
+      let res = yield call(() => postJSON(`${config.SERVER_URL_API_PREFIX}/article/publish`, rest))
+      let { data: { code } } = res
+      if (code === 100) {
+        if (successCallback) successCallback()
+      } else {
+        if (failCallback) failCallback()
+      }
     }
   }
 }

@@ -169,11 +169,11 @@ class AuthorBasicInfo extends Component {
                   <p>{userLevel}</p>
                 </li>
                 <li>
-                  <label>关注Ta的人</label>
+                  <label>关注TA的人</label>
                   <p>{fans}</p>
                 </li>
                 <li>
-                  <label>Ta关注的人</label>
+                  <label>TA关注的人</label>
                   <p>{focus}</p>
                 </li>
                 <li>

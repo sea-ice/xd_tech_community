@@ -7,7 +7,6 @@
   margin-bottom: 0;
 }
 
-
 .selectTagMain {
   padding: 5px .3rem 0;
   line-height: 1.5;
@@ -77,24 +76,10 @@
   line-height: 18px;
 }
 
-.coinSetting {
-  margin-top: -12px;
-  & > div + .plainCoins {
-    margin-top: -12px;
-  }
-}
-
-.plainCoins {
-  composes: faic from global;
-}
-
-
-
 .coinInput {
   display: inline-block;
   width: 80px;
   margin: 0 10px;
   vertical-align: top;
 }
-
 

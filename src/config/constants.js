@@ -22,7 +22,7 @@ export default {
     SHARE_PLAIN: 0b10, // 普通分享帖
     SHARE_WITH_COINS: 0b10010, // 金币分享帖
     APPEAL_PLAIN: 0b100, // 普通求助帖
-    APPEAL_WITH_COINS: 0b110100 // 悬赏求助帖
+    APPEAL_WITH_COINS: 0b110100 // 悬赏求助帖(悬赏+金币求助帖)
   },
   objectType: {
     POST: 0

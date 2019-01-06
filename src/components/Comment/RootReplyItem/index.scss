@@ -28,10 +28,29 @@
   }
 }
 
+.contentWrapper {
+  position: relative;
+  padding-left: 40px;
+  padding-top: 25px;
+  padding-bottom: 20px;
+}
+
+.acceptedIcon {
+  composes: icon from global;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -25px;
+}
+
+
+
 .commentContent {
-  padding-top: .4rem;
   font-size: 16px;
   text-indent: 20px;
+  margin-bottom: 0;
 }
 
 .replyItemFooter {

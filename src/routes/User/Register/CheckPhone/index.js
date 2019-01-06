@@ -57,7 +57,7 @@ class CheckPhone extends Component {
   }
 
   checkIdentifyCode () {
-    let {dispatch, form} = this.props
+    let { dispatch, form } = this.props
     form.validateFields()
     let validateErr = form.getFieldsError()
     console.log(validateErr)

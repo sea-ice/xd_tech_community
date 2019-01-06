@@ -4,7 +4,6 @@ import {fillPostListPayload} from 'utils'
 export default {
   namespace: 'recommendPosts',
   state: {
-    firstLoading: true,
     share: [],
     appeal: [],
     sharePostPage: 0,
@@ -31,7 +30,6 @@ export default {
     *getPageData({ payload }, { call, put }) {
       let { url, postType, params, reset, successCallback } = payload
       let posts = yield call(() => postJSON(url, params))
-      // redux-saga
       let { data: { code, body } } = posts
 
       if (code === 100) {

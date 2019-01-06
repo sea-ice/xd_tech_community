@@ -292,7 +292,7 @@ class AuthorCollection extends Component {
                 ) : (
                   <div className={styles.iconWrapper}>
                     <Icon type="inbox" style={iconStyle} />
-                    <p>{guest ? 'Ta' : '你'}还没有收藏任何文章</p>
+                    <p>{guest ? 'TA' : '你'}还没有收藏任何文章</p>
                   </div>
                 )
               }

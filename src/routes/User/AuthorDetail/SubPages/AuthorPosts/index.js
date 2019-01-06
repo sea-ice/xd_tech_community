@@ -32,8 +32,11 @@ class AuthorPosts extends Component {
     })
   }
   showDraftBin () {
-    let {dispatch} = this.props
-    dispatch(routerRedux.push(`/author/1?tab=draft-bin`))
+    let { dispatch, authorId } = this.props
+    dispatch(routerRedux.push({
+      pathname: `/author/${authorId}`,
+      search: `?tab=draft-bin`
+    }))
   }
   onPostPageChange(type) {
     return page => {
@@ -61,7 +64,7 @@ class AuthorPosts extends Component {
           </div>
         )
       }>
-        <Tabs.TabPane tab={`${guest ? 'Ta' : '我'}的分享帖(${sharePosts.total})`} key="sharePosts">
+        <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的分享帖(${sharePosts.total})`} key="sharePosts">
           <div className={styles.postList}>
             {
               (({ loading, error, total, posts, currentPage }) => (
@@ -76,7 +79,7 @@ class AuthorPosts extends Component {
                       <div className={styles.iconWrapper}>
                         <Icon type="inbox" style={iconStyle} />
                           {guest ?
-                            <p>Ta还没有发布过分享帖</p> :
+                            <p>TA还没有发布过分享帖</p> :
                             <p>你还没有发布过分享帖，<a href="javascript:void(0);">去发布</a></p>}
                       </div>
                     ) : (
@@ -103,7 +106,7 @@ class AuthorPosts extends Component {
             }
           </div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`${guest ? 'Ta' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
+        <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
           <div className={styles.postList}>
             {
               (({ loading, error, total, posts, currentPage }) => (
@@ -118,7 +121,7 @@ class AuthorPosts extends Component {
                       <div className={styles.iconWrapper}>
                         <Icon type="inbox" style={iconStyle} />
                           {guest ?
-                            <p>Ta还没有发布过求助帖</p> :
+                            <p>TA还没有发布过求助帖</p> :
                             <p>你还没有发布过求助帖，<a href="javascript:void(0);">去发布</a></p>}
                       </div>
                     ) : (
