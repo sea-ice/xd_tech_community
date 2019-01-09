@@ -32,7 +32,6 @@ export default {
       let { url, postType, params, reset, successCallback } = payload
       let posts = yield call(() => postJSON(url, params))
       let { data: { code, body } } = posts
-
       if (code === 100) {
         yield put({
           type: 'putNextPage',

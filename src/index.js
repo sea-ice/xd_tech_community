@@ -29,6 +29,7 @@ function startApp() {
   app.model(require('./models/Post/postFilterState').default);
   app.model(require('./models/Post/curd').default);
   app.model(require('./models/Post/postDetails').default);
+  app.model(require('./models/Post/searchPost').default);
   app.model(require('./models/Post/comment').default);
   app.model(require('./models/User/privateMsg').default);
   app.model(require('./models/User/notification').default);
@@ -36,6 +37,7 @@ function startApp() {
   app.model(require('./models/User/behaviors').default);
   app.model(require('./models/User/collection').default);
   app.model(require('./models/firstScreenRender').default);
+
 
   app.model(require('./models/User/login').default);
   app.model(require('./models/User/register').default);

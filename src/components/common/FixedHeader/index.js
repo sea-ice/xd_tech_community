@@ -41,8 +41,39 @@ class FixedHeader extends Component {
       })
     }
   }
-  handleUserSearch () {
 
+
+  // searchListPost (userInfo, page, tags=[]) {
+  //   let params = { page, number: config.POSTS_PER_PAGE }
+  //   let payload = { params }
+  //   payload.url = `${config.SERVER_URL_API_PREFIX}/article/doSearch`
+  //   params.label = tags && tags.length ? getFullTags(tags) : ''
+  //   if (userInfo) {
+  //     params.userId = userInfo.userId
+  //     params.cookie = ''
+  //   } else {
+  //     params.userId = 1
+  //     params.cookie = window.localStorage.getItem(config.UUID_STORAGE_NAME)
+  //   }
+  //   return payload
+  // }
+
+  handleUserSearch (value) {
+    console.log(value);
+    console.log(this.props)
+    let searchKeyword = value;
+    let { dispatch } = this.props
+    dispatch({
+      type: 'searchPost/getPageData',
+      payload: { 
+        searchKeyword : value,
+        userInfo : this.props.userInfo,
+        label: "",
+        page:0
+      }
+      
+    })
+    dispatch(routerRedux.push(`/search`))
   }
   toRegister () {
     let { dispatch } = this.props
@@ -93,7 +124,7 @@ class FixedHeader extends Component {
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"
-              onSearch={this.handleUserSearch}
+              onSearch={value => this.handleUserSearch(value)}
               enterButton />
             <Link to="/publish" className={styles.btnYl}>
               <i className="fa fa-bullhorn"></i>
