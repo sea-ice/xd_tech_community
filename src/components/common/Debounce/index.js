@@ -24,7 +24,7 @@ class Debounce extends Component {
     if (notifyLoading) {
       notifyLoading(true)
     } else {
-      hideLoading = message.loading('加载中', 0)
+      hideLoading = message.loading('加载中...', 0)
     }
     dispatch({
       type: actionType,

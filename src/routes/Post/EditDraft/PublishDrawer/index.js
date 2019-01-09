@@ -17,13 +17,26 @@ import LabelSelector from 'components/common/LabelSelector'
   onFieldsChange(props, fields) {
     let fieldName = Object.keys(fields)[0]
     let { dispatch } = props
+    let newInfo = { [fieldName]: fields[fieldName].value }
+
+    if (fieldName === 'type') {
+      newInfo.setShareCoins = false
+      newInfo.setAppealCoins = false
+      newInfo.coinsForAcceptedUser = 0
+      newInfo.coinsPerJointUser = 0
+      newInfo.jointUsers = 0
+    } else if (
+      (fieldName === 'coinsForAcceptedUser') ||
+      (fieldName === 'coinsPerJointUser') ||
+      (fieldName === 'jointUsers')
+    ) {
+      newInfo[fieldName] = Number(newInfo[fieldName])
+    }
     dispatch({
       type: 'postCURD/setInfo',
       payload: {
         key: 'editPost',
-        newInfo: {
-          [fieldName]: fields[fieldName].value
-        }
+        newInfo
       }
     })
   }
@@ -31,16 +44,25 @@ import LabelSelector from 'components/common/LabelSelector'
 class PublishDrawer extends Component {
   state = {
     visible: false,
+    checkValid: false
   }
   constructor(props) {
     super(props)
     this.toggleSettings = this.toggleSettings.bind(this)
+    // this.onPostTypeChange = this.onPostTypeChange.bind(this)
     this.removeTag = this.removeTag.bind(this)
     this.getSelectedTags = this.getSelectedTags.bind(this)
+  }
+  componentDidMount() {
+    this.props.onRef(this)
+    this.setState({ checkValid: this.validatePostInfo() })
   }
   toggleSettings() {
     let { visible } = this.state
     this.setState({ visible: !visible })
+    if (visible) {
+      this.setState({ checkValid: this.validatePostInfo() })
+    }
   }
   removeTag(e) {
     let { selectedTags } = this.state
@@ -64,18 +86,29 @@ class PublishDrawer extends Component {
     })
   }
   validatePostInfo() {
+    let { form } = this.props
+    form.validateFields()
+    let validateErr = form.getFieldsError()
+    console.log(validateErr)
+    let hasValidateErr = Object.keys(validateErr).some(key => !!validateErr[key])
+    if (hasValidateErr) return false
 
+    return !!this.props.editPost.selectedTags.length
   }
   render() {
     let { form: { getFieldDecorator }, editPost } = this.props
-    let { type, selectedTags, setShareCoins, setAppealCoins } = editPost
-    let { visible } = this.state
-    let postInfoValid = this.validatePostInfo()
+    let { type, selectedTags, setShareCoins, setAppealCoins,
+      coinsForAcceptedUser, coinsPerJointUser, jointUsers } = editPost
+    let { visible, checkValid } = this.state
+
+    let badgeSymbol = checkValid ? {
+      count: < Icon type="check-circle" theme="filled" style={{ color: '#52c41a' }} />
+    } : { dot: true }
     let setCoins = setShareCoins || setAppealCoins
     return (
       <React.Fragment>
         <div className={styles.settingWrapper} onClick={this.toggleSettings}>
-          <Badge dot={!postInfoValid}>
+          <Badge {...badgeSymbol}>
             <Icon type="setting" style={{ fontSize: 24, color: '#999' }} />
           </Badge>
         </div>
@@ -99,7 +132,7 @@ class PublishDrawer extends Component {
               </Row>
             </Form.Item>
             {/* 可以考虑设置摘要 */}
-            <section>
+            <Form.Item>
               <h4 className={styles.selectTagTitle}>
                 <span className={styles.colorRed}>*</span>标签
               </h4>
@@ -129,66 +162,108 @@ class PublishDrawer extends Component {
                   </main>
                 </div>
               </main>
-            </section>
+            </Form.Item>
             <h4>设置金币</h4>
             <Form.Item>
               {
-                type === config.postType.SHARE ? getFieldDecorator('setShareCoins', {
-                  initialValue: setShareCoins
-                })(
-                  <Checkbox>我要散金币</Checkbox>
-                ) : getFieldDecorator('setAppealCoins', {
-                  initialValue: setAppealCoins
-                })(
-                  <Checkbox>我要悬赏</Checkbox>
-                )
+                type === config.postType.SHARE ?
+                  getFieldDecorator('setShareCoins', {
+                    initialValue: setShareCoins,
+                    valuePropName: 'checked'
+                  })(<Checkbox>我要散金币</Checkbox>) :
+                  getFieldDecorator('setAppealCoins', {
+                    initialValue: setAppealCoins,
+                    valuePropName: 'checked'
+                  })(<Checkbox>我要悬赏</Checkbox>)
               }
             </Form.Item>
-
-            {setAppealCoins ? (
-              <Form.Item>
-                评论被采纳的用户可获得{
-                  <div className="coinInput">
-                    {getFieldDecorator('coinsForAcceptedUser', {
-                      initialValue: 0,
-                      rules: [
-                        { required: true, message: '请填写昵称！' },
-
-                      ]
-                    })(
-                      <Input type="number" />
-                      )}
-                  </div>
-                }金币，其他
-              </Form.Item>
-            ) : null}
-            {
-              setCoins ? (
+            <div className={styles.coinSetting}>
+              {setAppealCoins ? (
                 <Form.Item>
-                  参与评论的用户可获得{
-                    getFieldDecorator('coinsPerJointUser', {
-                      initialValue: 0
-                    })(
-                      <Input type="number" />
-                      )
-                  }金币，
-                </Form.Item>
-              ) : null
-            }
-            {
-              setCoins ? (
-                <Form.Item>
-                  共奖励{
-                    <div className="coinInput">
-                      {getFieldDecorator('jointUsers', {
-                        initialValue: 0
+                  评论被采纳的用户可获得{
+                    <div className={styles.coinInput}>
+                      {getFieldDecorator('coinsForAcceptedUser', {
+                        initialValue: coinsForAcceptedUser,
+                        rules: [
+                          {
+                            validator(rule, val, callback) {
+                              if (!val.trim()) return callback('请填写金币数量！')
+                              if ((Number(val) >= 0) && (window.parseInt(val) === Number(val))) {
+                                callback()
+                              } else {
+                                callback('请填写大于等于0的整数！')
+                              }
+                            }
+                          },
+                        ]
                       })(
                         <Input type="number" />
                         )}
                     </div>
-                  }人
-                  <p>你当前的金币数量为，共需要支付枚金币</p>
-                </Form.Item>
+                  }金币
+              </Form.Item>
+              ) : null}
+              {
+                setCoins ? (
+                  <div className={styles.plainCoins}>
+                    <Form.Item>
+                      {setAppealCoins ? '其他' : null}参与评论的用户可获得{
+                        <div className={styles.coinInput}>
+                          {getFieldDecorator('coinsPerJointUser', {
+                            initialValue: coinsPerJointUser,
+                            rules: [
+                              {
+                                validator(rule, val, callback) {
+                                  if (!val.trim()) return callback('请填写金币数量！')
+
+                                  if ((Number(val) >= 0) && (window.parseInt(val) === Number(val))) {
+                                    callback()
+                                  } else {
+                                    callback('请填写大于等于0的整数！')
+                                  }
+                                }
+                              },
+                            ]
+                          })(
+                            <Input type="number" />
+                            )}
+                        </div>
+                      }金币，
+                    </Form.Item>
+                    <Form.Item>
+                      共奖励{
+                        <div className={styles.coinInput}>
+                          {getFieldDecorator('jointUsers', {
+                            initialValue: jointUsers,
+                            rules: [
+                              {
+                                validator(rule, val, callback) {
+                                  if (!val.trim()) return callback('请填写金币数量！')
+
+                                  if ((Number(val) >= 0) && (window.parseInt(val) === Number(val))) {
+                                    callback()
+                                  } else {
+                                    callback('请填写大于等于0的整数！')
+                                  }
+                                }
+                              },
+                            ]
+                          })(
+                            <Input type="number" />
+                            )}
+                        </div>
+                      }人
+
+                    </Form.Item>
+                  </div>
+
+                ) : null
+              }
+            </div>
+
+            {
+              setCoins ? (
+                <p>你当前的金币数量为，共需要支付{Number(coinsForAcceptedUser) + coinsPerJointUser * jointUsers}枚金币</p>
               ) : null
             }
           </Form>

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-import { Tabs, Button, Spin, Pagination, Icon } from 'antd'
+import { routerRedux, withRouter } from 'dva/router';
+import { Tabs, Button, Spin, Pagination, Icon, message } from 'antd'
 
 import styles from './index.scss'
 import PostItem from 'AuthorDetail/PostItem'
@@ -12,10 +12,12 @@ import PostItem from 'AuthorDetail/PostItem'
   sharePosts: state.author.sharePosts,
   appealPosts: state.author.appealPosts,
 }))
+@withRouter
 class AuthorPosts extends Component {
   constructor (props) {
     super(props)
     this.showDraftBin = this.showDraftBin.bind(this)
+    this.newDraft = this.newDraft.bind(this)
     this.onSharePostPageChange = this.onPostPageChange.bind(this, 'share')()
     this.onAppealPostPageChange = this.onPostPageChange.bind(this, 'appeal')()
   }
@@ -38,6 +40,25 @@ class AuthorPosts extends Component {
       search: `?tab=draft-bin`
     }))
   }
+  newDraft() {
+    let { dispatch, authorId, location: { pathname } } = this.props
+    let hideLoading = message.loading('加载中...', 0)
+    dispatch({
+      type: 'postCURD/newDraft',
+      payload: {
+        userId: authorId,
+        pathname,
+        successCallback(draftId) {
+          hideLoading()
+          dispatch(routerRedux.push(`/edit/${draftId}`))
+        },
+        failCallback() {
+          hideLoading()
+          message.error('新建帖子失败，请稍后再试！')
+        }
+      }
+    })
+  }
   onPostPageChange(type) {
     return page => {
       let { dispatch, authorId } = this.props
@@ -55,7 +76,7 @@ class AuthorPosts extends Component {
   render () {
     let { guest, sharePosts, appealPosts } = this.props
 
-    let iconStyle = {fontSize: 60, color: '#999'}
+    let iconStyle = { fontSize: 60, color: '#999' }
     return (
       <Tabs tabBarExtraContent={
         guest ? null : (
@@ -80,7 +101,7 @@ class AuthorPosts extends Component {
                         <Icon type="inbox" style={iconStyle} />
                           {guest ?
                             <p>TA还没有发布过分享帖</p> :
-                            <p>你还没有发布过分享帖，<a href="javascript:void(0);">去发布</a></p>}
+                            <p>你还没有发布过分享帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
                       </div>
                     ) : (
                       <React.Fragment>
@@ -122,7 +143,7 @@ class AuthorPosts extends Component {
                         <Icon type="inbox" style={iconStyle} />
                           {guest ?
                             <p>TA还没有发布过求助帖</p> :
-                            <p>你还没有发布过求助帖，<a href="javascript:void(0);">去发布</a></p>}
+                            <p>你还没有发布过求助帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
                       </div>
                     ) : (
                       <React.Fragment>

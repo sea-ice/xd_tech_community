@@ -76,6 +76,17 @@
   line-height: 18px;
 }
 
+.coinSetting {
+  margin-top: -12px;
+  &>div+.plainCoins {
+    margin-top: -12px;
+  }
+}
+
+.plainCoins {
+  composes: faic from global;
+}
+
 .coinInput {
   display: inline-block;
   width: 80px;

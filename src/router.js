@@ -37,6 +37,10 @@ function appRouterConfig(app) {
     app,
     component: () => import ('./routes/User/AuthorDetail')
   })
+  const EditDraft = dynamic({
+    app,
+    component: () => import('./routes/Post/EditDraft')
+  })
   const Error404 = dynamic({
     app,
     component: () => import ('./routes/Extra/404')
@@ -58,6 +62,7 @@ function appRouterConfig(app) {
         <Route path="/notify" exact component={Notification} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
+        <Route path="/edit/:id" exact component={EditDraft} />
         <Route path="/404" exact component={Error404} />
         <Route path="/500" exact component={Error500} />
       </Switch>

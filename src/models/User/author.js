@@ -11,7 +11,8 @@ export default {
     sharePosts: { posts: [], currentPage: 0, total: 0 },
     appealPosts: { posts: [], currentPage: 0, total: 0 },
     followedUsers: { users: [], currentPage: 0, total: 0 },
-    followingUsers: { users: [], currentPage: 0, total: 0 }
+    followingUsers: { users: [], currentPage: 0, total: 0 },
+    drafts: { posts: [], currentPage: 0, total: 0 }
   },
   reducers: {
     setState(state, { payload }) {
@@ -118,6 +119,57 @@ export default {
         type: 'setState',
         payload: {
           [`${type}Posts`]: newInfo
+        }
+      })
+    },
+    *getAuthorDrafts({ payload }, { call, put }) {
+      let { authorId, page, number } = payload
+      // 设置loading
+      yield put({
+        type: 'setInfo',
+        payload: {
+          key: `drafts`,
+          newInfo: { loading: true }
+        }
+      })
+      // 先获取草稿数量
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/article/getDraftArticleNumber`, {
+          userId: authorId
+        }))
+      let { data: { code, body } } = res
+      let newInfo
+      console.log(body)
+      if (code === 100) {
+        let draftNum = body
+        if (!draftNum) {
+          newInfo = { posts: [], currentPage: 0, total: 0, loading: false }
+        } else {
+          let total = draftNum, posts = []
+          let currentPage = Math.min(Math.ceil(draftNum / number), page)
+          let res = yield call(() => postJSON(
+            `${config.SERVER_URL_API_PREFIX}/article/getArticleDraftList`, {
+              lastId: 0,
+              userId: authorId,
+              page: 0, // page不起作用，但需要传
+              number: currentPage * number
+            }))
+          let { data: { code, body } } = res
+          if (code === 100) {
+            let pageStart = (currentPage - 1) * number
+            posts = body.slice(pageStart)
+            newInfo = { posts, currentPage, total, loading: false }
+          } else {
+            newInfo = { loading: false, error: true }
+          }
+        }
+      } else {
+        newInfo = { loading: false, error: true }
+      }
+      yield put({
+        type: 'setState',
+        payload: {
+          drafts: newInfo
         }
       })
     },

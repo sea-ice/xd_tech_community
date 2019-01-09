@@ -157,6 +157,7 @@ class EditDraft extends Component {
   render() {
     let { value } = this.state
     let { draftSaveState } = this.props
+
     return (
       <div>
         <header className={styles.fixedHeader}>

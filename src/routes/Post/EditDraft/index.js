@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { withRouter, routerRedux } from 'dva/router'
 
-import { Row, Col, Badge, Icon, Button, Spin } from 'antd'
+import { Row, Col, Badge, Icon, Button, Spin, message } from 'antd'
 import Html from 'slate-html-serializer'
 import { DEFAULT_RULES as rules } from '@canner/slate-editor-html/lib'
 import CannerEditor from 'canner-slate-editor'
@@ -20,25 +20,17 @@ import 'antd/lib/table/style/index.css'
 import 'antd/lib/modal/style/index.css'
 import 'antd/lib/alert/style/index.css'
 
-import initialValue from './initialValue'
-import Undo from "@canner/slate-icon-undo"
-import { Header1, Header2, Header3 } from "@canner/slate-icon-header";
+import menuToolbarOption from './toolbar.config'
 
 import styles from './index.scss'
 import PublishDrawer from './PublishDrawer'
-import { checkLogin } from 'utils'
-
-// const menuToolbarOption = [
-//   { type: Undo, title: '撤销' },
-//   { type: Header1, title: "Header One" },
-//   { type: Header2, title: "Header Two" },
-//   { type: Header3, title: "Header Three" }
-// ]
+import { checkLogin, hasSameElements } from 'utils'
 
 const HTMLSerializer = new Html({ rules })
 const isSaveKey = isKeyHotkey('mod+s')
 
 @connect(state => ({
+  returnPage: state.postCURD.draftEditReturnPage,
   editPost: state.postCURD.editPost,
   userId: state.user.userId,
   draftSaveState: state.postCURD.draftSaveState,
@@ -84,6 +76,7 @@ class EditDraft extends Component {
   }
   constructor(props) {
     super(props)
+    this.backToLastPage = this.backToLastPage.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onContentChange = this.onContentChange.bind(this)
@@ -104,19 +97,36 @@ class EditDraft extends Component {
   }
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
-    let { newPostFlag } = this.props
+    let { newPostFlag, editPost } = this.props
+    let { title, content } = editPost
     if (newPostFlag) {
       // 通过发帖按钮新建帖子直接初始化组件状态
+      let value = HTMLSerializer.deserialize(content)
       this.setState({
-        title: '',
-        value: '',
-        savedHTML: '',
-        initialized: true
+        title,
+        value,
+        initialized: true,
+        savedInfo: {
+          ...editPost,
+          content: HTMLSerializer.serialize(value)
+          // 原来content为空，反序列化之后为'<p></p>'，需要再次序列化为HTML
+        }
       })
     }
   }
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown)
+  }
+  backToLastPage() {
+    let { dispatch, returnPage } = this.props
+    dispatch({
+      type: 'postCURD/popEditDraftReturnPage',
+      payload: {
+        successCallback: () => {
+          dispatch(routerRedux.push(returnPage))
+        }
+      }
+    })
   }
   onKeyDown(e) {
     console.log(isSaveKey(e))
@@ -131,8 +141,9 @@ class EditDraft extends Component {
       dispatch,
       validDraftId,
       match: { params },
-      editPost: { title, content }
+      editPost
     } = nextProps;
+    let { title, content } = editPost
 
     // 如果检查发现草稿id不存在则跳转到404页面
     if (nextProps.validDraftId === false) {
@@ -142,45 +153,112 @@ class EditDraft extends Component {
       (validDraftId === Number(params.id))
     ) {
       // 如果草稿存在，则初始化当前组件状态
+      let value = HTMLSerializer.deserialize(content)
       this.setState({
         initialized: true,
         title,
-        value: HTMLSerializer.deserialize(content),
-        savedHTML: content
+        value,
+        savedInfo: {
+          ...editPost,
+          content: HTMLSerializer.serialize(value)
+        }
       })
+    } else if (
+      initialized &&
+      this.isDraftInfoChanged(editPost)
+    ) {
+      this.setDraftUnsaved()
     }
+  }
+  setDraftUnsaved() {
+    let { dispatch, draftSaveState } = this.props
+    if (draftSaveState === 'unsaved') return
+
+    dispatch({
+      type: 'postCURD/setState',
+      payload: {
+        draftSaveState: 'unsaved'
+      }
+    })
+  }
+  isDraftInfoChanged(newInfo) {
+    let compareFields = ['selectedTags', 'type', 'setShareCoins', 'setAppealCoins', 'coinsForAcceptedUser', 'coinsPerJointUser', 'jointUsers']
+    let { savedInfo } = this.state
+    for (let field of compareFields) {
+      if (field === 'selectedTags') {
+        if (!hasSameElements(savedInfo[field], newInfo[field])) return true
+      } else {
+        if (savedInfo[field] !== newInfo[field]) return true
+      }
+    }
+    return false
   }
   onTitleChange(e) {
     this.setState({ title: e.target.value })
+    this.setDraftUnsaved()
   }
   saveContent() {
-    let {draftSaveState} = this.props
+    let { draftSaveState } = this.props
     if (draftSaveState === 'saving') return
 
-    let { value, title, savedHTML } = this.state
+    let { value, title } = this.state
     let newHTML = HTMLSerializer.serialize(value)
-    if (savedHTML === newHTML) return
+    // if (savedHTML === newHTML) return
 
     let { dispatch, editPost, userId } = this.props
     dispatch({
       type: 'postCURD/saveDraft',
       payload: {
         ...editPost,
-        userId: 115,
+        userId,
         title,
-        content: newHTML
+        content: newHTML,
+        successCallback: () => {
+          this.setState({
+            savedInfo: {
+              ...editPost,
+              title,
+              content: newHTML
+            }
+          })
+        }
       }
     })
   }
   onContentChange({ value }) {
     this.setState({ value })
+
+    let newHTML = HTMLSerializer.serialize(value)
+    let { savedInfo, initialized } = this.state
+    if (initialized && (newHTML !== savedInfo.content)) {
+      this.setDraftUnsaved()
+    }
   }
   onPublish() {
-    let { value } = this.state
-    console.log(HTMLSerializer.serialize(value))
+    let { value, title } = this.state
+    let content = HTMLSerializer.serialize(value)
+
+    if (!title.trim()) return message.error('标题不允许为空！')
+    if (!content.trim()) return message.error('帖子内容不允许为空！')
+    if (!this.postSettings.validatePostInfo()) return message.error('请在设置中选择帖子相关的标签！')
+
+    let { dispatch, editPost, userId } = this.props
+    dispatch({
+      type: 'postCURD/publish',
+      payload: {
+        ...editPost,
+        userId,
+        title,
+        content,
+        successCallback() {
+          message.success('发表成功！')
+          dispatch(routerRedux.push(`/author/${userId}?tab=my-post`))
+        }
+      }
+    })
   }
   render() {
-    let { value, initialized } = this.state
+    let { title, value, initialized } = this.state
     let {
       draftSaveState, validDraftId,
       match: { params }
@@ -194,7 +272,7 @@ class EditDraft extends Component {
         <div>
           <header className={styles.fixedHeader}>
             <section className={styles.leftSide}>
-              <a href="javascript:void(0);" className={styles.returnBtn}>返回</a>
+              <a href="javascript:void(0);" className={styles.returnBtn} onClick={this.backToLastPage}>返回</a>
               {
                 (function () {
                   const iconCommonProps = { theme: "filled" }
@@ -231,7 +309,7 @@ class EditDraft extends Component {
             </section>
 
             <section className={styles.rightSide}>
-                <PublishDrawer />
+              <PublishDrawer onRef={drawer => this.postSettings = drawer} />
               <div className={styles.publishBtn}>
                 <Button type="primary" onClick={this.onPublish}>发表</Button>
               </div>
@@ -243,14 +321,16 @@ class EditDraft extends Component {
               <Col span={18} offset={3}>
                 <div className={styles.editorWrapper}>
                   <div className={styles.titleInputWrapper}>
-                    <input type="text" placeholder="请输入标题..." onChange={this.onTitleChange} />
+                    <input type="text" placeholder="请输入标题..." value={title} onChange={this.onTitleChange} />
                   </div>
                   <div className={styles.mainContentWrapper}>
-                    {/* <CannerEditor menuToolbarOption={menuToolbarOption} value={value} onChange={this.onContentChange} /> */}
-                    <CannerEditor galleryConfig={null} serviceConfig={{
-                      name: 'postUploadImg',
-                      action: secret.POST_IMAGE_UPLOAD_API
-                    }} value={value} onChange={this.onContentChange} />
+                    <CannerEditor
+                      galleryConfig={null}
+                      menuToolbarOption={menuToolbarOption}
+                      serviceConfig={{
+                        name: 'postUploadImg',
+                        action: secret.POST_IMAGE_UPLOAD_API
+                      }} value={value} onChange={this.onContentChange} />
                   </div>
                 </div>
               </Col>
