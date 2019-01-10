@@ -7,7 +7,6 @@ import styles from './index.scss'
 
 class PullupLoadMore extends Component {
   state = {
-    firstLoading: true,
     loading: false,
     error: false,
     noMoreData: false
@@ -24,19 +23,23 @@ class PullupLoadMore extends Component {
       'scroll', this.handleScroll)
   }
   handleScroll(e) {
+    let { loading, noMoreData } = this.state
+    if (loading || noMoreData) return
+
     let root = e.target
-    let appMainHeight = document.getElementById('app-main').clientHeight
+    let { container } = this.props
+
+    let appMainHeight = container.clientHeight
     console.log(root.scrollTop)
     console.log(`threshold: ${appMainHeight - root.clientHeight - 50}`)
     if (root.scrollTop > appMainHeight - root.clientHeight - 50) {
-      let { firstLoading } = this.state
-      if (firstLoading) this.setState({firstLoading: false})
       this.getPageData()
     }
   }
   getPageData() {
     let { loading, error, noMoreData } = this.state
     if (loading || error || noMoreData) return
+
     this.setState({ loading: true })
     let { getPageData } = this.props
     getPageData(this.page).then(res => {
@@ -69,7 +72,7 @@ class PullupLoadMore extends Component {
     })
   }
   componentDidMount() {
-    this.props.onRef(this)
+    if (this.props.onRef) this.props.onRef(this)
   }
   componentWillUnmount() {
     document.getElementById('root').removeEventListener(
@@ -77,12 +80,10 @@ class PullupLoadMore extends Component {
   }
   render () {
     let { children } = this.props
-    let { firstLoading, loading, error, noMoreData } = this.state
+    let { loading, error, noMoreData } = this.state
     return (
       <div>
         {children}
-        {/* 此处的firstLoading是障眼法，模拟页面初始加载时的loading */}
-        {firstLoading ? (<div className={styles.spinWrapper}><Spin tip="加载中..." /></div>) : null}
         {loading ? (
           <div className={styles.spinWrapper}><Spin tip="加载中..." /></div>
         ) : (

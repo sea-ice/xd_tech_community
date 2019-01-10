@@ -1,122 +1,173 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import {Row, Col, Spin} from 'antd'
-import { checkLogin, searchListPost } from 'utils'
+import { withRouter, routerRedux } from 'dva/router';
+import { Row, Col, Icon, message } from 'antd'
+import { checkLogin, getSearchObj } from 'utils'
 
 import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
 import PullupLoadMore from 'components/common/PullupLoadMore'
 import PlainPostItem from 'components/Post/PlainPostItem'
 
+@connect(state => ({
+  userId: state.user.userId,
+  searchResults: state.searchPost.searchResults,
+  searchKeyword: state.searchPost.searchKeyword
+}))
+@checkLogin({
+  *checkLoginFinish(userInfo, { put }, props) {
+    let { searchKeyword } = props
 
-class PostDetail extends Component {
+    console.log(`searchKeyword:${searchKeyword}`)
+    yield put({
+      type: 'searchPost/getPageData',
+      payload: {
+        page: 0,
+        number: 10,
+        userId: !!userInfo ? userInfo.userId : 0,
+        keyword: searchKeyword,
+        reset: true
+      }
+    })
+  }
+})
+@withRouter
+class SearchPage extends Component {
   constructor (props) {
     super(props)
-    this.getSearchPageDate = this.getPageData.bind(this)()
+    this.getSearchPageData = this.getPageData.bind(this)()
+    this.appMain = React.createRef()
+  }
+
+  componentDidMount() {
+    this.getSearchKeyword()
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    // 用户在当前页输入不同的关键字进行搜索
+    let { searchKeyword } = this.props
+    let newKeyword = nextProps.searchKeyword
+    if (!!searchKeyword && (newKeyword !== searchKeyword)) {
+      let hideLoading = message.loading('加载中...')
+      this.getSearchResultByNewKeyword(newKeyword, () => {
+        hideLoading()
+        if (this.pullup) this.pullup.resetState()
+        message.success('加载成功！')
+      }, () => {
+        hideLoading()
+        message.success('加载失败！')
+      })
+    }
+  }
+
+  getSearchResultByNewKeyword(keyword, successCallback, failCallback) {
+    // 根据新的关键词重新搜索结果
+    let { dispatch, userId } = this.props
+    dispatch({
+      type: 'searchPost/getPageData',
+      payload: {
+        userId: userId || 0,
+        page: 0,
+        number: 10,
+        keyword,
+        reset: true,
+        successCallback,
+        failCallback
+      }
+    })
+  }
+
+  getSearchKeyword() {
+    let { dispatch, location } = this.props
+    let { q } = getSearchObj(location)
+    q = q.trim()
+    if (!q) return dispatch(routerRedux.push('/404'))
+
+    q = window.decodeURIComponent(q)
+    this.setSearchPageState({ searchKeyword: q })
+  }
+
+  setSearchPageState(newState) {
+    let { dispatch } = this.props
+    dispatch({
+      type: 'searchPost/setState',
+      payload: newState
+    })
   }
 
   getPageData() {
     return (page) => new Promise((resolve, reject) => {
-      let { dispatch, userInfo, confirmedTags } = this.props
+      let { dispatch, userId, searchKeyword } = this.props
       dispatch({
         type: 'searchPost/getPageData',
-        payload: Object.assign(
-           {
-            successCallback: (res) => {
-              // res为响应
-              let { data: { code } } = res
-              console.log(res)
-              let result = {}
-              if (code === 216) {
-                result = { noMoreData: true }
-              }
-              resolve(result)
+        payload: {
+          page,
+          number: 10,
+          userId: userId || 0,
+          keyword: searchKeyword,
+          reset: false,
+          successCallback: (res) => {
+            // res为响应
+            let { data: { code } } = res
+            let result = {}
+            if (code === 216) {
+              result = { noMoreData: true }
             }
+            resolve(result)
           }
-        )
+        }
       })
     })
   }
-  
-  resetPullupState() {
-    // 重置上拉加载组件为初始状态
-    this.sharePullup.resetState()
-    if (this.appealPullup) { // 有可能求助帖列表页面还没有渲染
-      this.appealPullup.resetState()
-    }
-  }
 
   render () {
-    this.getPageData()
-    let {
-      firstLoading,
-      postFilterCollapse,
-      searchListPosts
-    } = this.props
+    let { searchResults } = this.props
+
+    let iconStyle = { fontSize: 60, color: '#999' }
     return (
       <div>
         <FixedHeader />
-        <main className="app-main">
-       
+        <main className="app-main" ref={this.appMain}>
+
           <Row gutter={20}>
             <Col span={18} offset={3}>
               <div className={styles.tabWrapper}>
-                
-                <PullupLoadMore
-                  initPageNum={1}
-                  onRef={c => this.appealPullup = c}
-                  getPageData={this.getSearchPageDate}
-                >
-                  <ul className={styles.postList}>
-                    {
-                      searchListPosts.map(
-                        p => <PlainPostItem key={p.articleId} {...p} />)
-                    }
-                  </ul>
-                  {firstLoading ? (
-                    <div className={styles.spinWrapper}><Spin tip="加载中..." /></div>
-                  ) : null}
-                </PullupLoadMore>
-            
-                
-              </div>
-            
-            </Col>
-            <Col span={6}>
 
+
+                {
+                  !!searchResults.length ? (
+                    <PullupLoadMore
+                      initPageNum={1}
+                      container={this.appMain.current}
+                      onRef={p => this.pullup = p}
+                      getPageData={this.getSearchPageData}
+                    >
+                      <ul className={styles.postList}>
+                        {
+                          searchResults.map(
+                            p => <PlainPostItem key={p.articleId} {...p} />)
+                        }
+                      </ul>
+                    </PullupLoadMore>
+                  ) : (
+                    <div className={styles.iconWrapper}>
+                      <Icon type="inbox" style={iconStyle} />
+                      <p>没有相关结果</p>
+                    </div>
+                  )
+                }
+              </div>
             </Col>
           </Row>
-          
+
         </main>
       </div>
     );
   }
 }
 
-PostDetail.propTypes = {
+SearchPage.propTypes = {
 };
 
-export default checkLogin({
-  *checkLoginFinish(userInfo, { all, put }) {
-    yield all([
-      put({
-        type: 'postFilterState/initPostFilter',
-        payload: { userInfo }
-      }),
-      put({
-        type: 'firstScreenRender/indexPage',
-        payload: { userInfo }
-      })
-    ])
-  }
-})(connect(state => ({
-  userInfo: state.user.userInfo,
-  firstLoading: state.recommendPosts.firstLoading,
-  postFilterCollapse: state.postFilterState.collapse,
-  stickSharePosts: state.indexStickPosts.share,
-  recommendSharePosts: state.recommendPosts.share,
-  recommendAppealPosts: state.recommendPosts.appeal,
-  confirmedTags: state.postFilterState.confirmedTags,
-  searchListPosts: state.searchPost.list
-}))(PostDetail));
+export default SearchPage

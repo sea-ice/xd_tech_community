@@ -3,7 +3,7 @@ import {connect} from 'dva'
 
 import config from 'config/constants'
 
-export function checkLogin (opt) {
+export function checkLogin (opt = {}) {
   return C => connect(state => ({
     userToken: state.user.userToken,
     userId: state.user.userId
@@ -39,13 +39,15 @@ export function checkLogin (opt) {
           })
         } else {
           // token不存在，则清除store中存储的登录信息
-          dispatch({
-            type: 'user/checkLoginInvalid',
-            payload: {
-              checkLoginFinish,
-              props: this.props
-            }
-          })
+          setTimeout(() => {
+            dispatch({
+              type: 'user/checkLoginInvalid',
+              payload: {
+                checkLoginFinish,
+                props: this.props
+              }
+            })
+          }, 10)
         }
       }
 

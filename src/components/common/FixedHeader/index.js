@@ -12,7 +12,8 @@ import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
   userId: state.user.userId,
   userToken: state.user.userToken,
   userInfo: state.user.userInfo,
-  unreadTotalNum: state.notify.unreadTotalNum
+  unreadTotalNum: state.notify.unreadTotalNum,
+  searchKeyword: state.searchPost.searchKeyword
 }))
 @withRouter
 class FixedHeader extends Component {
@@ -44,38 +45,24 @@ class FixedHeader extends Component {
     }
   }
 
+  handleUserSearch(value) {
+    let newKeyword = value.trim()
+    if (!newKeyword) return message.error('搜索关键字不能为空！')
 
-  // searchListPost (userInfo, page, tags=[]) {
-  //   let params = { page, number: config.POSTS_PER_PAGE }
-  //   let payload = { params }
-  //   payload.url = `${config.SERVER_URL_API_PREFIX}/article/doSearch`
-  //   params.label = tags && tags.length ? getFullTags(tags) : ''
-  //   if (userInfo) {
-  //     params.userId = userInfo.userId
-  //     params.cookie = ''
-  //   } else {
-  //     params.userId = 1
-  //     params.cookie = window.localStorage.getItem(config.UUID_STORAGE_NAME)
-  //   }
-  //   return payload
-  // }
-
-  handleUserSearch (value) {
-    console.log(value);
-    console.log(this.props)
-    let searchKeyword = value;
-    let { dispatch } = this.props
-    dispatch({
-      type: 'searchPost/getPageData',
-      payload: { 
-        searchKeyword : value,
-        userInfo : this.props.userInfo,
-        label: "",
-        page:0
+    let { dispatch, location: { pathname }, searchKeyword } = this.props
+    if (!!pathname.match(/\/search/)) {
+      if (searchKeyword !== newKeyword) {
+        dispatch({
+          type: 'searchPost/setState',
+          payload: { searchKeyword: newKeyword }
+        })
       }
-      
-    })
-    dispatch(routerRedux.push(`/search`))
+    } else {
+      dispatch(routerRedux.push({
+        pathname: `/search`,
+        search: `?q=${window.encodeURIComponent(value.trim())}`
+      }))
+    }
   }
   turnToPublishPage() {
     let { dispatch, userId, location: { pathname } } = this.props
@@ -135,7 +122,7 @@ class FixedHeader extends Component {
   }
   render () {
     let Search = Input.Search
-    let { userId, userToken, userInfo, unreadTotalNum } = this.props
+    let { userId, userToken, userInfo, unreadTotalNum, searchKeyword } = this.props
     let userLogined = !!(userId && userToken && userInfo)
     return (
       <header className={styles.header}>
@@ -147,8 +134,10 @@ class FixedHeader extends Component {
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"
+              defaultValue={searchKeyword}
               onSearch={value => this.handleUserSearch(value)}
-              enterButton />
+              enterButton
+            />
 
             <div className={styles.publishBtn}>
               <ConfirmIfNotMeet

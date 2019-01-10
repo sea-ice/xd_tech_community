@@ -20,9 +20,20 @@
 
 .postList {
   border-bottom: 1px solid #f1f1f1;
+  margin-bottom: 0;
 }
 
 .spinWrapper {
   padding: 20px 0;
   text-align: center;
+}
+
+.iconWrapper {
+  padding: .8rem 0;
+  text-align: center;
+  &>p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    color: #999;
+  }
 }

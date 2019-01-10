@@ -107,7 +107,9 @@ export default {
               userInfo: body
             }
           })
-          yield checkLoginFinish({ userId, ...body }, effects, props)
+          if (checkLoginFinish) {
+            yield* checkLoginFinish({ userId, ...body }, effects, props)
+          }
         } else {
           yield put({
             type: 'checkLoginInvalid',
@@ -127,7 +129,9 @@ export default {
       let { checkLoginFinish, props } = payload
       yield put({ type: 'clearLoginInfo' })
       yield put({ type: 'setUUID' })
-      yield checkLoginFinish(null, effects, props)
+      if (checkLoginFinish) {
+        yield* checkLoginFinish(null, effects, props)
+      }
     },
     *logout({payload}, {call, put}) {
       let { userId, successCallback, failCallback } = payload

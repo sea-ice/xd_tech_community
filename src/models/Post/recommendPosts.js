@@ -6,21 +6,14 @@ export default {
   state: {
     share: [],
     appeal: [],
-    sharePostPage: 0,
-    appealPostPage: 0
   },
   reducers: {
     putNextPage(state, { payload }) {
       let { posts, postType, reset } = payload
-      let pageKey = `${postType}PostPage`
 
       return Object.assign({}, state, {
         [postType]: reset ? posts : state[postType].concat(posts),
-        [pageKey]: state[pageKey] + 1
-      }, reset ? {
-        sharePostPage: 1,
-        appealPostPage: 1
-      } : {})
+      })
     },
     setState(state, { payload }) {
       return Object.assign({}, state, payload)
