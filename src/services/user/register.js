@@ -1,5 +1,5 @@
 import config from 'config/constants'
-import smsConfig from 'config/secret'
+import smsConfig from 'config/secret.config'
 import { request } from 'utils'
 
 export function getSmsCode ({phone}) {

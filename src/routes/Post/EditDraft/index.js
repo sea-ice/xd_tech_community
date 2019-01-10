@@ -8,7 +8,7 @@ import Html from 'slate-html-serializer'
 import { DEFAULT_RULES as rules } from '@canner/slate-editor-html/lib'
 import CannerEditor from 'canner-slate-editor'
 import { isKeyHotkey } from 'is-hotkey'
-import secret from 'config/secret'
+import secret from 'config/secret.config'
 /* canner-slate-editor antd styles */
 import 'antd/lib/popover/style/index.css'
 import 'antd/lib/tabs/style/index.css'
@@ -72,7 +72,8 @@ const isSaveKey = isKeyHotkey('mod+s')
 })
 class EditDraft extends Component {
   state = {
-    initialized: false
+    initialized: false,
+    publishState: ''
   }
   constructor(props) {
     super(props)
@@ -84,16 +85,15 @@ class EditDraft extends Component {
   }
   UNSAFE_componentWillMount() {
     let { dispatch, newPostFlag } = this.props
+    let initialState = { draftSaveState: 'initial' }
     // 进入当前页面先将validDraftId置为null，并初始化postCURD相关的状态
     if (!newPostFlag) {
-      dispatch({
-        type: 'postCURD/setState',
-        payload: {
-          validDraftId: null,
-          draftSaveState: 'initial'
-        }
-      })
+      initialState.validDraftId = null
     }
+    dispatch({
+      type: 'postCURD/setState',
+      payload: initialState
+    })
   }
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
@@ -116,6 +116,7 @@ class EditDraft extends Component {
   }
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown)
+    if (this.unBlock) this.unBlock()
   }
   backToLastPage() {
     let { dispatch, returnPage } = this.props
@@ -171,7 +172,7 @@ class EditDraft extends Component {
     }
   }
   setDraftUnsaved() {
-    let { dispatch, draftSaveState } = this.props
+    let { dispatch, draftSaveState, history } = this.props
     if (draftSaveState === 'unsaved') return
 
     dispatch({
@@ -180,6 +181,7 @@ class EditDraft extends Component {
         draftSaveState: 'unsaved'
       }
     })
+    this.unBlock = history.block('确定要离开当前页吗？当前未保存的内容将会丢失！') // 对下次路由操作有效(无论下次是PUSH还是POP操作)
   }
   isDraftInfoChanged(newInfo) {
     let compareFields = ['selectedTags', 'type', 'setShareCoins', 'setAppealCoins', 'coinsForAcceptedUser', 'coinsPerJointUser', 'jointUsers']
@@ -221,6 +223,7 @@ class EditDraft extends Component {
               content: newHTML
             }
           })
+          if (this.unBlock) this.unBlock()
         }
       }
     })
@@ -234,6 +237,20 @@ class EditDraft extends Component {
       this.setDraftUnsaved()
     }
   }
+  checkUploadImage(file) {
+    let { type, size } = file
+    if (!(type.match(/jpeg|png|gif|bmp|svg\+xml/))) {
+      message.error('仅支持jpg、png、gif、bmp、svg等格式的图片')
+      return false
+    }
+
+    if (size > 2 * 1024 * 1024) {
+      message.error('图片大小不能超过2M，请重新选择！')
+      return false
+    }
+
+    return true
+  }
   onPublish() {
     let { value, title } = this.state
     let content = HTMLSerializer.serialize(value)
@@ -242,7 +259,12 @@ class EditDraft extends Component {
     if (!content.trim()) return message.error('帖子内容不允许为空！')
     if (!this.postSettings.validatePostInfo()) return message.error('请在设置中选择帖子相关的标签！')
 
-    let { dispatch, editPost, userId } = this.props
+    this.setState({ publishState: 'loading' })
+    let { dispatch, editPost, userId, draftSaveState } = this.props
+
+    // 取消block对于后续同步调用的路由切换操作不起作用，因此在publish前先提前取消block
+    if ((draftSaveState === 'unsaved') && this.unBlock) this.unBlock()
+
     dispatch({
       type: 'postCURD/publish',
       payload: {
@@ -258,7 +280,7 @@ class EditDraft extends Component {
     })
   }
   render() {
-    let { title, value, initialized } = this.state
+    let { title, value, initialized, publishState } = this.state
     let {
       draftSaveState, validDraftId,
       match: { params }
@@ -282,7 +304,7 @@ class EditDraft extends Component {
                     return (
                       <p className={styles.draftSaveTips}>
                         <Icon type="exclamation-circle" style={{ color: '#ffe58f' }} {...iconCommonProps} />
-                        <span>有未保存的内容</span>
+                        <span>有未保存的内容(ctrl+s保存)</span>
                       </p>)
                   } else if (draftSaveState === 'saving') {
                     return (
@@ -311,7 +333,7 @@ class EditDraft extends Component {
             <section className={styles.rightSide}>
               <PublishDrawer onRef={drawer => this.postSettings = drawer} />
               <div className={styles.publishBtn}>
-                <Button type="primary" onClick={this.onPublish}>发表</Button>
+                <Button type="primary" loading={publishState === 'loading'} onClick={this.onPublish}>发表</Button>
               </div>
             </section>
 
@@ -328,8 +350,10 @@ class EditDraft extends Component {
                       galleryConfig={null}
                       menuToolbarOption={menuToolbarOption}
                       serviceConfig={{
-                        name: 'postUploadImg',
-                        action: secret.POST_IMAGE_UPLOAD_API
+                        name: 'uploadImg',
+                        action: secret.IMAGE_UPLOAD_API,
+                        data: { type: 'postImage' },
+                        beforeUpload: this.checkUploadImage
                       }} value={value} onChange={this.onContentChange} />
                   </div>
                 </div>

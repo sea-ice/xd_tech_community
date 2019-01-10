@@ -23,6 +23,12 @@
   }
 }
 
+.uploadBtn {
+  [class*=ant-upload] {
+    width: 100%;
+  }
+}
+
 .H_BtnWrapper {
   composes: faic from global;
   .btn:not(:first-child) {
