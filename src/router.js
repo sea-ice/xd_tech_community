@@ -37,6 +37,10 @@ function appRouterConfig(app) {
     app,
     component: () => import('./routes/Post/EditDraft')
   })
+  const SearchPage = dynamic({
+    app,
+    component: () => import('./routes/Search')
+  })
   const Error404 = dynamic({
     app,
     component: () => import ('./routes/Extra/404')
@@ -55,6 +59,7 @@ function appRouterConfig(app) {
         <Route path="/login" exact component={LoginPage} />
         <Route path="/reset_password" exact component={ResetPasswordPage} />
         <Route path="/notify" exact component={Notification} />
+        <Route path="/search" exact component={SearchPage} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
         <Route path="/edit/:id" exact component={EditDraft} />
