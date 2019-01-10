@@ -1,0 +1,53 @@
+.toolIcon {
+  position: relative;
+  line-height: 30px;
+  cursor: pointer;
+  margin-right: 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  .colorIcon {
+    display: inline-block;
+    padding: 0 8px;
+    box-sizing: content-box;
+    svg {
+      vertical-align: top;
+      margin-top: 8px;
+    }
+  }
+
+  .arrowIcon {
+    display: inline-block;
+    padding: 0 3px;
+    border-left: 1px solid transparent;
+  }
+  &:hover {
+    border-color: #ccc;
+    background-color: #eee;
+    .arrowIcon {
+      border-color: #ccc;
+    }
+
+  }
+}
+
+.colorPanel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 42px;
+  background-color: #fcfcfc;
+  z-index: 1;
+  border-radius: 4px;
+  line-height: 1.5;
+  &:after {
+    content: '';
+    position: absolute;
+    border-width: 5px;
+    border-color: transparent transparent #fcfcfc transparent;
+    border-style: solid;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+  }
+}
+

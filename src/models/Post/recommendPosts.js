@@ -4,7 +4,6 @@ import {fillPostListPayload} from 'utils'
 export default {
   namespace: 'recommendPosts',
   state: {
-    firstLoading: true,
     share: [],
     appeal: [],
     sharePostPage: 0,

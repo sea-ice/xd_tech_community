@@ -13,4 +13,4 @@ nginx.conf
 npm-debug.log*
 
 # secret
-secret.json
+secret.config.js

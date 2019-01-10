@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 
 import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
@@ -8,6 +9,12 @@ import LoginForm from './LoginForm'
 class UserLoginPage extends Component {
   constructor (props) {
     super(props)
+  }
+  UNSAFE_componentWillMount() {
+    let { dispatch, loginUserId } = this.props
+    if (!!loginUserId) {
+      dispatch(routerRedux.push('/404'))
+    }
   }
   render () {
 
@@ -27,4 +34,6 @@ class UserLoginPage extends Component {
 UserLoginPage.propTypes = {
 };
 
-export default connect()(UserLoginPage);
+export default connect(state => ({
+  loginUserId: state.user.userId,
+}))(UserLoginPage);

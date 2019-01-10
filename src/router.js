@@ -1,50 +1,70 @@
 import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import dynamic from 'dva/dynamic'
-
-import IndexPage from './routes/Index';
-import Publish from './routes/Publish';
-import RegisterPage from './routes/User/Register'
-import LoginPage from './routes/User/Login'
-import PostDetail from './routes/Post/PostDetail'
-import Notification from './routes/User/Notification'
-import Search from './routes/Search'
-import AuthorDetail from './routes/User/AuthorDetail'
-import Error404 from './routes/Extra/404'
+import { LocaleProvider } from 'antd'
+import zhCN from 'antd/lib/locale-provider/zh_CN'
 
 function appRouterConfig(app) {
-  // const IndexPage = dynamic({
-  //   app,
-  //   component: () => import('./routes/Index')
-  // })
-  // const RegisterPage = dynamic({
-  //   app,
-  //   component: () => import('./routes/User/Register')
-  // })
-  // const LoginPage = dynamic({
-  //   app,
-  //   component: () => import('./routes/User/Login')
-  // })
-  // const PostDetail = dynamic({
-  //   app,
-  //   component: () => import('./routes/Post/PostDetail')
-  // })
-  // const AuthorDetail = dynamic({
-  //   app,
-  //   component: () => import('./routes/User/AuthorDetail')
-  // })
-  return ({history}) => (
+  const IndexPage = dynamic({
+    app,
+    component: () => import('./routes/Index')
+  })
+  const RegisterPage = dynamic({
+    app,
+    component: () => import('./routes/User/Register')
+  })
+  const LoginPage = dynamic({
+    app,
+    component: () => import('./routes/User/Login')
+  })
+  const ResetPasswordPage = dynamic({
+    app,
+    component: () => import('./routes/User/ResetPassword')
+  })
+  const PostDetail = dynamic({
+    app,
+    component: () => import('./routes/Post/PostDetail')
+  })
+  const Notification = dynamic({
+    app,
+    component: () => import ('./routes/User/Notification')
+  })
+  const AuthorDetail = dynamic({
+    app,
+    component: () => import ('./routes/User/AuthorDetail')
+  })
+  const EditDraft = dynamic({
+    app,
+    component: () => import('./routes/Post/EditDraft')
+  })
+  const SearchPage = dynamic({
+    app,
+    component: () => import('./routes/Search')
+  })
+  const Error404 = dynamic({
+    app,
+    component: () => import ('./routes/Extra/404')
+  })
+  const Error500 = dynamic({
+    app,
+    component: () => import('./routes/Extra/500')
+  })
+
+
+  return ({ history }) => (
     <Router history={history}>
       <Switch>
         <Route path="/" exact component={IndexPage} />
         <Route path="/register" exact component={RegisterPage} />
-        <Route path="/publish" exact component={Publish} />
         <Route path="/login" exact component={LoginPage} />
+        <Route path="/reset_password" exact component={ResetPasswordPage} />
         <Route path="/notify" exact component={Notification} />
-        <Route path="/search" exact component={Search} />
+        <Route path="/search" exact component={SearchPage} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/author/:id" exact component={AuthorDetail} />
+        <Route path="/edit/:id" exact component={EditDraft} />
         <Route path="/404" exact component={Error404} />
+        <Route path="/500" exact component={Error500} />
       </Switch>
     </Router>
   )

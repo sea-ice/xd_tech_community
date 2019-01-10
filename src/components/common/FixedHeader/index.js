@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
-import {Input, Badge, Icon, Avatar, message} from 'antd'
-import {connect} from 'dva'
-import { routerRedux, withRouter, Link } from 'dva/router'
+import { Input, Badge, Icon, Avatar, message } from 'antd'
+import { connect } from 'dva'
+import { routerRedux, withRouter } from 'dva/router'
 
 import config from 'config/constants'
-import IconBtn from '../IconBtn'
+import IconBtn from 'components/common/IconBtn'
 import styles from './index.css'
+import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 
 @connect(state => ({
   userId: state.user.userId,
@@ -19,6 +20,7 @@ class FixedHeader extends Component {
     super(props)
     this.turnToIndexPage = this.turnToIndexPage.bind(this)
     this.handleUserSearch = this.handleUserSearch.bind(this)
+    this.turnToPublishPage = this.turnToPublishPage.bind(this)
     this.turnToNotifyPage = this.turnToNotifyPage.bind(this)
     this.turnToMyHomepage = this.turnToMyHomepage.bind(this)
     this.toRegister = this.toRegister.bind(this)
@@ -75,12 +77,33 @@ class FixedHeader extends Component {
     })
     dispatch(routerRedux.push(`/search`))
   }
+  turnToPublishPage() {
+    let { dispatch, userId, location: { pathname } } = this.props
+    let hideLoading = message.loading('加载中...', 0)
+    dispatch({
+      type: 'postCURD/newDraft',
+      payload: {
+        userId,
+        pathname,
+        successCallback(draftId) {
+          hideLoading()
+          dispatch(routerRedux.push(`/edit/${draftId}`))
+        },
+        failCallback() {
+          hideLoading()
+          message.error('新建帖子失败，请稍后再试！')
+        }
+      }
+    })
+  }
   toRegister () {
     let { dispatch } = this.props
     dispatch(routerRedux.push(`/register`))
   }
   toLogin () {
     let { dispatch, location: { pathname } } = this.props
+    if (!!pathname.match(/\/login/)) return
+
     dispatch({
       type: 'user/setLoginSuccessPage',
       payload: { page: pathname }
@@ -126,15 +149,23 @@ class FixedHeader extends Component {
               placeholder="发现更多有趣的"
               onSearch={value => this.handleUserSearch(value)}
               enterButton />
-            <Link to="/publish" className={styles.btnYl}>
-              <i className="fa fa-bullhorn"></i>
-              <span>发帖</span>
-            </Link>
+
+            <div className={styles.publishBtn}>
+              <ConfirmIfNotMeet
+                condition={!!userId}
+                callbackWhenMeet={this.turnToPublishPage}
+                btn={<IconBtn
+                      iconType="form" iconBtnText="发帖" type='icon'
+                      iconSize={24} fontSize={18} btnPadding='.2rem' color='#666' />
+                }
+              />
+            </div>
             <div className={styles.appLink}>
               <IconBtn
                 iconClassName={styles.flyIcon}
                 bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
-                iconBtnText="APP" color="#999" fontSize="18px"  />
+                iconBtnText="APP" color="#999" fontSize="18px"
+              />
             </div>
             {
               !!userId ? (

@@ -130,7 +130,7 @@ class CollectionPostItem extends Component {
         <footer className={styles.footer}>
           <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
           <div className={styles.iconBtnWrapper}>
-            <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} />
+            {/* <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} /> */}
             <IconBtn iconType="heart" iconBtnText={`${approvalNum}人喜欢`} {...commonIconOpt} />
             <IconBtn iconType="message" iconBtnText={`${commentNum}人评论`} {...commonIconOpt} />
           </div>

@@ -9,7 +9,7 @@ function PostItemFooter ({
   publishTime,
   label,
   approvalNum,
-  view,
+  scanNum,
   commentNum
 }) {
   let commonIconOpt = {
@@ -46,7 +46,7 @@ function PostItemFooter ({
         {/* <time className={styles.postItemPublishTime}>{publishTime}</time> */}
       </div>
       <div className={styles.postItemStatistic}>
-        <IconBtn iconType="eye" iconBtnText={`${view}人看过`} {...commonIconOpt} />
+        <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} />
         <IconBtn iconType="heart" iconBtnText={`${approvalNum}人喜欢`} {...commonIconOpt} />
         <IconBtn iconType="message" iconBtnText={`${commentNum}人评论`} {...commonIconOpt} />
       </div>

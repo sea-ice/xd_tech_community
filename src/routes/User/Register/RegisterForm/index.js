@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Form, Input, Button, notification} from 'antd'
-import { connect } from 'dva';
+import React, { Component } from 'react'
+import { Form, Input, Button, message } from 'antd'
+import { connect } from 'dva'
 
 // import styles from './index.scss'
 
@@ -8,9 +8,33 @@ class RegisterForm extends Component {
   constructor (props) {
     super(props)
     this.register = this.register.bind(this)
+    this.onPasswordChange = this.onInputChange.bind(this, 'password')()
+    this.onConfirmPasswordChange = this.onInputChange.bind(this, 'confirmPassword')()
+  }
+  onInputChange(fieldName) {
+    let fields = ['password', 'confirmPassword']
+    return () => {
+      let { form } = this.props
+      let anotherField = fieldName === fields[0] ? fields[1] : fields[0]
+      let fieldValue = form.getFieldValue(fieldName)
+      let anotherFieldValue = form.getFieldValue(anotherField)
+
+      if (
+        !!anotherFieldValue &&
+        (form.getFieldValue(fields[0]).length >= 6) &&
+        (anotherFieldValue !== fieldValue)
+      ) {
+        console.log(fieldName)
+        form.setFields({
+          [fieldName]: {
+            errors: [new Error('两次输入的密码不一致！')]
+          }
+        })
+      }
+    }
   }
   register () {
-    let {dispatch, form, username} = this.props
+    let { dispatch, form, username } = this.props
     form.validateFields()
     let validateErr = form.getFieldsError()
     let hasValidateErr = Object.keys(validateErr).some(key => !!validateErr[key])
@@ -35,10 +59,7 @@ class RegisterForm extends Component {
           this.props.onComplete()
         },
         failCallback: (msg) => {
-          notification.warn({
-            message: 'Warning',
-            description: `注册失败！${msg}`
-          })
+          message.error(`注册失败！${msg}`)
         }
       }
     })
@@ -53,11 +74,12 @@ class RegisterForm extends Component {
           {
             getFieldDecorator('password', {
               rules: [
-                {required: true, message: '请填写密码！'},
-                {min: 6, message: '密码长度不得少于6位！'}
+                { required: true, message: '请填写密码！' },
+                { min: 6, message: '密码长度不得少于6位！' }
               ]
             })(
-              <Input type="password" size="large" style={{width: '100%'}} placeholder="请填写密码" />
+              <Input type="password" size="large" style={{ width: '100%' }} placeholder="请填写密码"
+                onChange={this.onPasswordChange} />
             )
           }
         </Form.Item>
@@ -65,10 +87,11 @@ class RegisterForm extends Component {
           {
             getFieldDecorator('confirmPassword', {
               rules: [
-                {required: true, message: '请填写确认密码！'}
+                { required: true, message: '请填写确认密码！' }
               ]
             })(
-              <Input type="password" size="large" style={{width: '100%'}} placeholder="请填写确认密码" />
+              <Input type="password" size="large" style={{ width: '100%' }} placeholder="请填写确认密码"
+                onChange={this.onConfirmPasswordChange} />
             )
           }
         </Form.Item>

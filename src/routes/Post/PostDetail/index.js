@@ -5,6 +5,7 @@ import { Row, Col, Affix, Button, Popover, Tag, Avatar, Pagination, message } fr
 import dayjs from 'dayjs'
 
 import styles from './index.scss'
+import articleStyles from  "./article.scss"
 import config from 'config/constants'
 // import colorfulTags from 'config/colorfulTags.json'
 import { checkLogin, getIconBtnToggleProps } from 'utils'
@@ -209,9 +210,8 @@ class PostDetail extends Component {
   }
   render () {
     let { loginUserId, postInfo, authorInfo, comments, commentCurrentPage } = this.props
-    let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum, liked, collected } = postInfo
-    let { relationship } = authorInfo
-    // console.log(`relationship: ${relationship}`)
+    let { articleId, title, content, avator, label = '', nickName, time, userId, approvalNum = 0, commentNum, scanNum = 0, liked, collected } = postInfo
+    let { relationship, fans = 0, introduction } = authorInfo
     let { commentContent } = this.state
     let commentStart = (commentCurrentPage - 1) * 10
     comments = comments.slice(commentStart, commentStart + 10)
@@ -248,7 +248,7 @@ class PostDetail extends Component {
                     </Popover>
                   </header>
                   <article className={styles.postContent}>
-                    <p>{content}</p>
+                    <div className={articleStyles.article} dangerouslySetInnerHTML={{__html: content}}></div>
                   </article>
                   <footer className={styles.postInfoFooter}>
                     <Debounce
@@ -371,21 +371,30 @@ class PostDetail extends Component {
             <Col span={8}>
               <Affix offsetTop={108}>
                 <div className={styles.postOtherInfo}>
-                  <ul className={styles.postTags}>
-                    {
-                      label.split(',').map(tag => <li key={tag}>
-                        <Tag
-                          // color={colorfulTags.find(ct => ct === tag).color}
-                          color="gold"
-                        >{tag}</Tag>
-                      </li>)
-                    }
-                  </ul>
-                  <div className={styles.postOtherInfoIcon}>
-                    <IconBtn iconType="clock-circle" iconBtnText={
-                      dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
-                    } {...commonOtherInfoIconOpt} />
-                  </div>
+                  {
+                    !!label ? (
+                      <ul className={styles.postTags}>
+                        {
+                          label.split(',').map(tag => (
+                            <li key={tag}>
+                              <Tag
+                                // color={colorfulTags.find(ct => ct === tag).color}
+                                color="gold"
+                              >{tag}</Tag>
+                            </li>
+                          ))
+                        }
+                      </ul>
+                    ) : null
+                  }
+
+                  {!!time ? (
+                    <div className={styles.postOtherInfoIcon}>
+                      <IconBtn iconType="clock-circle" iconBtnText={
+                        dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
+                      } {...commonOtherInfoIconOpt} />
+                    </div>
+                  ) : null}
                   <div className={styles.postOtherInfoIcon}>
                     <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonOtherInfoIconOpt} />
                   </div>
@@ -397,12 +406,13 @@ class PostDetail extends Component {
                       (!loginUserId || userId && (loginUserId !== userId)) ? (
                         <div className={styles.contactAuthorBtns}>
                           <div className={styles.btn}>
-                            <UserFollowState
-                              authorId={userId}
-                              followState={relationship}
-                              customBtnProps={{ type: 'primary' }}
-                              updateSuccessCallback={this.updateFollowAuthorState}
-                            />
+                            {!!relationship ? (
+                              <UserFollowState
+                                authorId={userId}
+                                followState={relationship}
+                                updateSuccessCallback={this.updateFollowAuthorState}
+                              />
+                            ) : null}
                           </div>
                           <div className={styles.btn}>
                             <PrivateMsgBtn
@@ -423,12 +433,12 @@ class PostDetail extends Component {
                     </div>
                     <div className={styles.authorInfo}>
                       <p onClick={this.turnToAuthorHomePage}><strong>{nickName}</strong></p>
-                      <span onClick={this.showAuthorFollowed}>关注Ta的人：1102</span>
+                      <span onClick={this.showAuthorFollowed}>关注Ta的人：{fans}</span>
                     </div>
                   </main>
                   <div className={styles.signature}>
-                    <strong>签名：</strong>
-                    {/* {signature} */}
+                    <strong>个人介绍：</strong>
+                    {introduction ? <span>{introduction}</span> : <i>暂无说明</i>}
                   </div>
                 </section>
               </Affix>

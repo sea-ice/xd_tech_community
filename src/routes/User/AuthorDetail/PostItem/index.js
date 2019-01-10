@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router'
+import { routerRedux, withRouter } from 'dva/router'
 import { Icon, Popover, message } from 'antd'
 import dayjs from 'dayjs'
 
@@ -10,23 +10,35 @@ import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import IconBtn from "components/common/IconBtn";
 
+@withRouter
 class PostItem extends Component {
   constructor (props) {
     super(props)
+    this.editDraft = this.editDraft.bind(this)
     this.turnToPostDetails = this.turnToPostDetails.bind(this)
     this.deletePost = this.deletePost.bind(this)
   }
   turnToPostDetails() {
-    let { dispatch, articleId } = this.props
+    let { dispatch, articleId, isDraft } = this.props
+    if (isDraft) return
     dispatch(routerRedux.push(`/post/${articleId}`))
   }
+  editDraft() {
+    let { dispatch, articleId, location: { pathname } } = this.props
+    dispatch(routerRedux.push(`/edit/${articleId}`))
+    dispatch({
+      type: 'postCURD/saveEditDraftReturnPage',
+      payload: { returnPath: pathname }
+    })
+  }
   deletePost() {
-    let { dispatch, articleId, userId } = this.props
+    let { dispatch, articleId, loginUserId, isDraft } = this.props
     dispatch({
       type: 'postCURD/delete',
       payload: {
-        userId,
+        userId: loginUserId,
         postId: articleId,
+        isDraft,
         successCallback: () => {
           message.success('删除成功！')
           this.props.updateCurrentPage()
@@ -52,9 +64,12 @@ class PostItem extends Component {
         <header className={styles.header}>
           <div className={styles.title}>
             <h4 onClick={this.turnToPostDetails}>
-              {isDraft ? `[${type === config.postType.SHARE ? '分享' : '求助'}]` : ''}{title}
+              {isDraft ? `[${type === config.postType.SHARE ? '分享' : '求助'}]` : ''}
+              <span>{title || '无标题'}</span>
             </h4>
-            {guest ? null : <i className={styles.editIcon}><Icon type="edit" /></i>}
+            {isDraft ? (
+              <i className={styles.editIcon} onClick={this.editDraft}><Icon type="edit" /></i>
+            ) : null}
           </div>
           {
             guest ? null : (
@@ -80,10 +95,10 @@ class PostItem extends Component {
           }
         </header>
         <footer className={styles.footer}>
-          <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
+          <time>{!!time && dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
           {
             isDraft ?
-            <p className={styles.wordCount}>共&nbsp;234&nbsp;字</p>
+              <p className={styles.wordCount}>共&nbsp;234&nbsp;字</p>
             :
             <div className={styles.iconBtnWrapper}>
               <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} />
@@ -102,4 +117,6 @@ PostItem.propTypes = {
   isDraft: PropTypes.bool
 };
 
-export default connect()(PostItem);
+export default connect(state => ({
+  loginUserId: state.user.userId
+}))(PostItem);

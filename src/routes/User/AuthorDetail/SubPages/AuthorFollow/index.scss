@@ -1,0 +1,39 @@
+.listWithHeader {
+  &>header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 .3rem;
+    border-bottom: 1px solid #ccc;
+    &>h4 {
+      margin: 0;
+      line-height: 50px;
+    }
+    .searchWrapper {
+      width: 220px;
+    }
+  }
+}
+
+.spinWrapper {
+  padding: .4rem 0;
+  text-align: center;
+}
+
+
+.iconWrapper {
+  padding: .8rem 0;
+  text-align: center;
+  &>p {
+    margin-bottom: 0;
+    margin-top: 10px;
+    color: #999;
+  }
+}
+
+
+.paginatorWrapper {
+  padding: .2rem .3rem;
+  display: flex;
+  justify-content: flex-end;
+}

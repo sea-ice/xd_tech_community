@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import styles from './index.scss'
 import IconBtn from 'components/common/IconBtn'
 
-class PostDetail extends Component {
+class Page404 extends Component {
   constructor(props) {
     super(props)
     this.turnToHomePage = this.turnToHomePage.bind(this)
@@ -39,7 +39,7 @@ class PostDetail extends Component {
   }
 }
 
-PostDetail.propTypes = {
+Page404.propTypes = {
 };
 
-export default connect()(PostDetail);
+export default connect()(Page404);

@@ -57,7 +57,7 @@ class CheckPhone extends Component {
   }
 
   checkIdentifyCode () {
-    let {dispatch, form} = this.props
+    let { dispatch, form } = this.props
     form.validateFields()
     let validateErr = form.getFieldsError()
     console.log(validateErr)
@@ -74,8 +74,10 @@ class CheckPhone extends Component {
         successCallback: () => {
           // 保存当前手机号到store中，用于后面的注册
           dispatch({
-            type: 'register/saveRegisterName',
-            payload: {username: phone}
+            type: 'register/setState',
+            payload: {
+              saveRegisterName: phone
+            }
           })
           this.props.onComplete()
         },

@@ -8,16 +8,22 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@gitbook/slate": "^0.34.11-0",
     "antd": "^3.10.7",
+    "canner-slate-editor": "^1.5.4",
     "dayjs": "^1.7.7",
     "dva": "^2.4.1",
     "fast-memoize": "^2.5.1",
     "history": "^4.7.2",
     "immutable": "^4.0.0-rc.12",
+    "is-hotkey": "^0.1.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "reselect": "^4.0.0",
-    "simditor": "^2.3.6"
+    "slate": "^0.33.0",
+    "slate-html-serializer": "^0.5.8",
+    "slate-react": "^0.12.0",
+    "slate-schema-violations": "^0.1.39"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",

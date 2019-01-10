@@ -12,9 +12,11 @@ import ReportBtn from 'components/User/ReportBtn'
 import IconBtn from 'components/common/IconBtn'
 import CommentBox from '../CommentBox'
 import Debounce from 'components/common/Debounce'
+import Confirm from 'components/common/Confirm'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 
 @connect(state => ({
+  postInfo: state.postDetails.postInfo,
   comments: state.postDetails.comments
 }))
 class ReplyItem extends Component {
@@ -24,12 +26,27 @@ class ReplyItem extends Component {
   };
   constructor(props) {
     super(props)
+    this.acceptReply = this.acceptReply.bind(this)
     this.toggleCommentBox = this.toggleCommentBox.bind(this)
     this.toggleReplies = this.toggleReplies.bind(this)
     this.updateLikeState = this.updateLikeState.bind(this)
     this.onReplyContentChange = this.onReplyContentChange.bind(this)
     this.publishReply = this.publishReply.bind(this)
     this.replyInput = React.createRef()
+  }
+  acceptReply() {
+    let { dispatch, postInfo, replyInfo } = this.props
+    let { articleId } = postInfo
+    let { commentsv1Id, userId } = replyInfo
+
+    dispatch({
+      type: 'comment/acceptReply',
+      payload: {
+        articleId,
+        commentsv1Id,
+        commentUserId: userId
+      }
+    })
   }
   toggleCommentBox() {
     this.setState(
@@ -82,11 +99,17 @@ class ReplyItem extends Component {
       loginUserId,
       replyInfo,
       rootComment,
+      postInfo,
       open
     } = this.props
     let { nickName, avator, commentNum, commentsv1Id,
-      content, isApproval, approvalNum, time, userId } = replyInfo
-    console.log(`isApproval: ${isApproval}`)
+      content, isApproval, isAccept, approvalNum, time, userId } = replyInfo
+    console.log(replyInfo)
+    let isPlainAppealPost = postInfo.type === config.postType.SHARE_PLAIN
+    // let isRewardAppealPost = postInfo.type === config.postType.APPEAL_WITH_COINS
+    let needAcceptBtn = !!loginUserId && (
+      loginUserId === postInfo.userId) &&
+      !postInfo.adoptFlag && !!(postInfo.type & 0b100)
 
     let commonIconOpt = {
       type: 'icon',
@@ -95,6 +118,11 @@ class ReplyItem extends Component {
       iconSize: 20,
       fontSize: 16
     }
+    let acceptBtnOpt = Object.assign({}, commonIconOpt, {
+      iconType: 'check',
+      iconBtnText: '采纳该回答',
+      color: '#4DB93C'
+    })
     let { showReplyBox, replyContent } = this.state
 
     return (
@@ -113,9 +141,32 @@ class ReplyItem extends Component {
             </p>
             <p className="commentNumber">#&nbsp;{rootComment}</p>
           </header>
-          <p className={styles.commentContent}>{content}</p>
+          <main className={styles.contentWrapper}>
+            <span
+              className={styles.acceptedIcon}
+              style={isAccept ? {
+                backgroundImage: `url(${
+                  config.SUBDIRECTORY_PREFIX}/assets/accepted.svg)`
+              } : {}}></span>
+            <p className={styles.commentContent}>{content}</p>
+          </main>
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
+              {
+                needAcceptBtn ? (
+                  isPlainAppealPost ? (
+                    <IconBtn {...acceptBtnOpt} onClick={this.acceptReply} />
+                  ) : (
+                    <Confirm
+                      triggerModalBtn={ <IconBtn {...acceptBtnOpt} /> }
+                      modalTitle="提示"
+                      handleOk={this.acceptReply}
+                    >
+                      <p>确定采纳该评论吗？采纳之后悬赏的金币将自动转给该用户。</p>
+                    </Confirm>
+                  )
+                ) : null
+              }
               <Debounce
                 btnProps={getIconBtnToggleProps(approvalNum, isApproval, '赞同', '#1890ff')}
                 actionType="userBehaviors/approval"

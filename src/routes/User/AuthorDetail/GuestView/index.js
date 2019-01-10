@@ -9,8 +9,7 @@ import styles from './index.scss'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
-import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollowing'
-// import AuthorFollowed from 'AuthorDetail/SubPages/AuthorFollowed'
+import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollow'
 import { getSearchObj } from 'utils'
 
 @withRouter
@@ -88,10 +87,10 @@ class GuestAuthorDetail extends Component {
             <aside className={styles.menuWrapper}>
               <Menu theme="light" defaultSelectedKeys={selectedTab} onClick={this.changeTab}>
                 <Menu.Item key="basic-info">基本信息</Menu.Item>
-                <Menu.Item key="my-post">Ta的帖子</Menu.Item>
-                <Menu.Item key="my-collection">Ta的收藏</Menu.Item>
-                <Menu.Item key="my-follow">Ta关注的人</Menu.Item>
-                <Menu.Item key="follow-me">关注Ta的人</Menu.Item>
+                <Menu.Item key="my-post">TA的帖子</Menu.Item>
+                <Menu.Item key="my-collection">TA的收藏</Menu.Item>
+                <Menu.Item key="my-follow">TA关注的人</Menu.Item>
+                <Menu.Item key="follow-me">关注TA的人</Menu.Item>
               </Menu>
             </aside>
           </Affix>

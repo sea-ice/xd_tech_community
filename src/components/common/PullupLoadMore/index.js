@@ -7,6 +7,7 @@ import styles from './index.scss'
 
 class PullupLoadMore extends Component {
   state = {
+    firstLoading: true,
     loading: false,
     error: false,
     noMoreData: false
@@ -28,6 +29,8 @@ class PullupLoadMore extends Component {
     console.log(root.scrollTop)
     console.log(`threshold: ${appMainHeight - root.clientHeight - 50}`)
     if (root.scrollTop > appMainHeight - root.clientHeight - 50) {
+      let { firstLoading } = this.state
+      if (firstLoading) this.setState({firstLoading: false})
       this.getPageData()
     }
   }
@@ -74,10 +77,12 @@ class PullupLoadMore extends Component {
   }
   render () {
     let { children } = this.props
-    let { loading, error, noMoreData } = this.state
+    let { firstLoading, loading, error, noMoreData } = this.state
     return (
       <div>
         {children}
+        {/* 此处的firstLoading是障眼法，模拟页面初始加载时的loading */}
+        {firstLoading ? (<div className={styles.spinWrapper}><Spin tip="加载中..." /></div>) : null}
         {loading ? (
           <div className={styles.spinWrapper}><Spin tip="加载中..." /></div>
         ) : (

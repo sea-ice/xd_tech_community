@@ -15,6 +15,29 @@ export function hasSameElements (src, dest) {
 }
 
 /**
+ * 求得两个数组的并集减去交集剩余的部分
+ *
+ * @export
+ * @param {any} src
+ * @param {any} dest
+ * @returns
+ */
+export function getDiffElements(src, dest) {
+  if (!src.length) return dest
+  if (!dest.length) return src
+  let inSrc = {}, inDest = {}
+  src.forEach(v => inSrc[v] = true)
+  dest.forEach(v => inDest[v] = true)
+  for (let key of src) {
+    if (dest.hasOwnProperty(key)) {
+      delete inSrc[key]
+      delete inDest[key]
+    }
+  }
+  return [...Object.keys(inSrc), ...Object.keys(inDest)]
+}
+
+/**
  * 随机生成给定范围内的整数，包含start，但不包含end
  *
  * @export

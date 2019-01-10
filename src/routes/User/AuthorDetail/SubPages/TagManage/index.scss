@@ -1,53 +1,81 @@
-.page{
-  padding: 10px;
+.listWithHeader {
+  &>header {
+    padding: 0 .3rem;
+    border-bottom: 1px solid #ccc;
+    &>h4 {
+      margin: 0;
+      line-height: 50px;
+    }
+  }
 }
-.head{
-  border-bottom: 1px solid #aaa;
-  padding-bottom: 10px;
+
+.main {
+  padding: 15px .3rem;
 }
-.content{
-  display: flex;
-  flex-wrap:wrap;
-}
-.tag{
-  border: 1px solid #aaa;
-  margin-right: .2rem;
-  margin-top: .2rem;
-  padding: .06rem .2rem;
+
+.tagsWrapper {
+  border: 1px solid #ccc;
   border-radius: 5px;
+  & > header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 10px 20px 10px;
+    border-bottom: 1px solid #ccc;
+    .tips {
+      line-height: calc(.12rem + 21px);
+      margin-bottom: 0;
+    }
+  }
+  & > main {
+    padding: 5px 20px;
+  }
 }
-.tag:hover,.checkTag:hover{
-  cursor: pointer;
-}
-.checkTag{
-  border: 1px solid #1890ff;
-  color: #1890ff;
-  margin-right: .2rem;
-  margin-top: .2rem;
-  padding: .06rem .2rem;
-  border-radius: 5px;
-}
-.tags{
-  margin-top: .2rem;
-}
-.all{
-  display: flex;
-  justify-content: space-between;
-  padding-top: 10px;
-}
-.btnYl{
-  display: inline-block;
+
+.categoryTagsList {
+  margin-left: -15px;
+  margin-top: -10px;
   margin-bottom: 0;
-  text-align: center;
-  vertical-align: middle;
-  touch-action: manipulation;
-  cursor: pointer;
-  background: #1890ff;
-  color:#fff;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  width:100px;
-  height:32px;
-  line-height: 32px;
-  border-radius: 5px;
 }
+
+.categoryTagsList:after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: left;
+}
+
+.listItem {
+  float: left;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.categoryTag {
+  composes: listItem;
+  border: 1px solid #ccc;
+  padding: .06rem .2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  a {
+    color: #ccc;
+  }
+}
+
+.categoryTagActive {
+  composes: categoryTag;
+  border-color: #1890ff;
+  a {
+    color: #1890ff;
+  }
+}
+
+
+.btnWrapper {
+  composes: faic from global;
+  .btn:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+

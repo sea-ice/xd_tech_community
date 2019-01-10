@@ -63,7 +63,6 @@ class IndexPage extends Component {
   }
   render () {
     let {
-      firstLoading,
       postFilterCollapse,
       recommendSharePosts,
       recommendAppealPosts
@@ -110,9 +109,6 @@ class IndexPage extends Component {
                             p => <PlainPostItem key={p.articleId} {...p} />)
                         }
                       </ul>
-                      {firstLoading ? (
-                        <div className={styles.spinWrapper}><Spin tip="加载中..." /></div>
-                      ) : null}
                     </PullupLoadMore>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="求助" key="appealPosts">
@@ -128,9 +124,6 @@ class IndexPage extends Component {
                             p => <PlainPostItem key={p.articleId} {...p} />)
                         }
                       </ul>
-                      {firstLoading ? (
-                        <div className={styles.spinWrapper}><Spin tip="加载中..." /></div>
-                      ) : null}
                     </PullupLoadMore>
 
                   </Tabs.TabPane>
@@ -166,7 +159,6 @@ export default checkLogin({
   }
 })(connect(state => ({
   userInfo: state.user.userInfo,
-  firstLoading: state.recommendPosts.firstLoading,
   postFilterCollapse: state.postFilterState.collapse,
   stickSharePosts: state.indexStickPosts.share,
   // stickAppealPosts: state.indexStickPosts.appeal,

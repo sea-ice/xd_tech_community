@@ -93,13 +93,15 @@ export default {
         type: 'author/getAuthorFollowState',
         payload: {
           userId, authorId,
-          *successCallback(res) {
+          *successCallback(body) {
+            let {status, ...otherInfo} = body
             yield put({
               type: 'setInfo',
               payload: {
                 key: 'authorInfo',
                 newInfo: {
-                  relationship: res.status
+                  relationship: status,
+                  ...otherInfo
                 }
               }
             })
@@ -115,14 +117,13 @@ export default {
         }))
       console.log('hello')
       console.log(userInfo)
-      if (userInfo) {
-        // 对于已登录用户，获取是否已关注当前作者
-        let { userId } = userInfo
-        yield put({
-          type: 'updateAuthorFollowState',
-          payload: { userId, authorId }
-        })
-      }
+      yield put({
+        type: 'updateAuthorFollowState',
+        payload: {
+          userId: userInfo && userInfo.userId,
+          authorId
+        }
+      })
       let { data: { code, body } } = authorInfo
       if (code === 100) {
         console.log(body)

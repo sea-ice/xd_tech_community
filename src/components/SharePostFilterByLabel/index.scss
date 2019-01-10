@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 .4rem 16px;
+  padding: 0 .4rem;
 }
 
 .categoryLink {
@@ -40,7 +40,6 @@
 
 .categoryTagsList {
   margin-left: -0.4rem;
-  padding-bottom: 1em;
 }
 
 .categoryTagsList:after {

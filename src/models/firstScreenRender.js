@@ -9,42 +9,41 @@ export default {
     *indexPage({ payload }, { all, put }) {
       let { userInfo } = payload
 
-      yield (yield all([
-        put({ // 推荐分享帖
-          type: 'recommendPosts/getPageData',
-          payload: {
-            ...fillPostListPayload(
-              userInfo, 'share', 0, userInfo && userInfo.label.split(',')),
-            reset: true
-          }
-        }),
-        put({ // 推荐求助帖
-          type: 'recommendPosts/getPageData',
-          payload: {
-            ...fillPostListPayload(
-              userInfo, 'appeal', 0, userInfo && userInfo.label.split(',')),
-            reset: true
-          }
-        }),
-        // put({ // 分享置顶帖
-        //   type: 'indexStickPosts/getPageData',
-        //   payload: {
-        //     postType: 'share',
-        //     url: `${config.SERVER_URL_API_PREFIX}/article/getShareTops`
-        //   }
-        // }),
-        // put({ // 求助置顶帖
-        //   type: 'indexStickPosts/getPageData',
-        //   payload: {
-        //     postType: 'appeal',
-        //     url: `${config.SERVER_URL_API_PREFIX}/article/getHelpTops`
-        //   }
-        // })
-      ]))
-      yield put({
-        type: 'recommendPosts/setState',
-        payload: { firstLoading: false }
-      })
+      try {
+        yield (yield all([
+          put({ // 推荐分享帖
+            type: 'recommendPosts/getPageData',
+            payload: {
+              ...fillPostListPayload(
+                userInfo, 'share', 0, userInfo && userInfo.label.split(',')),
+              reset: true
+            }
+          }),
+          put({ // 推荐求助帖
+            type: 'recommendPosts/getPageData',
+            payload: {
+              ...fillPostListPayload(
+                userInfo, 'appeal', 0, userInfo && userInfo.label.split(',')),
+              reset: true
+            }
+          }),
+          // put({ // 分享置顶帖
+          //   type: 'indexStickPosts/getPageData',
+          //   payload: {
+          //     postType: 'share',
+          //     url: `${config.SERVER_URL_API_PREFIX}/article/getShareTops`
+          //   }
+          // }),
+          // put({ // 求助置顶帖
+          //   type: 'indexStickPosts/getPageData',
+          //   payload: {
+          //     postType: 'appeal',
+          //     url: `${config.SERVER_URL_API_PREFIX}/article/getHelpTops`
+          //   }
+          // })
+        ]))
+      } finally {
+      }
     },
     *postDetails({ payload }, { all, put }) {
       // lastPostId为上一次加载帖子详情页面时的帖子id
@@ -53,6 +52,7 @@ export default {
 
       // 重置redux store中的帖子详情
       yield put({ type: 'postDetails/reset' })
+      // todo: 需要先检查当前帖子是否存在
       let [postDetails, _] = yield (yield all([
         put({
           type: 'postDetails/getDetails',

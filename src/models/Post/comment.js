@@ -148,6 +148,36 @@ export default {
         })
       }
     },
+    *acceptReply({ payload }, { call, put }) {
+      let { articleId, commentsv1Id, commentUserId } = payload
+      let res = yield call(() => postJSON(
+        `${
+          config.SERVER_URL_API_PREcommentUserIdFIX
+        }/coin/getArticleRewardCoin`, {
+          articleId,
+          commentsv1Id,
+          commentsUserId: commentUserId,
+          adoptedTime: '' + Date.now()
+        }))
+      let { data: { code } } = res
+      if (code === 100) {
+        yield put({
+          type: 'postDetails/setInfo',
+          payload: {
+            key: 'postInfo',
+            newInfo: { adoptFlag: 1 }
+          }
+        })
+        yield put({
+          type: 'postDetails/setItem',
+          payload: {
+            key: 'comments',
+            itemFilter: comment => comment.commentsv1Id === commentsv1Id,
+            newItem: { isAccept: 1 }
+          }
+        })
+      }
+    },
     *updateReplyLikeState({ payload }, { call, put }) {
       let { commentsv1Id, commentsv2Id, comments } = payload
       let targetContainer

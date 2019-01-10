@@ -49,7 +49,9 @@ export default {
       return Object.assign({}, state, {loginSuccessPage: '/'})
     },
     setLoginSuccessPage(state, { payload: { page } }) {
-      return Object.assign({}, state, {loginSuccessPage: page})
+      let loginSuccessPage = !!(['/login', '/register', '/reset_password'].find(
+        path => !!~page.indexOf(path))) ? '/' : page // 当前如果是数组中列出的路径，则登录成功后跳转到首页
+      return Object.assign({}, state, { loginSuccessPage })
     }
   },
   effects: {

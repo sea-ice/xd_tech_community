@@ -99,10 +99,11 @@
 
 .postOtherInfo {
   background-color: white;
-  padding: .3rem .4rem .4rem;
+  padding: .3rem .4rem;
 }
 
 .postTags {
+  margin-bottom: .2rem;
   & > li {
     float: left;
     padding-top: .1rem;
@@ -116,8 +117,10 @@
 }
 
 .postOtherInfoIcon {
-  padding-top: .2rem;
   margin-left: -.2rem;
+  &:not(:last-child) {
+    margin-bottom: .2rem;
+  }
 }
 
 .authorInfoSection {
