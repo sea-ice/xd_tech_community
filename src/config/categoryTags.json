@@ -6,7 +6,7 @@
     "name": "Java"
   }, {
     "id": "",
-    "name": "Javascript"
+    "name": "JavaScript"
   }, {
     "id": "",
     "name": "C"
@@ -28,19 +28,19 @@
   "name": "前端",
   "tags": [{
     "id": "",
-    "name": "Html"
+    "name": "HTML"
   }, {
     "id": "",
-    "name": "Css"
+    "name": "CSS"
   }, {
     "id": "",
-    "name": "Javascript"
+    "name": "JavaScript"
   }, {
     "id": "",
-    "name": "Angular.js"
+    "name": "AngularJS"
   }, {
     "id": "",
-    "name": "React.js"
+    "name": "React"
   }, {
     "id": "",
     "name": "Vue.js"
@@ -49,7 +49,7 @@
     "name": "Node.js"
   }, {
     "id": "",
-    "name": "Webpack"
+    "name": "webpack"
   }, {
     "id": "",
     "name": "微信小程序"
@@ -102,7 +102,7 @@
     "name": "Kotlin"
   }, {
     "id": "",
-    "name": "Rx.Java"
+    "name": "RxJava"
   }, {
     "id": "",
     "name": "gradle"

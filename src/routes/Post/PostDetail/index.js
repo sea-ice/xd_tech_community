@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react'
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
 import { Row, Col, Affix, Button, Popover, Tag, Avatar, Pagination, message } from 'antd'
@@ -8,7 +8,7 @@ import styles from './index.scss'
 import articleStyles from  "./article.scss"
 import config from 'config/constants'
 // import colorfulTags from 'config/colorfulTags.json'
-import { checkLogin, getIconBtnToggleProps } from 'utils'
+import { checkLogin, getIconBtnToggleProps, removeDuplicateTags } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
@@ -289,10 +289,10 @@ class PostDetail extends Component {
                         )
                       )
                     }
-                    <ConfirmIfNotMeet
+                    {/* <ConfirmIfNotMeet
                       condition={!!loginUserId}
                       callbackWhenMeet={this.sharePost}
-                      btn={<IconBtn iconType="share-alt" iconBtnText="分享" {...commonFooterIconOpt} />} />
+                      btn={<IconBtn iconType="share-alt" iconBtnText="分享" {...commonFooterIconOpt} />} /> */}
                   </footer>
                 </section>
                 <section className={styles.postCommentSection}>
@@ -375,7 +375,7 @@ class PostDetail extends Component {
                     !!label ? (
                       <ul className={styles.postTags}>
                         {
-                          label.split(',').map(tag => (
+                          removeDuplicateTags(label).map(tag => (
                             <li key={tag}>
                               <Tag
                                 // color={colorfulTags.find(ct => ct === tag).color}

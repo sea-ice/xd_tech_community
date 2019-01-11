@@ -28,6 +28,7 @@ class PullupLoadMore extends Component {
 
     let root = e.target
     let { container } = this.props
+    if (!container) return
 
     let appMainHeight = container.clientHeight
     console.log(root.scrollTop)

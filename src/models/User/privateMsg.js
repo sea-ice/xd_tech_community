@@ -122,7 +122,7 @@ export default {
       let { msgId, setReadImmediately, successCallback } = payload
       yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/secretMsg/setSecretMsgRead`, {
-          secretMsgId: msgId
+          secretMsgId: String(msgId)
         }))
       if (setReadImmediately) {
         yield put({

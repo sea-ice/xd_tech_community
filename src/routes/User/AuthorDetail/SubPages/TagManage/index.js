@@ -15,7 +15,7 @@ class TagManage extends Component {
     this.saveSelectedTags = this.saveSelectedTags.bind(this)
     this.resetSelectedTags = this.resetSelectedTags.bind(this)
     this.state = {
-      selectedTags: props.label
+      selectedTags: !!props.label ? props.label.split(',') : []
     }
   }
   getSelectedTags(tags) {
@@ -105,6 +105,6 @@ TagManage.propTypes = {
 };
 
 export default connect(state => ({
-  label: state.author.authorInfo.label.split(','),
+  label: state.author.authorInfo.label,
   authorInfo: state.author.authorInfo
 }))(TagManage);

@@ -14,7 +14,7 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
   payload.url = postType === 'share' ?
     `${config.SERVER_URL_API_PREFIX}/article/getShareRecommend/LoadMore` :
     `${config.SERVER_URL_API_PREFIX}/article/getHelpRecommend/LoadMore`
-  params.label = tags && tags.length ? getFullTags(tags) : ''
+  params.label = !!tags ? getFullTags(tags) : ''
   if (userInfo) {
     params.userId = userInfo.userId
     params.cookie = ''

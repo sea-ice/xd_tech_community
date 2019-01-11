@@ -36,8 +36,9 @@ class AuthorInfoList extends Component {
           <label>感兴趣标签</label>
           <div className={styles.fieldContent}>
             {
-              label.split(',').map(
-                tag => <Tag color="magenta" key={tag}>{tag}</Tag>)
+              !!label ? label.split(',').map(
+                tag => <Tag color="magenta" key={tag}>{tag}</Tag>
+              ) : <span>暂无标签</span>
             }
           </div>
         </li>

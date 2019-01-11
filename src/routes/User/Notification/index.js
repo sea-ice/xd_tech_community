@@ -80,7 +80,7 @@ class Notification extends Component {
     let { activeTabKey } = this.state
     let unReadNum = activeTabKey === 'private' ? privateMsgs.unReadNum : 0
     return (
-      <React.Fragment>
+      <div>
         <FixedHeader />
         <main className="app-main">
           <Row gutter={20}>
@@ -153,7 +153,7 @@ class Notification extends Component {
             </Col>
           </Row>
         </main>
-      </React.Fragment>
+      </div>
     );
   }
 }

@@ -109,7 +109,7 @@ class ReplyItem extends Component {
     // let isRewardAppealPost = postInfo.type === config.postType.APPEAL_WITH_COINS
     let needAcceptBtn = !!loginUserId && (
       loginUserId === postInfo.userId) &&
-      !postInfo.adoptFlag && !!(postInfo.type & 0b100)
+      !postInfo.adoptFlag && !!(postInfo.type & 4 /* 0b100 */)
 
     let commonIconOpt = {
       type: 'icon',

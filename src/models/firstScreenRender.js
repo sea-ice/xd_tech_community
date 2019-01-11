@@ -15,7 +15,8 @@ export default {
             type: 'recommendPosts/getPageData',
             payload: {
               ...fillPostListPayload(
-                userInfo, 'share', 0, userInfo && userInfo.label.split(',')),
+                userInfo, 'share', 0,
+                userInfo && userInfo.label && userInfo.label.split(',')),
               reset: true
             }
           }),
@@ -23,7 +24,8 @@ export default {
             type: 'recommendPosts/getPageData',
             payload: {
               ...fillPostListPayload(
-                userInfo, 'appeal', 0, userInfo && userInfo.label.split(',')),
+                userInfo, 'appeal', 0,
+                userInfo && userInfo.label && userInfo.label.split(',')),
               reset: true
             }
           }),

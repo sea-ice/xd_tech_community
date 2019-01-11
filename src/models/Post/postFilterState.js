@@ -15,7 +15,8 @@ export default {
     },
     initPostFilter (state, {payload}) {
       let {userInfo} = payload
-      let selectedTags = userInfo ? userInfo.label.split(',') : []
+      let selectedTags = !!(userInfo && userInfo.label) ? userInfo.label.split(',') : []
+
       return Object.assign({}, state, {
         collapse: !!userInfo,
         selectedTags,

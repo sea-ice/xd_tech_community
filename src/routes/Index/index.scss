@@ -5,12 +5,29 @@
   }
 }
 
-.filter {
-  composes: icon from global;
-  display: block;
-  width: 24px;
-  height: 24px;
+.filterBtn {
+  line-height: 45px;
+  span {
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 16px;
+  }
 }
+
+.filterIcon {
+  composes: icon from global;
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  vertical-align: top;
+  margin-top: 14px;
+}
+
+.spreadIcon {
+  composes: filterIcon;
+  transform: rotate(180deg);
+}
+
 
 .postList {
   border-bottom: 1px solid #f1f1f1;

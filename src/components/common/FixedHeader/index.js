@@ -7,6 +7,7 @@ import config from 'config/constants'
 import IconBtn from 'components/common/IconBtn'
 import styles from './index.css'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
+import { getSearchObj } from 'utils'
 
 @connect(state => ({
   userId: state.user.userId,
@@ -20,6 +21,7 @@ class FixedHeader extends Component {
   constructor (props) {
     super(props)
     this.turnToIndexPage = this.turnToIndexPage.bind(this)
+    this.onInputKeywordChange = this.onInputKeywordChange.bind(this)
     this.handleUserSearch = this.handleUserSearch.bind(this)
     this.turnToPublishPage = this.turnToPublishPage.bind(this)
     this.turnToNotifyPage = this.turnToNotifyPage.bind(this)
@@ -27,10 +29,18 @@ class FixedHeader extends Component {
     this.toRegister = this.toRegister.bind(this)
     this.toLogin = this.toLogin.bind(this)
     this.toLogout = this.toLogout.bind(this)
+
+    let { location: { pathname } } = props
+
+    this.state = {
+      // 仅当当前页面为搜索页时才根据url中的search初始化inputKeyword
+      inputKeyword: !!pathname.match(/\/search/) ?
+        (this.getSearchKeyword() || '') : ''
+    }
+    console.log(`get keyword in constructor: ${this.state.searchKeyword}`)
   }
   turnToIndexPage () {
     let { dispatch } = this.props
-    // dispatch(routerRedux.push(`/author/115?tab=my-post`))
     dispatch(routerRedux.push(`/`))
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -44,20 +54,50 @@ class FixedHeader extends Component {
       })
     }
   }
+  getSearchKeyword() {
+    let { dispatch, location } = this.props
+    let { q } = getSearchObj(location)
+    if (!q || !q.trim()) {
+      dispatch(routerRedux.push('/404'))
+      return
+    }
 
+    q = window.decodeURIComponent(q.trim())
+    this.setSearchPageState({ searchKeyword: q })
+    return q
+  }
+  setSearchPageState(newState) {
+    let { dispatch } = this.props
+    dispatch({
+      type: 'searchPost/setState',
+      payload: newState
+    })
+  }
+  onInputKeywordChange(e) {
+    this.setState({ inputKeyword: e.target.value })
+  }
   handleUserSearch(value) {
     let newKeyword = value.trim()
     if (!newKeyword) return message.error('搜索关键字不能为空！')
 
     let { dispatch, location: { pathname }, searchKeyword } = this.props
+
+    let dispatchSearchAction = false
     if (!!pathname.match(/\/search/)) {
       if (searchKeyword !== newKeyword) {
-        dispatch({
-          type: 'searchPost/setState',
-          payload: { searchKeyword: newKeyword }
-        })
+        // 在搜索页面输入新的关键词搜索
+        // 通过componentWillReceiveProps更新SearchPage组件，并更新URL中的search
+        dispatchSearchAction = true
       }
     } else {
+      // 从其他页面跳转到搜索页，此时会挂载SearchPage
+      dispatchSearchAction = true
+    }
+    if (dispatchSearchAction) {
+      dispatch({
+        type: 'searchPost/setState',
+        payload: { searchKeyword: newKeyword }
+      })
       dispatch(routerRedux.push({
         pathname: `/search`,
         search: `?q=${window.encodeURIComponent(value.trim())}`
@@ -122,7 +162,8 @@ class FixedHeader extends Component {
   }
   render () {
     let Search = Input.Search
-    let { userId, userToken, userInfo, unreadTotalNum, searchKeyword } = this.props
+    let { userId, userToken, userInfo, unreadTotalNum } = this.props
+    let { inputKeyword } = this.state
     let userLogined = !!(userId && userToken && userInfo)
     return (
       <header className={styles.header}>
@@ -134,7 +175,8 @@ class FixedHeader extends Component {
           <main className={styles.headerMain}>
             <Search
               placeholder="发现更多有趣的"
-              defaultValue={searchKeyword}
+              value={inputKeyword}
+              onChange={this.onInputKeywordChange}
               onSearch={value => this.handleUserSearch(value)}
               enterButton
             />

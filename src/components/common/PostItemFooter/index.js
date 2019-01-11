@@ -1,9 +1,10 @@
 import React from 'react'
-import {Tag} from 'antd'
+import { Tag } from 'antd'
 
 import styles from './index.css'
 import IconBtn from '../IconBtn'
 import colorfulTags from 'config/colorfulTags.json'
+import { removeDuplicateTags } from 'utils'
 
 function PostItemFooter ({
   publishTime,
@@ -22,27 +23,18 @@ function PostItemFooter ({
   return (
     <footer className={styles.postItemFooter}>
       <div className={styles.postItemInfo}>
-        <div className={styles.postItemTags}>
-          {
-            label && label.split(',').map(
-            tag => <Tag
-              key={tag}
-              // color={colorfulTags.find(ct => ct.name === tag).color}
-              color='gold'
-            >{tag}</Tag>)
-          }
-          {/* <Tag color="magenta">JavaScript</Tag>
-          <Tag color="red">CSS</Tag>
-          <Tag color="volcano">HTML</Tag> */}
-          {/* <Tag color="orange">orange</Tag>
-          <Tag color="gold">gold</Tag>
-          <Tag color="lime">lime</Tag>
-          <Tag color="green">green</Tag>
-          <Tag color="cyan">cyan</Tag>
-          <Tag color="blue">blue</Tag>
-          <Tag color="geekblue">geekblue</Tag>
-          <Tag color="purple">purple</Tag> */}
-        </div>
+        {
+          !!label ? (
+            <div className={styles.postItemTags}>
+              {
+                removeDuplicateTags(label).map(
+                  tag => <Tag key={tag} color='gold' >{tag}</Tag>
+                  // color = { colorfulTags.find(ct => ct.name === tag).color }
+                )
+              }
+            </div>
+          ) : null
+        }
         {/* <time className={styles.postItemPublishTime}>{publishTime}</time> */}
       </div>
       <div className={styles.postItemStatistic}>

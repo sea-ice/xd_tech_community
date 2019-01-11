@@ -78,98 +78,100 @@ class AuthorPosts extends Component {
 
     let iconStyle = { fontSize: 60, color: '#999' }
     return (
-      <Tabs tabBarExtraContent={
-        guest ? null : (
-          <div className={styles.draftBtn}>
-            <Button icon='file-text' onClick={this.showDraftBin}>草稿箱</Button>
-          </div>
-        )
-      }>
-        <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的分享帖(${sharePosts.total})`} key="sharePosts">
-          <div className={styles.postList}>
-            {
-              (({ loading, error, total, posts, currentPage }) => (
-                loading ? <div className={styles.spinWrapper}><Spin tip="加载中..." /></div> : (
-                  error ? (
-                    <div className={styles.iconWrapper}>
-                      <Icon type="frown" style={iconStyle} />
-                      <p>加载失败，请稍后再试！</p>
-                    </div>
-                  ) : (
-                    !total ? (
+      <div className={styles.authorPosts}>
+        <Tabs tabBarExtraContent={
+          guest ? null : (
+            <div className={styles.draftBtn}>
+              <Button icon='file-text' onClick={this.showDraftBin}>草稿箱</Button>
+            </div>
+          )
+        }>
+          <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的分享帖(${sharePosts.total})`} key="sharePosts">
+            <div className={styles.postList}>
+              {
+                (({ loading, error, total, posts, currentPage }) => (
+                  loading ? <div className={styles.spinWrapper}><Spin tip="加载中..." /></div> : (
+                    error ? (
                       <div className={styles.iconWrapper}>
-                        <Icon type="inbox" style={iconStyle} />
-                          {guest ?
-                            <p>TA还没有发布过分享帖</p> :
-                            <p>你还没有发布过分享帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
+                        <Icon type="frown" style={iconStyle} />
+                        <p>加载失败，请稍后再试！</p>
                       </div>
                     ) : (
-                      <React.Fragment>
-                        {posts.map(item => (
-                          <PostItem
-                            key={item.articleId}
-                            guest={guest} {...item}
-                            updateCurrentPage={() => this.onSharePostPageChange(currentPage)}
-                          />))}
-                        {
-                          total > 10 ? (
-                            <div className={styles.paginatorWrapper}>
-                              <Pagination total={total} defaultCurrent={currentPage}
-                                onChange={this.onSharePostPageChange} />
-                            </div>
-                          ) : null
-                        }
-                      </React.Fragment>
-                    )
+                        !total ? (
+                          <div className={styles.iconWrapper}>
+                            <Icon type="inbox" style={iconStyle} />
+                            {guest ?
+                              <p>TA还没有发布过分享帖</p> :
+                              <p>你还没有发布过分享帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
+                          </div>
+                        ) : (
+                            <React.Fragment>
+                              {posts.map(item => (
+                                <PostItem
+                                  key={item.articleId}
+                                  guest={guest} {...item}
+                                  updateCurrentPage={() => this.onSharePostPageChange(currentPage)}
+                                />))}
+                              {
+                                total > 10 ? (
+                                  <div className={styles.paginatorWrapper}>
+                                    <Pagination total={total} defaultCurrent={currentPage}
+                                      onChange={this.onSharePostPageChange} />
+                                  </div>
+                                ) : null
+                              }
+                            </React.Fragment>
+                          )
+                      )
                   )
-                )
-              ))(sharePosts)
-            }
-          </div>
-        </Tabs.TabPane>
-        <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
-          <div className={styles.postList}>
-            {
-              (({ loading, error, total, posts, currentPage }) => (
-                loading ? <div className={styles.spinWrapper}><Spin tip="加载中..." /></div> : (
-                  error ? (
-                    <div className={styles.iconWrapper}>
-                      <Icon type="frown" style={iconStyle} />
-                      <p>加载失败，请稍后再试！</p>
-                    </div>
-                  ) : (
-                    !total ? (
+                ))(sharePosts)
+              }
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
+            <div className={styles.postList}>
+              {
+                (({ loading, error, total, posts, currentPage }) => (
+                  loading ? <div className={styles.spinWrapper}><Spin tip="加载中..." /></div> : (
+                    error ? (
                       <div className={styles.iconWrapper}>
-                        <Icon type="inbox" style={iconStyle} />
-                          {guest ?
-                            <p>TA还没有发布过求助帖</p> :
-                            <p>你还没有发布过求助帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
+                        <Icon type="frown" style={iconStyle} />
+                        <p>加载失败，请稍后再试！</p>
                       </div>
                     ) : (
-                      <React.Fragment>
-                        {posts.map(item => (
-                          <PostItem
-                            key={item.articleId}
-                            guest={guest} {...item}
-                            updateCurrentPage={() => this.onAppealPostPageChange(currentPage)}
-                          />))}
-                        {
-                          total > 10 ? (
-                            <div className={styles.paginatorWrapper}>
-                              <Pagination total={total} defaultCurrent={currentPage}
-                                onChange={this.onAppealPostPageChange} />
-                            </div>
-                          ) : null
-                        }
-                      </React.Fragment>
-                    )
+                        !total ? (
+                          <div className={styles.iconWrapper}>
+                            <Icon type="inbox" style={iconStyle} />
+                            {guest ?
+                              <p>TA还没有发布过求助帖</p> :
+                              <p>你还没有发布过求助帖，<a href="javascript:void(0);" onClick={this.newDraft}>去发布</a></p>}
+                          </div>
+                        ) : (
+                            <React.Fragment>
+                              {posts.map(item => (
+                                <PostItem
+                                  key={item.articleId}
+                                  guest={guest} {...item}
+                                  updateCurrentPage={() => this.onAppealPostPageChange(currentPage)}
+                                />))}
+                              {
+                                total > 10 ? (
+                                  <div className={styles.paginatorWrapper}>
+                                    <Pagination total={total} defaultCurrent={currentPage}
+                                      onChange={this.onAppealPostPageChange} />
+                                  </div>
+                                ) : null
+                              }
+                            </React.Fragment>
+                          )
+                      )
                   )
-                )
-              ))(appealPosts)
-            }
-          </div>
-        </Tabs.TabPane>
-      </Tabs>
+                ))(appealPosts)
+              }
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
+      </div>
     );
   }
 }

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
+import { withRouter } from 'dva/router'
 import { Row, Col, Tabs, Icon } from 'antd'
 
 import config from 'config/constants'
@@ -13,6 +14,31 @@ import SharePostFilterByLabel from 'components/SharePostFilterByLabel'
 // import StickPostItem from 'components/Post/StickPostItem'
 import PlainPostItem from 'components/Post/PlainPostItem'
 
+
+@checkLogin({
+  *checkLoginFinish(userInfo, { all, put }) {
+    yield all([
+      put({
+        type: 'postFilterState/initPostFilter',
+        payload: { userInfo }
+      }),
+      put({
+        type: 'firstScreenRender/indexPage',
+        payload: { userInfo }
+      })
+    ])
+  }
+})
+@connect(state => ({
+  userInfo: state.user.userInfo,
+  postFilterCollapse: state.postFilterState.collapse,
+  stickSharePosts: state.indexStickPosts.share,
+  // stickAppealPosts: state.indexStickPosts.appeal,
+  recommendSharePosts: state.recommendPosts.share,
+  recommendAppealPosts: state.recommendPosts.appeal,
+  confirmedTags: state.postFilterState.confirmedTags
+}))
+@withRouter
 class IndexPage extends Component {
   constructor (props) {
     super(props)
@@ -72,27 +98,35 @@ class IndexPage extends Component {
       recommendAppealPosts
     } = this.props
 
-    let postFilterIconOpt = {
-      lineHeight: '45px',
-      onClick: this.toggleCollapse
-    }
-    let filterIconBtn = postFilterCollapse ? (
-      <IconBtn
-        iconClassName={styles.filter}
-        bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/filter.svg`}
-        iconBtnText="筛选"
-        {...postFilterIconOpt} />
-    ) : (
-      <IconBtn
-        iconClassName={styles.filter}
-        bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/collapse.svg`}
-        iconBtnText="收起"
-        {...postFilterIconOpt} />)
+    let filterIconBtn = (
+      <a href="javascript:void(0);" onClick={this.toggleCollapse} className={styles.filterBtn}>
+        {
+          postFilterCollapse ? (
+            <React.Fragment>
+              <span>筛选</span>
+              <i className={styles.spreadIcon} style={{
+                backgroundImage: `url(${
+                  config.SUBDIRECTORY_PREFIX
+                  }/assets/collapse.svg)`
+              }}></i>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <span>收起</span>
+              <i className={styles.filterIcon} style={{
+                backgroundImage: `url(${
+                  config.SUBDIRECTORY_PREFIX
+                  }/assets/collapse.svg)`
+              }}></i>
+            </React.Fragment>
+          )}
+      </a>
+    )
 
     let iconStyle = { fontSize: 60, color: '#999' }
 
     return (
-      <React.Fragment>
+      <div>
         <FixedHeader />
         <main className="app-main" ref={this.appMain}>
           <Row gutter={20}>
@@ -162,7 +196,7 @@ class IndexPage extends Component {
             </Col> */}
           </Row>
         </main>
-      </React.Fragment>
+      </div>
     );
   }
 }
@@ -170,25 +204,4 @@ class IndexPage extends Component {
 IndexPage.propTypes = {
 };
 
-export default checkLogin({
-  *checkLoginFinish(userInfo, { all, put }) {
-    yield all([
-      put({
-        type: 'postFilterState/initPostFilter',
-        payload: { userInfo }
-      }),
-      put({
-        type: 'firstScreenRender/indexPage',
-        payload: { userInfo }
-      })
-    ])
-  }
-})(connect(state => ({
-  userInfo: state.user.userInfo,
-  postFilterCollapse: state.postFilterState.collapse,
-  stickSharePosts: state.indexStickPosts.share,
-  // stickAppealPosts: state.indexStickPosts.appeal,
-  recommendSharePosts: state.recommendPosts.share,
-  recommendAppealPosts: state.recommendPosts.appeal,
-  confirmedTags: state.postFilterState.confirmedTags
-}))(IndexPage));
+export default IndexPage;

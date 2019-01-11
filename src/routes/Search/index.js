@@ -15,24 +15,23 @@ import PlainPostItem from 'components/Post/PlainPostItem'
   searchResults: state.searchPost.searchResults,
   searchKeyword: state.searchPost.searchKeyword
 }))
+@withRouter
 @checkLogin({
   *checkLoginFinish(userInfo, { put }, props) {
-    let { searchKeyword } = props
-
-    console.log(`searchKeyword:${searchKeyword}`)
+    let { location } = props
+    let { q } = getSearchObj(location)
     yield put({
       type: 'searchPost/getPageData',
       payload: {
         page: 0,
         number: 10,
         userId: !!userInfo ? userInfo.userId : 0,
-        keyword: searchKeyword,
+        keyword: window.decodeURIComponent(q.trim()),
         reset: true
       }
     })
   }
 })
-@withRouter
 class SearchPage extends Component {
   constructor (props) {
     super(props)
@@ -40,14 +39,11 @@ class SearchPage extends Component {
     this.appMain = React.createRef()
   }
 
-  componentDidMount() {
-    this.getSearchKeyword()
-  }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     // 用户在当前页输入不同的关键字进行搜索
     let { searchKeyword } = this.props
     let newKeyword = nextProps.searchKeyword
+
     if (!!searchKeyword && (newKeyword !== searchKeyword)) {
       let hideLoading = message.loading('加载中...')
       this.getSearchResultByNewKeyword(newKeyword, () => {
@@ -76,16 +72,6 @@ class SearchPage extends Component {
         failCallback
       }
     })
-  }
-
-  getSearchKeyword() {
-    let { dispatch, location } = this.props
-    let { q } = getSearchObj(location)
-    q = q.trim()
-    if (!q) return dispatch(routerRedux.push('/404'))
-
-    q = window.decodeURIComponent(q)
-    this.setSearchPageState({ searchKeyword: q })
   }
 
   setSearchPageState(newState) {

@@ -1,5 +1,11 @@
+.authorPosts {
+  [class*="ant-tabs-bar"] {
+    padding: 0 .3rem;
+  }
+}
+
 .draftBtn {
-  padding: 6px .2rem 6px 0;
+  padding: 6px 0;
   height: 44px;
   & > button {
     display: block;

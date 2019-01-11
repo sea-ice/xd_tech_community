@@ -54,15 +54,6 @@
 
 .notLoggedInComments {
   position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 1rem;
-    left: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba($color: #fff, $alpha: 1), rgba($color: #ccc, $alpha: .8));
-  }
 }
 
 .loginToComment {
@@ -73,9 +64,10 @@
   margin-bottom: 0;
   text-align: center;
   z-index: 1;
+  background-color: rgba(222, 222, 222, .8);
   a {
     display: block;
-    line-height: .64rem;
+    line-height: 60px;
   }
 }
 
