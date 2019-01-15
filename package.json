@@ -8,6 +8,10 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@canner/slate-editor-renderer": "^1.5.0",
+    "@canner/slate-helper-inline-links": "^1.5.0",
+    "@canner/slate-icon-shared": "^1.5.0",
+    "@canner/slate-util-have": "^1.5.0",
     "@gitbook/slate": "^0.34.11-0",
     "antd": "^3.10.7",
     "canner-slate-editor": "^1.5.4",
@@ -15,8 +19,10 @@
     "dva": "^2.4.1",
     "fast-memoize": "^2.5.1",
     "history": "^4.7.2",
+    "htmlparser2": "^3.10.0",
     "immutable": "^4.0.0-rc.12",
     "is-hotkey": "^0.1.4",
+    "prismjs": "^1.13.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "reselect": "^4.0.0",

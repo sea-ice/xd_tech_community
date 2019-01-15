@@ -85,6 +85,7 @@
     box-shadow: none;
     overflow: visible;
   }
+  /* 编辑器toolbar样式 */
   [class*=sc-gzVnrw] {
     position: fixed;
     top: 68px;
@@ -95,7 +96,17 @@
     & > :first-child {
       border-left: 1px solid #ebebeb;
     }
+
+    [class*=qlStrokeActive] {
+      stroke: #1890ff;
+    }
+    [class*=qlFillActive] {
+      fill: #1890ff;
+    }
+
   }
+
+
 
   [class*=sc-brqgnP] {
     min-height: 400px;
@@ -111,6 +122,14 @@
     border-right: 0.5px solid #ebebeb;
     border-bottom: none;
     vertical-align: top;
+  }
+  [class*=markdown-body] {
+    table {
+      word-break: break-all;
+      p {
+        margin-bottom: 8px;
+      }
+    }
   }
 }
 

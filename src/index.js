@@ -1,9 +1,12 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
 import dva from 'dva';
 import createHistory from 'history/createBrowserHistory'
 
 import initialState from './initialState'
 import appRouterConfig from './router'
-import {initRootFontSize} from './utils/dom'
+import { initRootFontSize } from './utils/dom'
+
 
 import './index.css';
 
@@ -46,5 +49,9 @@ function startApp() {
   app.router(appRouterConfig(app));
 
   // 5. Start
-  app.start('#root');
+  // const App = app.start()
+  // ReactDOM.render(
+  //   <LocaleProvider locale={zh_CN}><App /></LocaleProvider>,
+  //   document.getElementById('root'))
+  app.start('#root')
 }

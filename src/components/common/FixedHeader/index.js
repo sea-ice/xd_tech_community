@@ -45,14 +45,15 @@ class FixedHeader extends Component {
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     let { dispatch, userId } = nextProps
-    if (userId && this.props.userId !== userId) {
-      dispatch({
-        type: 'notify/getNumber',
-        payload: {
-          userId
-        }
-      })
-    }
+
+    console.log('fixed header receive props')
+    // 刷新未读消息数量
+    dispatch({
+      type: 'notify/getNumber',
+      payload: {
+        userId
+      }
+    })
   }
   getSearchKeyword() {
     let { dispatch, location } = this.props
@@ -128,12 +129,12 @@ class FixedHeader extends Component {
     dispatch(routerRedux.push(`/register`))
   }
   toLogin () {
-    let { dispatch, location: { pathname } } = this.props
+    let { dispatch, location: { pathname, search } } = this.props
     if (!!pathname.match(/\/login/)) return
 
     dispatch({
       type: 'user/setLoginSuccessPage',
-      payload: { page: pathname }
+      payload: { page: pathname + search }
     })
     dispatch(routerRedux.push(`/login`))
   }
@@ -173,13 +174,15 @@ class FixedHeader extends Component {
             style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.jpg)` }}
             onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
-            <Search
-              placeholder="发现更多有趣的"
-              value={inputKeyword}
-              onChange={this.onInputKeywordChange}
-              onSearch={value => this.handleUserSearch(value)}
-              enterButton
-            />
+            <div className={styles.searchInput}>
+              <Search
+                placeholder="发现更多有趣的"
+                value={inputKeyword}
+                onChange={this.onInputKeywordChange}
+                onSearch={value => this.handleUserSearch(value)}
+                enterButton
+              />
+            </div>
 
             <div className={styles.publishBtn}>
               <ConfirmIfNotMeet
@@ -187,17 +190,17 @@ class FixedHeader extends Component {
                 callbackWhenMeet={this.turnToPublishPage}
                 btn={<IconBtn
                       iconType="form" iconBtnText="发帖" type='icon'
-                      iconSize={24} fontSize={18} btnPadding='.2rem' color='#666' />
+                      iconSize={20} fontSize={16} btnPadding='.2rem' color='#666' />
                 }
               />
             </div>
-            <div className={styles.appLink}>
+            {/* <div className={styles.appLink}>
               <IconBtn
                 iconClassName={styles.flyIcon}
                 bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
                 iconBtnText="APP" color="#999" fontSize="18px"
               />
-            </div>
+            </div> */}
             {
               !!userId ? (
                 <div className={styles.msgNotify}>

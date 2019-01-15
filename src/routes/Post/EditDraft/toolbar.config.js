@@ -1,11 +1,11 @@
 import { AlignCenter, AlignLeft, AlignRight } from "@canner/slate-icon-align";
 import Blockquote from "@canner/slate-icon-blockquote";
 import Table from "@canner/slate-icon-table";
-import CodeBlock from "@canner/slate-icon-codeblock";
+import CodeBlock from "./CannerPlugins/slate-icon-codeblock";
 import { Header1, Header2, Header3, Header4 } from "@canner/slate-icon-header";
 import Hr from "@canner/slate-icon-hr";
 import { Indent, Outdent } from "@canner/slate-icon-indent";
-import Link from "@canner/slate-icon-link";
+import Link from "./CannerPlugins/slate-icon-link";
 import { OlList, UlList } from "@canner/slate-icon-list";
 import Undo from "@canner/slate-icon-undo";
 import Redo from "@canner/slate-icon-redo";

@@ -7,6 +7,7 @@ import styles from './index.scss'
 import config from 'config/constants'
 import IconBtn from 'components/common/IconBtn'
 import PostItemFooter from 'components/common/PostItemFooter'
+import { getPostExcerpt } from 'utils'
 
 class PlainPostItem extends Component {
   constructor (props) {
@@ -33,6 +34,8 @@ class PlainPostItem extends Component {
       time,
       ...postFooterInfo
     } = this.props
+    let excerpt = getPostExcerpt(content, 120)
+
     return (
       <li className={styles.postItem} onClick={this.showPostDetail}>
         <header className={styles.postItemHeader}>
@@ -49,10 +52,12 @@ class PlainPostItem extends Component {
           </div>
           <h2 className={styles.title}>{title}</h2>
         </header>
-        <main className={styles.postItemMain}>
-          {image !== '-1' ? <img className={styles.poster} src={image} alt="poster" /> : null}
-          <p className={styles.content}>{content}</p>
-        </main>
+        {!!excerpt ? (
+          <main className={styles.postItemMain}>
+            {image !== '-1' ? <img className={styles.poster} src={image} alt="poster" /> : null}
+            <p className={styles.content}>{excerpt}</p>
+          </main>
+        ) : <div className={styles.placeholder}></div>}
         <PostItemFooter {...postFooterInfo} />
       </li>
     )

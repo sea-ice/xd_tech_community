@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { Button, message } from 'antd'
+import { Breadcrumb, Button, message } from 'antd'
+import { createSelector } from 'reselect'
 
 import styles from './index.scss'
 import { hasSameElements } from 'utils'
 import LabelSelector from 'components/common/LabelSelector'
+
+const covertLabelsToArray = createSelector(
+  state => state.author.authorInfo.label,
+  label => !!label ? label.split(',') : []
+)
 
 class TagManage extends Component {
   constructor (props) {
@@ -15,7 +21,7 @@ class TagManage extends Component {
     this.saveSelectedTags = this.saveSelectedTags.bind(this)
     this.resetSelectedTags = this.resetSelectedTags.bind(this)
     this.state = {
-      selectedTags: !!props.label ? props.label.split(',') : []
+      selectedTags: props.label
     }
   }
   getSelectedTags(tags) {
@@ -50,14 +56,18 @@ class TagManage extends Component {
     this.setState({ selectedTags: label })
   }
   render() {
-    let { label } = this.props
+    let { label, loginUserId } = this.props
     let { selectedTags } = this.state
     let noUpdate = hasSameElements(selectedTags, label)
 
     return (
       <div className={styles.listWithHeader}>
-        <header className={styles.header}>
-          <h4>我的标签({label.length})</h4>
+        <header className={styles.breadCrumbWrapper}>
+          <p>当前位置：</p>
+          <Breadcrumb>
+            <Breadcrumb.Item ><a href={`/author/${loginUserId}?tab=settings`}>设置</a></Breadcrumb.Item>
+            <Breadcrumb.Item>我的标签({label.length})</Breadcrumb.Item>
+          </Breadcrumb>
         </header>
         <main className={styles.main}>
           <div className={styles.tagsWrapper}>
@@ -105,6 +115,7 @@ TagManage.propTypes = {
 };
 
 export default connect(state => ({
-  label: state.author.authorInfo.label,
+  loginUserId: state.user.userId,
+  label: covertLabelsToArray(state),
   authorInfo: state.author.authorInfo
 }))(TagManage);

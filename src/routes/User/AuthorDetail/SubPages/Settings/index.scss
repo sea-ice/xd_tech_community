@@ -1,0 +1,53 @@
+.settings {
+  padding-bottom: 40px;
+}
+
+.section {
+  h3 {
+    line-height: 60px;
+    margin-bottom: 0;
+  }
+  ul {
+    padding-left: 30px;
+    li {
+      display: flex;
+      padding: 0 10px;
+      line-height: 50px;
+      border-bottom: 1px solid #eee;
+      label {
+        width: 80px;
+        text-align: right;
+        margin-right: 20px;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.titleWrapper {
+  padding: 0 30px;
+  composes: faic from global;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+}
+
+.settingField {
+  composes: faic from global;
+  justify-content: space-between;
+  padding-right: 60px;
+  width: calc(100% - 100px);
+  & > :first-child {
+    width: calc(100% - 70px);
+  }
+  .settingBtn {
+    display: block;
+    width: 70px;
+    line-height: 40px;
+    height: 40px;
+    text-align: center;
+  }
+}
+
+

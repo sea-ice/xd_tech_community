@@ -85,7 +85,7 @@ class GuestAuthorDetail extends Component {
         <Col span={6}>
           <Affix offsetTop={108}>
             <aside className={styles.menuWrapper}>
-              <Menu theme="light" defaultSelectedKeys={selectedTab} onClick={this.changeTab}>
+              <Menu theme="light" selectedKeys={selectedTab} onClick={this.changeTab}>
                 <Menu.Item key="basic-info">基本信息</Menu.Item>
                 <Menu.Item key="my-post">TA的帖子</Menu.Item>
                 <Menu.Item key="my-collection">TA的收藏</Menu.Item>

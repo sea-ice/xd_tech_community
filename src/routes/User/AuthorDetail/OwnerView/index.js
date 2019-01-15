@@ -9,10 +9,12 @@ import styles from './index.scss'
 import config from 'config/constants'
 import AuthorBasicInfo from 'AuthorDetail/SubPages/AuthorBasicInfo'
 import AuthorPosts from 'AuthorDetail/SubPages/AuthorPosts'
-import DraftBin from 'AuthorDetail/SubPages/DraftBin'
+import DraftBin from 'AuthorDetail/SubPages/AuthorPosts/DraftBin'
 import AuthorCollection from 'AuthorDetail/SubPages/AuthorCollection'
 import AuthorFollow from 'AuthorDetail/SubPages/AuthorFollow'
-import TagManage from 'AuthorDetail/SubPages/TagManage'
+import Settings from 'AuthorDetail/SubPages/Settings'
+import ModifyPassword from 'AuthorDetail/SubPages/Settings/ModifyPassword'
+import TagManage from 'AuthorDetail/SubPages/Settings/TagManage'
 import { getSearchObj } from 'utils'
 
 @withRouter
@@ -20,13 +22,15 @@ import { getSearchObj } from 'utils'
 class OwnerAuthorDetail extends Component {
   constructor (props) {
     super(props)
-    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['tag-manage']];
+    this.authorDetailTabs = [['basic-info'], ['my-post', 'draft-bin'], ['my-collection'], ['my-follow'], ['follow-me'], ['settings', 'tag-manage', 'modify-password']];
 
     this.state = this.getURLSearchState(props.history.location)
     this.changeTab = this.changeTab.bind(this)
   }
   UNSAFE_componentWillReceiveProps () {
     let { location, history } = this.props
+    console.log(location.search)
+    console.log(history.location.search)
     if (
       // 用户刷新地址栏、点击前进后退均属于POP操作
       // history.action === 'POP' ||
@@ -50,7 +54,7 @@ class OwnerAuthorDetail extends Component {
         subPage = tab
       }
     }
-    // console.log({selectedTab: selected, subPage})
+    console.log({selectedTab: selected, subPage})
     return { selectedTab: selected, subPage }
   }
   changeTab ({key}) {
@@ -82,8 +86,14 @@ class OwnerAuthorDetail extends Component {
       case 'follow-me':
         subPage = <AuthorFollow followed={true} guest={false} />
         break
+      case 'settings':
+        subPage = <Settings />
+        break
       case 'tag-manage':
         subPage = <TagManage />
+        break
+      case 'modify-password':
+        subPage = <ModifyPassword />
         break
       default:
         subPage = <AuthorBasicInfo guest={false} />
@@ -94,13 +104,13 @@ class OwnerAuthorDetail extends Component {
         <Col span={6}>
           <Affix offsetTop={108}>
             <aside className={styles.menuWrapper}>
-              <Menu theme="light" defaultSelectedKeys={selectedTab} onClick={this.changeTab}>
+              <Menu theme="light" selectedKeys={selectedTab} onClick={this.changeTab}>
                 <Menu.Item key="basic-info">基本信息</Menu.Item>
                 <Menu.Item key="my-post">我的帖子</Menu.Item>
                 <Menu.Item key="my-collection">我的收藏</Menu.Item>
                 <Menu.Item key="my-follow">我关注的人</Menu.Item>
                 <Menu.Item key="follow-me">关注我的人</Menu.Item>
-                <Menu.Item key="tag-manage">标签管理</Menu.Item>
+                <Menu.Item key="settings">设置</Menu.Item>
               </Menu>
             </aside>
           </Affix>

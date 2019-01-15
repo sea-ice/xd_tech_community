@@ -23,7 +23,7 @@ class NotifyItem extends Component {
     this.deleteMsg = this.deleteMsg.bind(this)
     this.isRead = !!props.isRead // 查看详情的时候使用
   }
-  toggleShowComplete() {
+  toggleShowComplete(e) {
     let { showComplete } = this.state
     this.setState({ showComplete: !showComplete })
     let { isReceiver } = this.props
@@ -32,6 +32,7 @@ class NotifyItem extends Component {
         this.isRead = true
       })
     }
+    e.stopPropagation()
   }
   setMsgRead(successCallback) {
     let { dispatch, isReceiver, id, content, isRead } = this.props
@@ -114,7 +115,11 @@ class NotifyItem extends Component {
           >{nickName}</Avatar>
         </div>
         <main className={styles.main}>
-          <div className={styles.contentWrapper}>
+          <div
+            className={styles.contentWrapper}
+            style={{ cursor: ((content.length <= 60) && isReceiver) ? 'pointer' : 'auto' }}
+            onClick={this.setMsgRead}
+          >
             <header className={styles.header}>
               <h4 className={styles.title}>{
                 isReceiver ? (
@@ -144,14 +149,13 @@ class NotifyItem extends Component {
                   >{showComplete ? '收起' : '查看详情'}</a>
                 </div>
               ) : (
-                <p className={isReceiver ? styles.clickableSummary : styles.summary}
-                  onClick={this.setMsgRead}>{content}</p>
+                <p className={isReceiver ? styles.clickableSummary : styles.summary}>{content}</p>
               )
             }
           </div>
           <div className={styles.btnWrapper}>
             {
-              (isReceiver || replyId !== -1) ? (
+              (isReceiver || (replyId !== -1)) ? (
                 <div className={styles.btn}>
                   <Confirm
                     triggerModalBtn={<Button type="primary" block>{isReceiver ? '' : '追加'}回复</Button>}

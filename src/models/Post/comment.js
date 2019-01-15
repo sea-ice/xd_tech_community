@@ -44,7 +44,10 @@ export default {
         ) : (
           yield put({
             type: 'getAllComments',
-            payload: { postId: objectId }
+            payload: {
+              postId: objectId,
+              userId
+            }
           })
         )
       } else {
@@ -94,10 +97,11 @@ export default {
       }
     },
     *getAllComments({ payload }, { call, put }) {
-      let { postId } = payload
+      let { postId, userId } = payload
       let res = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/WebUpdate`, {
         id: postId,
+        userId,
         page: 0, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id
         number: 9999 // 获取全部的评论

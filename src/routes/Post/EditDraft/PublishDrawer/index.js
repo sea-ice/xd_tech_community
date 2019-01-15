@@ -143,7 +143,7 @@ class PublishDrawer extends Component {
                       <p className={styles.tips} style={{ color: '#ccc' }}>请选择标签</p>
                     ) : (
                         <ul className={styles.categoryTagsList}>
-                          <li className={styles.listItem}><p className={styles.tips}>已选标签：</p></li>
+                          <li className={styles.listItem}><p className={styles.tips}>已选标签({selectedTags.length}/3)：</p></li>
                           {
                             selectedTags.map(tag => (
                               <li
@@ -158,12 +158,15 @@ class PublishDrawer extends Component {
                       )}
                   </header>
                   <main>
-                    <LabelSelector selectedTags={selectedTags} notifySelectedTags={this.getSelectedTags} />
+                    <LabelSelector
+                      selectedTags={selectedTags}
+                      selectTagsLimit={3}
+                      notifySelectedTags={this.getSelectedTags} />
                   </main>
                 </div>
               </main>
             </Form.Item>
-            <h4>设置金币</h4>
+            <h4>设置金币(可选)</h4>
             <Form.Item>
               {
                 type === config.postType.SHARE ?

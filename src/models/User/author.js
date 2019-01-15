@@ -70,6 +70,7 @@ export default {
     },
     *getAuthorPosts({ payload }, { call, put }) {
       let { type, authorId, page, number } = payload
+      let apiName = type === 'share' ? 'getMyShare' : 'getMyHelp'
       // 设置loading
       yield put({
         type: 'setInfo',
@@ -80,33 +81,30 @@ export default {
       })
       // 先获取当前帖子数量
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/user/getMyArticleNum`, {
+        `${config.SERVER_URL_API_PREFIX}/user/${apiName}ArticleNum`, {
           userId: authorId
         }))
       let { data: { code, body } } = res
       let newInfo
       if (code === 100) {
-        let { hArticleNum, sArticleNum } = body
-        let articleNum = type === 'share' ? sArticleNum : hArticleNum
+        let articleNum = body
         if (!articleNum) {
           // 未发布帖子
           newInfo = { posts: [], currentPage: 0, total: 0, loading: false }
         } else {
-          let total = articleNum, posts = []
+          let total = articleNum
           let currentPage = Math.min(Math.ceil(articleNum / number), page)
           let res = yield call(() => postJSON(
-            `${config.SERVER_URL_API_PREFIX}/article/${
-            type === 'share' ? 'getMyShare' : 'getMyHelp'
-            }/Update`, {
+            `${config.SERVER_URL_API_PREFIX}/article/${ apiName }/LoadMoreWeb`, {
               lastId: 0,
               userId: authorId,
-              page: currentPage, // page不起作用，但需要传
+              page: 0, // page不起作用，但需要传
               number: currentPage * number
             }))
           let { data: { code, body } } = res
           if (code === 100) {
             let pageStart = (currentPage - 1) * number
-            posts = body.slice(pageStart, pageStart + number)
+            let posts = body.slice(pageStart, pageStart + number)
             newInfo = { posts, currentPage, total, loading: false }
           } else {
             newInfo = { loading: false, error: true }
@@ -121,6 +119,26 @@ export default {
           [`${type}Posts`]: newInfo
         }
       })
+    },
+    *getPostCount({ payload }, { call, put }) {
+      let { type, authorId } = payload
+      let apiName = type === 'share' ? 'getMyShare' : 'getMyHelp'
+
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/user/${apiName}ArticleNum`, {
+          userId: authorId
+        }))
+      let { data: { code, body } } = res
+
+      if (code === 100) {
+        yield put({
+          type: 'setInfo',
+          payload: {
+            key: `${type}Posts`,
+            newInfo: { total: body }
+          }
+        })
+      }
     },
     *getAuthorDrafts({ payload }, { call, put }) {
       let { authorId, page, number } = payload

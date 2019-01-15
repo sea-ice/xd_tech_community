@@ -1,8 +1,6 @@
 import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import dynamic from 'dva/dynamic'
-import { LocaleProvider } from 'antd'
-import zhCN from 'antd/lib/locale-provider/zh_CN'
 
 function appRouterConfig(app) {
   const IndexPage = dynamic({

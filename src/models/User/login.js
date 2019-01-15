@@ -34,15 +34,16 @@ export default {
       })
     },
     saveLoginInfo(state, { payload }) {
-      let { userId, token, userInfo } = payload
+      let { userId, username, token, userInfo } = payload
       window.localStorage.setItem(
         config.USER_TOKEN_STORAGE_NAME,
-        JSON.stringify({ id: userId, token }))
+        JSON.stringify({ id: userId, token, username }))
 
       return Object.assign({}, state, {
         userId,
+        username,
         userToken: token,
-        userInfo: {...userInfo, userId}
+        userInfo: { ...userInfo, userId }
       })
     },
     resetLoginSuccessPage (state) {
@@ -55,7 +56,7 @@ export default {
     }
   },
   effects: {
-    *login({payload}, {call, put}) {
+    *login({ payload }, { call, put }) {
       let {
         username,
         password,
@@ -74,6 +75,7 @@ export default {
         yield put({
           type: 'saveLoginInfo',
           payload: {
+            username,
             userId,
             token,
             userInfo: rest
@@ -88,7 +90,7 @@ export default {
     },
     *checkLogin({ payload }, effects) {
       let { call, put } = effects
-      let { token, userId, checkLoginFinish, props } = payload
+      let { token, userId, username, checkLoginFinish, props, noTryCheckLoginAgain } = payload
       try {
         // token验证失败时会返回html页面
         let res = yield call(() => postJSON(
@@ -99,11 +101,13 @@ export default {
         console.log(res)
         let { data: { code, body } } = res
         if (code === 100) {
+          console.log('check token success')
           yield put({
             type: 'saveLoginInfo',
             payload: {
               token,
               userId,
+              username,
               userInfo: body
             }
           })
@@ -111,18 +115,37 @@ export default {
             yield* checkLoginFinish({ userId, ...body }, effects, props)
           }
         } else {
+          // 如果出错，则再重试验证一次
+          yield* tryCheckLoginAgainOrNot()
+        }
+      } catch (e) {
+        console.log('catch check login error')
+        yield* tryCheckLoginAgainOrNot()
+      }
+      function* tryCheckLoginAgainOrNot() {
+        if (!!noTryCheckLoginAgain) {
+          console.log('check token failed')
           yield put({
             type: 'checkLoginInvalid',
             payload: { checkLoginFinish, props }
           })
+        } else {
+          console.log('check token again')
+          yield put({
+            type: 'tryCheckLoginAgain',
+            payload
+          })
         }
-      } catch (e) {
-        yield put({
-          type: 'checkLoginInvalid',
-          payload: { checkLoginFinish, props }
-        })
       }
-
+    },
+    *tryCheckLoginAgain({ payload }, { call, put }) {
+      yield put({
+        type: 'checkLogin',
+        payload: {
+          ...payload,
+          noTryCheckLoginAgain: true
+        }
+      })
     },
     *checkLoginInvalid({ payload }, effects) {
       let { put } = effects
@@ -133,7 +156,22 @@ export default {
         yield* checkLoginFinish(null, effects, props)
       }
     },
-    *logout({payload}, {call, put}) {
+    *validatePassword({ payload }, { call, put }) {
+      let { username, password, successCallback, failCallback } = payload
+      let res = yield call(() => postJSON(
+        `${config.SERVER_URL_API_PREFIX}/user/doLoginWeb`, {
+          userName: username, password
+        }
+      ))
+      console.log(res)
+      let { data: { code, message, body } } = res
+      if (code === 100) {
+        if (successCallback) successCallback()
+      } else {
+        if (failCallback) failCallback(message)
+      }
+    },
+    *logout({ payload }, { call, put }) {
       let { userId, successCallback, failCallback } = payload
       let res = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/user/doLogout`, {

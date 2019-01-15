@@ -40,6 +40,9 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 }))
 @withRouter
 class IndexPage extends Component {
+  state = {
+    count: 1
+  }
   constructor (props) {
     super(props)
     this.bindHandlers()
@@ -47,6 +50,12 @@ class IndexPage extends Component {
     this.getAppealPostPageData = this.getPageData.bind(this, 'appeal')()
     this.resetPullupState = this.resetPullupState.bind(this)
     this.appMain = React.createRef()
+  }
+  UNSAFE_componentWillMount() {
+    this.setState({count: this.state.count + 1})
+    this.setState({count: this.state.count + 1})
+    this.setState({ count: this.state.count + 1 })
+    console.log(this.state.count)
   }
   bindHandlers() {
     this.toggleCollapse = this.toggleCollapse.bind(this)

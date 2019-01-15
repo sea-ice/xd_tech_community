@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { fromJS, List } from 'immutable'
 import { connect } from 'dva';
-import { Row, Col } from 'antd'
+import { message } from 'antd'
 
 import styles from './index.scss'
 import categories from 'config/categoryTags.json'
@@ -16,6 +16,7 @@ class LabelSelector extends Component {
       categoryList: fromJS(categories)
     }
     this.selectTag = this.selectTag.bind(this)
+    this.selectTagLimit = props.selectTagsLimit || 9999
   }
 
   componentDidMount() {
@@ -59,20 +60,24 @@ class LabelSelector extends Component {
       let tags = categoryList.get(i).get('tags')
       let tagIdx = tags.findIndex(tag => tag.get('name') === t)
       if (~tagIdx) {
-        categoryList = categoryList.updateIn([i, 'tags', tagIdx, 'selected'], val => !val)
         if (!updateSelectedTags) {
           // 更新selectedTags
-          if (!!tags.getIn([tagIdx, 'selected'])) {
+          if (tags.getIn([tagIdx, 'selected'])) {
             let tagIdx = selectedTags.indexOf(t)
             console.log('remove item')
             console.log(tagIdx)
             selectedTags = selectedTags.remove(tagIdx)
             console.log(selectedTags)
           } else {
+            if (selectedTags.size >= this.selectTagLimit) {
+              message.error(`标签数量不能超过${this.selectTagLimit}个！`)
+              break
+            }
             selectedTags = selectedTags.push(t)
           }
           updateSelectedTags = true
         }
+        categoryList = categoryList.updateIn([i, 'tags', tagIdx, 'selected'], val => !val)
       }
     }
     return { selectedTags, categoryList }

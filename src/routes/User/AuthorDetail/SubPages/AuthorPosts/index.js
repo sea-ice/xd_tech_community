@@ -18,15 +18,36 @@ class AuthorPosts extends Component {
     super(props)
     this.showDraftBin = this.showDraftBin.bind(this)
     this.newDraft = this.newDraft.bind(this)
+    this.onTabChange = this.onTabChange.bind(this)
     this.onSharePostPageChange = this.onPostPageChange.bind(this, 'share')()
     this.onAppealPostPageChange = this.onPostPageChange.bind(this, 'appeal')()
   }
   componentDidMount() {
     let { authorId, dispatch } = this.props
+    // 获取求助帖数量
+    dispatch({
+      type: 'author/getPostCount',
+      payload: {
+        type: 'appeal',
+        authorId
+      }
+    })
     dispatch({
       type: 'author/getAuthorPosts',
       payload: {
         type: 'share',
+        authorId,
+        page: 1,
+        number: 10
+      }
+    })
+  }
+  onTabChange(activeKey) {
+    let { dispatch, authorId } = this.props
+    dispatch({
+      type: 'author/getAuthorPosts',
+      payload: {
+        type: activeKey,
         authorId,
         page: 1,
         number: 10
@@ -85,8 +106,11 @@ class AuthorPosts extends Component {
               <Button icon='file-text' onClick={this.showDraftBin}>草稿箱</Button>
             </div>
           )
-        }>
-          <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的分享帖(${sharePosts.total})`} key="sharePosts">
+        } onChange={this.onTabChange}>
+          <Tabs.TabPane
+            tab={`${guest ? 'TA' : '我'}的分享帖(${sharePosts.total})`}
+            key="share"
+          >
             <div className={styles.postList}>
               {
                 (({ loading, error, total, posts, currentPage }) => (
@@ -128,7 +152,10 @@ class AuthorPosts extends Component {
               }
             </div>
           </Tabs.TabPane>
-          <Tabs.TabPane tab={`${guest ? 'TA' : '我'}的求助帖(${appealPosts.total})`} key="appealPosts">
+          <Tabs.TabPane
+            tab={`${guest ? 'TA' : '我'}的求助帖(${appealPosts.total})`}
+            key="appeal"
+          >
             <div className={styles.postList}>
               {
                 (({ loading, error, total, posts, currentPage }) => (

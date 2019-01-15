@@ -9,6 +9,7 @@ import styles from './index.scss'
 import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import IconBtn from "components/common/IconBtn";
+import { getPostExcerpt } from 'utils'
 
 @withRouter
 class PostItem extends Component {
@@ -33,6 +34,7 @@ class PostItem extends Component {
   }
   deletePost() {
     let { dispatch, articleId, loginUserId, isDraft } = this.props
+    let hideLoading = message.loading('加载中...')
     dispatch({
       type: 'postCURD/delete',
       payload: {
@@ -40,17 +42,19 @@ class PostItem extends Component {
         postId: articleId,
         isDraft,
         successCallback: () => {
+          hideLoading()
           message.success('删除成功！')
           this.props.updateCurrentPage()
         },
         failCallback() {
+          hideLoading()
           message.error('删除失败，请稍后再试！')
         }
       }
     })
   }
   render () {
-    let { isDraft, guest, type, title, time, approvalNum, scanNum, commentNum } = this.props
+    let { isDraft, guest, type, title, content, time, approvalNum, scanNum, commentNum } = this.props
 
     let commonIconOpt = {
       type: 'icon',
@@ -98,7 +102,7 @@ class PostItem extends Component {
           <time>{!!time && dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
           {
             isDraft ?
-              <p className={styles.wordCount}>共&nbsp;234&nbsp;字</p>
+              <p className={styles.wordCount}>共&nbsp;{getPostExcerpt(content || '').length}&nbsp;字</p>
             :
             <div className={styles.iconBtnWrapper}>
               <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} />

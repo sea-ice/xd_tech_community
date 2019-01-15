@@ -1,3 +1,5 @@
+import htmlParser from 'htmlparser2'
+
 import config from 'config/constants'
 import { getFullTags } from 'utils'
 
@@ -24,6 +26,55 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
   }
   return payload
 }
+
+
+export const getPostExcerpt = (() => {
+  let targetText = false
+  let excerpt = ''
+  let parser
+  let isTable = false
+
+  /**
+   * 获取帖子内容的摘要
+   * lengthLimit为0表示对提取的摘要长度不进行限制
+   */
+  return (html, lengthLimit = Infinity, includeTags = ['blockquote', 'p']) => {
+    if (!html) return ''
+    parser = parser || new htmlParser.Parser({
+      onopentag(name, attrs) {
+        if (
+          !isTable &&
+          !!~includeTags.indexOf(name) &&
+          excerpt.length < lengthLimit
+        ) {
+          targetText = true
+        } else if (name === 'table') {
+          isTable = true
+        }
+      },
+      ontext(text) {
+        if (targetText) {
+          excerpt += `${!!excerpt ? ' ' : ''}${text}`
+        }
+      },
+      onclosetag(name) {
+        if (!!~includeTags.indexOf(name)) {
+          targetText = false
+        } else if (name === 'table') {
+          isTable = false
+        }
+      }
+    }, { decodeEntities: true })
+    parser.write(html)
+    parser.end()
+
+    let result = excerpt.slice(0, lengthLimit)
+    excerpt = ''
+
+    return result
+  }
+})()
+
 /**
  * 将应用中正在编辑的帖子状态转化为后端所需要的字段格式
  *

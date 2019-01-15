@@ -92,9 +92,9 @@ class CheckPhone extends Component {
     })
   }
   render () {
-    let {getFieldDecorator} = this.props.form
-    let {getSmsCode, getCodeTimeout, filledValidVal} = this.state
-    let fieldLayout = {labelCol: {span: 4, offset: 4}, wrapperCol: {span: 8}}
+    let { getFieldDecorator } = this.props.form
+    let { getSmsCode, getCodeTimeout, filledValidVal } = this.state
+    let fieldLayout = { labelCol: { span: 4, offset: 4 }, wrapperCol: { span: 8 } }
     return (
       <Form>
         <Form.Item {...fieldLayout} label="手机号">

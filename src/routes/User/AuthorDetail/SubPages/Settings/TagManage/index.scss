@@ -1,11 +1,9 @@
-.listWithHeader {
-  &>header {
-    padding: 0 .3rem;
-    border-bottom: 1px solid #ccc;
-    &>h4 {
-      margin: 0;
-      line-height: 50px;
-    }
+.breadCrumbWrapper {
+  composes: faic from global;
+  border-bottom: 1px solid #ccc;
+  padding: .2rem .3rem;
+  &>p {
+    margin: 0;
   }
 }
 
