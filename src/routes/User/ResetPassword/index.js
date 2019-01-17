@@ -43,6 +43,9 @@ class ForgetPassword extends Component {
           <Row type="flex" justify="center">
             <Col span={16}>
               <div className={styles.registerWrapper}>
+                <header className={styles.header}>
+                  <h4>重置密码</h4>
+                </header>
                 <div className={styles.stepsWrapper}>
                   <Steps>
                     <Steps.Step status={registerStep !== 1 ? 'finish' : 'process'} title="手机号验证" icon={<Icon type="mobile" />} />

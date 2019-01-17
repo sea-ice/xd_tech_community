@@ -1,37 +1,26 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, message } from 'antd'
-import { connect } from 'dva';
-import { checkPassword } from 'utils'
+import { connect } from 'dva'
 
 // import styles from './index.scss'
 
-@connect(state => ({
-  username: state.register.saveResetPasswordName
-}))
-@checkPassword
-class ResetPasswordForm extends Component {
-  constructor (props) {
+class SetPassword extends Component {
+  constructor(props) {
     super(props)
-    this.modifyPassword = this.modifyPassword.bind(this)
+    this.register = this.register.bind(this)
   }
-  modifyPassword () {
-    let {
-      dispatch,
-      username,
-      password,
-      confirmPassword,
-      passwordValidateState,
-      confirmPasswordValidateState
-     } = this.props
+  register() {
+    let { dispatch, username } = this.props
+    let { password, confirmPassword, passwordValidateState, confirmPasswordValidateState } = this.props
 
     if (
       !!password &&
-      (password === confirmPassword) &&
-      (Object.keys(passwordValidateState).length === 0) &&
-      (Object.keys(confirmPasswordValidateState).length === 0)
+      password === confirmPassword &&
+      Object.keys(passwordValidateState).length === 0 &&
+      Object.keys(confirmPasswordValidateState).length === 0
     ) {
       dispatch({
-        type: 'register/resetPassword',
+        type: 'register/register',
         payload: {
           username,
           password,
@@ -39,16 +28,15 @@ class ResetPasswordForm extends Component {
             this.props.onComplete()
           },
           failCallback: (msg) => {
-            message.error(`重置失败！${msg}`)
+            message.error(`注册失败！${msg}`)
           }
         }
       })
     }
   }
-  render () {
+  render() {
     let {
-      password,
-      confirmPassword,
+      password, confirmPassword,
       passwordValidateState,
       confirmPasswordValidateState,
       onPasswordChange,
@@ -74,15 +62,20 @@ class ResetPasswordForm extends Component {
             value={confirmPassword}
             onChange={onConfirmPasswordChange} />
         </Form.Item>
-        <Form.Item wrapperCol={{span: 8, offset: 7}}>
-          <Button type="primary" block onClick={this.modifyPassword}>确认重置</Button>
+        <Form.Item wrapperCol={{ span: 8, offset: 7 }}>
+          <Button type="primary" block onClick={this.register}>立即注册</Button>
         </Form.Item>
       </Form>
     );
   }
 }
 
-ResetPasswordForm.propTypes = {
+SetPassword.propTypes = {
 };
 
-export default ResetPasswordForm
+export default connect(state => ({
+  username: state.register.saveRegisterName
+}))(Form.create({
+  // 此处的props是增强后的SetPassword的props，而非被增强的原组件，意味着props.form并不能访问到内部的this.props.form
+  onValuesChange(props, changedValues) { }
+})(SetPassword));

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Form, Input, Button} from 'antd'
-import {connect} from 'dva'
+import React, { Component } from 'react'
+import { Form, Input, Button, message } from 'antd'
+import { connect } from 'dva'
 
 import styles from './index.scss'
 
@@ -66,6 +66,7 @@ class CheckPhone extends Component {
 
     let phone = form.getFieldValue('username')
     let smsCode = form.getFieldValue('smsCode')
+
     dispatch({
       type: 'register/verifySmsCode',
       payload: {
@@ -92,17 +93,17 @@ class CheckPhone extends Component {
     })
   }
   render () {
-    let {getFieldDecorator} = this.props.form
-    let {getSmsCode, getCodeTimeout, filledValidVal} = this.state
-    let fieldLayout = {labelCol: {span: 4, offset: 4}, wrapperCol: {span: 8}}
+    let { getFieldDecorator } = this.props.form
+    let { getSmsCode, getCodeTimeout, filledValidVal } = this.state
+    let fieldLayout = { labelCol: { span: 4, offset: 4 }, wrapperCol: { span: 8 } }
     return (
       <Form>
         <Form.Item {...fieldLayout} label="手机号">
           {
             getFieldDecorator('username', {
               rules: [
-                {required: true, message: '请填写手机号'},
-                {pattern: /^1[34578]\d{9}$/, message: '请输入正确格式的手机号！'}
+                { required: true, message: '请填写手机号' },
+                { pattern: /^1[34578]\d{9}$/, message: '请输入正确格式的手机号！' }
               ]
             })(
               <Input placeholder="请填写手机号" size="large" style={{width: '100%'}} />
@@ -113,7 +114,8 @@ class CheckPhone extends Component {
           {
             getFieldDecorator('smsCode', {
               rules: [
-                {required: true, message: '请填写验证码'}
+                { required: true, message: '请填写验证码' },
+                { pattern: /^\d{4,8}$/, message: '请输入有效的验证码' }
               ]
             })(
               <div className={styles.smsCodeWrapper}>

@@ -61,3 +61,98 @@ export function generateUUID() {
   });
   return uuid;
 }
+
+
+export function checkPassword(WrappedComponent) {
+  return class extends React.Component {
+    state = {
+      password: '',
+      passwordValidateState: {},
+      confirmPassword: '',
+      confirmPasswordValidateState: {}
+    }
+    constructor(props) {
+      super(props)
+      this.PASSWORD_MIN_LENGTH = 6
+      this.PASSWORD_MAX_LENGTH = 16
+      this.errors = {
+        PASSWORD_DIFFER_ERROR: '两次输入的密码不一致！'
+      }
+      this.onPasswordChange = this.onPasswordChange.bind(this)
+      this.onConfirmPasswordChange = this.onConfirmPasswordChange.bind(this)
+    }
+    onPasswordChange(e) {
+      let { confirmPassword, confirmPasswordValidateState } = this.state
+      let password = e.target.value
+      let validateState = {}
+
+      if (!password) {
+        validateState = { validateStatus: 'error', help: '请填写密码！' }
+      } else if (password.length < this.PASSWORD_MIN_LENGTH) {
+        validateState = { validateStatus: 'error', help: `密码长度不得少于${this.PASSWORD_MIN_LENGTH}位！` }
+      } else if (password.length > this.PASSWORD_MAX_LENGTH) {
+        validateState = { validateStatus: 'error', help: `密码长度不能超过${this.PASSWORD_MAX_LENGTH}位！` }
+      } else if (
+        !(!!password.match(/[0-9]+/) &&
+          !!password.match(/[a-z]+/) &&
+          !!password.match(/[A-Z]+/))
+      ) {
+        validateState = { validateStatus: 'error', help: '登录密码需同时含有数字、大写和小写字母！' }
+      } else if (confirmPassword !== password) {
+        if (!!confirmPassword) {
+          validateState = { validateStatus: 'error', help: this.errors.PASSWORD_DIFFER_ERROR }
+        }
+      }
+
+      if (
+        (Object.keys(validateState).length === 0) &&
+        (confirmPassword === password) &&
+        (confirmPasswordValidateState.help === this.errors.PASSWORD_DIFFER_ERROR)
+      ) {
+        confirmPasswordValidateState = {}
+      }
+
+      this.setState({
+        password,
+        passwordValidateState: validateState,
+        confirmPasswordValidateState
+      })
+    }
+
+    onConfirmPasswordChange(e) {
+      let { password, passwordValidateState } = this.state
+      let confirmPassword = e.target.value
+      let validateState = {}
+
+      if (!confirmPassword) {
+        validateState = { validateStatus: 'error', help: '请填写确认密码！' }
+      } else if (confirmPassword !== password) {
+        validateState = { validateStatus: 'error', help: this.errors.PASSWORD_DIFFER_ERROR }
+      }
+
+      if (
+        (Object.keys(validateState).length === 0) &&
+        (confirmPassword === password) &&
+        (passwordValidateState.help === this.errors.PASSWORD_DIFFER_ERROR)
+      ) {
+        passwordValidateState = {}
+      }
+
+      this.setState({
+        confirmPassword,
+        passwordValidateState,
+        confirmPasswordValidateState: validateState
+      })
+    }
+    render() {
+      return (
+        <WrappedComponent
+          {...this.state}
+          onPasswordChange={this.onPasswordChange}
+          onConfirmPasswordChange={this.onConfirmPasswordChange}
+          {...this.props}
+        />
+      )
+    }
+  }
+}

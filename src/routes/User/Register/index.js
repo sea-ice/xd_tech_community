@@ -17,11 +17,11 @@ class UserRegisterPage extends Component {
     this.turnToNextPage = this.turnToNextPage.bind(this)
   }
   turnToNextPage () {
-    let {registerStep} = this.state
-    this.setState({registerStep: registerStep + 1})
+    let { registerStep } = this.state
+    this.setState({ registerStep: registerStep + 1 })
   }
   render () {
-    let {registerStep} = this.state
+    let { registerStep } = this.state
     let showPage
     switch (registerStep) {
       case 1:
@@ -43,6 +43,9 @@ class UserRegisterPage extends Component {
           <Row type="flex" justify="center">
             <Col span={16}>
               <div className={styles.registerWrapper}>
+                <header className={styles.header}>
+                  <h4>新用户注册</h4>
+                </header>
                 <div className={styles.stepsWrapper}>
                   <Steps>
                     <Steps.Step status={registerStep !== 1 ? 'finish' : 'process'} title="手机号验证" icon={<Icon type="mobile" />} />
