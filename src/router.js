@@ -25,11 +25,11 @@ function appRouterConfig(app) {
   })
   const Notification = dynamic({
     app,
-    component: () => import ('./routes/User/Notification')
+    component: () => import('./routes/User/Notification')
   })
   const AuthorDetail = dynamic({
     app,
-    component: () => import ('./routes/User/AuthorDetail')
+    component: () => import('./routes/User/AuthorDetail')
   })
   const EditDraft = dynamic({
     app,
@@ -41,7 +41,7 @@ function appRouterConfig(app) {
   })
   const Error404 = dynamic({
     app,
-    component: () => import ('./routes/Extra/404')
+    component: () => import('./routes/Extra/404')
   })
   const Error500 = dynamic({
     app,

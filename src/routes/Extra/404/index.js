@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
+import React, { Component } from 'react'
 import { routerRedux } from 'dva/router'
 
 import styles from './index.scss'
@@ -30,7 +29,7 @@ class Page404 extends Component {
           />
         </footer>
         <img
-          src="/assets/logo.jpg" alt=""
+          src="/assets/logo.png" alt=""
           className={styles.logo}
           onClick={this.turnToHomePage}
         />
@@ -42,4 +41,4 @@ class Page404 extends Component {
 Page404.propTypes = {
 };
 
-export default connect()(Page404);
+export default Page404

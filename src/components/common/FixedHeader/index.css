@@ -12,6 +12,7 @@
 .headerContent {
   display: flex;
   width: 80%;
+  height: 68px;
   margin: 0 auto;
   justify-content: space-between;
   align-items: center;
@@ -19,8 +20,8 @@
 
 .logo {
   width: 113.55px;
-  height: 68px;
-  /* content: url(/assets/logo.jpg); */
+  height: 51px;
+  /* content: url(/assets/logo.png); */
   margin: 0;
   cursor: pointer;
 }

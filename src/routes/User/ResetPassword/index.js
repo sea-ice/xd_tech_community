@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'dva'
+import React, { Component } from 'react'
 import { Row, Col, Steps, Icon } from 'antd'
 
 import styles from './index.scss'
@@ -8,7 +7,7 @@ import CheckPhone from './CheckPhone'
 import ResetPasswordForm from './ResetPasswordForm'
 import ResetPasswordDone from './ResetPasswordDone'
 
-class ForgetPassword extends Component {
+class ResetPassword extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -65,8 +64,8 @@ class ForgetPassword extends Component {
   }
 }
 
-ForgetPassword.propTypes = {
+ResetPassword.propTypes = {
 };
 
-export default connect()(ForgetPassword);
+export default ResetPassword
 

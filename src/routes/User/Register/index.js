@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import { connect } from 'dva'
-import {Row, Col, Steps, Icon} from 'antd'
+import React, {Component} from 'react'
+import { Row, Col, Steps, Icon } from 'antd'
 
 import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
@@ -68,4 +67,4 @@ class UserRegisterPage extends Component {
 UserRegisterPage.propTypes = {
 };
 
-export default connect()(UserRegisterPage);
+export default UserRegisterPage

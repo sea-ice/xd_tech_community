@@ -47,13 +47,16 @@ class FixedHeader extends Component {
     let { dispatch, userId } = nextProps
 
     console.log('fixed header receive props')
+    console.log(userId)
     // 刷新未读消息数量
-    dispatch({
-      type: 'notify/getNumber',
-      payload: {
-        userId
-      }
-    })
+    if (!!userId) {
+      dispatch({
+        type: 'notify/getNumber',
+        payload: {
+          userId
+        }
+      })
+    }
   }
   getSearchKeyword() {
     let { dispatch, location } = this.props
@@ -171,7 +174,7 @@ class FixedHeader extends Component {
         <div className={styles.headerContent}>
           <h1
             className={styles.logo}
-            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.jpg)` }}
+            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.png)` }}
             onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
             <div className={styles.searchInput}>

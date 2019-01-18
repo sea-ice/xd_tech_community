@@ -8,7 +8,6 @@ import { checkLogin, fillPostListPayload } from 'utils'
 
 import styles from './index.scss'
 import FixedHeader from 'components/common/FixedHeader'
-import IconBtn from 'components/common/IconBtn'
 import PullupLoadMore from 'components/common/PullupLoadMore'
 import SharePostFilterByLabel from 'components/SharePostFilterByLabel'
 // import StickPostItem from 'components/Post/StickPostItem'

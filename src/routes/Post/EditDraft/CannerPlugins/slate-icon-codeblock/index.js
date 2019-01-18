@@ -1,14 +1,13 @@
 // @flow
 import * as React from "react";
-import { Data } from "slate";
-import { Popover, Button, Form, Select } from "antd";
+import { Popover, Form, Select } from "antd";
 import ToolbarIcon from "@canner/slate-icon-shared";
 import PluginEditCode from "slate-edit-code";
 import { CODE, CODE_LINE, PARAGRAPH } from "@canner/slate-constant/lib/blocks";
 import {
   codeBlockNode,
   codeLineNode
-} from "@canner/slate-editor-renderer/lib/codeBlockNode";
+} from "../slate-editor-renderer/codeBlockNode";
 import { languages } from "prismjs/components.json";
 const Option = Select.Option;
 

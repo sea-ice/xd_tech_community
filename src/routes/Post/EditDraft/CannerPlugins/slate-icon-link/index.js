@@ -4,7 +4,7 @@ import ToolbarIcon from "@canner/slate-icon-shared";
 import links from "@canner/slate-helper-inline-links";
 import { haveInlines } from "@canner/slate-util-have";
 import { LINK } from "@canner/slate-constant/lib/inlines";
-import linkNode from "@canner/slate-editor-renderer/lib/linkNode";
+import linkNode from "../slate-editor-renderer/linkNode";
 
 export const LinkPlugin = opt => {
   const options = Object.assign(

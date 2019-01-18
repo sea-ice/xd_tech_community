@@ -67,6 +67,10 @@ class AuthorBasicInfo extends Component {
         successCallback: () => {
           message.success('修改成功')
           this.setState({ personalInfoEditState: 'saved' })
+        },
+        failCallback: () => {
+          message.error('保存失败，请稍后再试！')
+          this.setState({ personalInfoEditState: 'edit' })
         }
       }
     })

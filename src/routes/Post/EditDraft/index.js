@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { withRouter, routerRedux } from 'dva/router'
 
-import { Row, Col, Badge, Icon, Button, Spin, message } from 'antd'
+import { Row, Col, Icon, Button, Spin, message } from 'antd'
 import Html from 'slate-html-serializer'
 import { DEFAULT_RULES as rules } from '@canner/slate-editor-html/lib'
-import CannerEditor from 'canner-slate-editor'
+// import CannerEditor from 'canner-slate-editor'
+import CannerEditor from './CannerSlateEditor'
 import { isKeyHotkey } from 'is-hotkey'
 import secret from 'config/secret.config'
 /* canner-slate-editor antd styles */

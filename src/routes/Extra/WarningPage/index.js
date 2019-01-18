@@ -30,7 +30,7 @@ class WarningPage extends Component {
           />
         </footer>
         <img
-          src="/assets/logo.jpg" alt=""
+          src="/assets/logo.png" alt=""
           className={styles.logo}
           onClick={this.turnToHomePage}
         />

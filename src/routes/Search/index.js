@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { withRouter, routerRedux } from 'dva/router';
+import { withRouter } from 'dva/router';
 import { Row, Col, Icon, message } from 'antd'
 import { checkLogin, getSearchObj } from 'utils'
 
@@ -115,12 +115,9 @@ class SearchPage extends Component {
       <div>
         <FixedHeader />
         <main className="app-main" ref={this.appMain}>
-
           <Row gutter={20}>
             <Col span={18} offset={3}>
               <div className={styles.tabWrapper}>
-
-
                 {
                   !!searchResults.length ? (
                     <PullupLoadMore

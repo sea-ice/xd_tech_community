@@ -209,7 +209,7 @@ export default {
       }
     },
     *saveAuthorInfo({ payload }, { call, put }) {
-      let { authorInfo, successCallback } = payload
+      let { authorInfo, successCallback, failCallback } = payload
       let {
         userId,
         avator,
@@ -221,29 +221,38 @@ export default {
         location = '',
         introduction
       } = authorInfo
-      let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/user/modifyUserInfo`, {
-          userId,
-          avator,
-          label,
-          nickName,
-          gender: Number(gender),
-          school,
-          education,
-          location,
-          introduction
-        }))
-      let { data: { code } } = res
-      if (code === 100) {
-        yield put({
-          type: 'setInfo',
-          payload: {
-            key: 'authorInfo',
-            newInfo: authorInfo
-          }
-        })
-        if (successCallback) successCallback()
+      let hasError = true
+      try {
+        let res = yield call(() => postJSON(
+          `${config.SERVER_URL_API_PREFIX}/user/modifyUserInfo`, {
+            userId,
+            avator,
+            label,
+            nickName,
+            gender: Number(gender),
+            school,
+            education,
+            location,
+            introduction
+          }))
+        let { data: { code } } = res
+        if (code === 100) {
+          yield put({
+            type: 'setInfo',
+            payload: {
+              key: 'authorInfo',
+              newInfo: authorInfo
+            }
+          })
+          hasError = false
+          if (successCallback) successCallback()
+        }
+      } finally {
+        if (hasError) {
+          if (failCallback) failCallback()
+        }
       }
+
     },
     *getFollowUserList({ payload }, { call, put, fork, cancel, cancelled }) {
       let { followed } = payload

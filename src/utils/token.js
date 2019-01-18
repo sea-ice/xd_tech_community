@@ -62,7 +62,10 @@ export function generateUUID() {
   return uuid;
 }
 
-
+/**
+ * 对输入的两次密码进行校验
+ * @param {React.Component} WrappedComponent
+ */
 export function checkPassword(WrappedComponent) {
   return class extends React.Component {
     state = {

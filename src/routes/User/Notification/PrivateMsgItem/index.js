@@ -18,10 +18,17 @@ class NotifyItem extends Component {
     super(props)
     this.toggleShowComplete = this.toggleShowComplete.bind(this)
     this.setMsgRead = this.setMsgRead.bind(this)
+    this.onShortMsgItemClick = this.onShortMsgItemClick.bind(this)
     this.onReplyContentChange = this.onReplyContentChange.bind(this)
     this.sendReply = this.sendReply.bind(this)
     this.deleteMsg = this.deleteMsg.bind(this)
     this.isRead = !!props.isRead // 查看详情的时候使用
+  }
+  onShortMsgItemClick() {
+    let { content } = this.props
+    if (content.length > 60) return
+    // 只处理短消息，长消息通过点击详情按钮设置已读状态
+    this.setMsgRead()
   }
   toggleShowComplete(e) {
     let { showComplete } = this.state
@@ -118,7 +125,7 @@ class NotifyItem extends Component {
           <div
             className={styles.contentWrapper}
             style={{ cursor: ((content.length <= 60) && isReceiver) ? 'pointer' : 'auto' }}
-            onClick={this.setMsgRead}
+            onClick={this.onShortMsgItemClick}
           >
             <header className={styles.header}>
               <h4 className={styles.title}>{

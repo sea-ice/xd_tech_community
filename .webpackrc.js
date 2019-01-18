@@ -1,4 +1,5 @@
 const path = require('path')
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 export default {
   "extraBabelPlugins": [
@@ -36,6 +37,7 @@ export default {
     'node_modules/hex-rgb/index.js',
     'node_modules/object-values/index.js'
   ],
+  ignoreMomentLocale: true,
   "commons": [
     {
       async: '__common',
@@ -44,12 +46,15 @@ export default {
         return (
           module.resource &&
           /\.js$/.test(module.resource) &&
-          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0
+          module.resource.indexOf(path.join(__dirname, './node_modules')) === 0 &&
+          count >= 5
         )
       }
     }, {
       name: 'runtime',
-      filename: '[name].js'
+      filename: `[name]${isDevelopment ? '' : '.[chunkhash:8]'}.js`
     }
   ]
 }
+
+// roadhog build --analyze 分析打包结果

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
+import React, { Component } from 'react'
 
 import styles from './index.scss'
 
@@ -16,4 +15,4 @@ class Page500 extends Component {
 Page500.propTypes = {
 };
 
-export default connect()(Page500);
+export default Page500

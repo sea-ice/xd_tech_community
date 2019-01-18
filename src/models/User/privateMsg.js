@@ -118,12 +118,21 @@ export default {
         payload: newState
       })
     },
-    *setMsgRead({ payload }, { call, put }) {
+    *setMsgRead({ payload }, { call, put, select }) {
       let { msgId, setReadImmediately, successCallback } = payload
       yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/secretMsg/setSecretMsgRead`, {
           secretMsgId: String(msgId)
         }))
+      let unReadNum = yield select(state => state.privateMsg.unReadNum)
+
+      yield put({
+        type: 'setState',
+        payload: {
+          unReadNum: unReadNum - 1
+        }
+      })
+      if (successCallback) successCallback()
       if (setReadImmediately) {
         yield put({
           type: 'setItem',
@@ -135,7 +144,6 @@ export default {
             }
           }
         })
-        if (successCallback) successCallback()
       }
     },
     *setAllMsgRead({ payload }, { call, put }) {
