@@ -1,5 +1,4 @@
 export * from './base'
-export * from './dom'
 export * from './request'
 export * from './url'
 export * from './token'

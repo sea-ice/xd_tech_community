@@ -69,6 +69,19 @@ export default class UploadImage extends React.Component {
     });
   }
 
+  checkUploadImage(file) {
+    let { type, size } = file
+    if (!(type.match(/jpeg|png|gif|bmp|svg\+xml/))) {
+      return false
+    }
+
+    if (size > 2 * 1024 * 1024) {
+      return false
+    }
+
+    return true
+  }
+
   uploadFile(info) {
     let fileList = info.fileList;
     // see issue: https://github.com/ant-design/ant-design/issues/2423#issuecomment-233523579
@@ -78,6 +91,7 @@ export default class UploadImage extends React.Component {
 
     // 2. read from response and show file link
     fileList = fileList.map(file => {
+      if (!this.checkUploadImage(file)) file.isInvalid = true
       if (file.response && file.response.data) {
         // Component will show file.url as link
         file.url = file.response.data.link;
@@ -85,9 +99,11 @@ export default class UploadImage extends React.Component {
       return file;
     });
 
-    this.setState({
-      fileList
-    });
+    if (fileList.every(file => !file.isInvalid)) {
+      this.setState({
+        fileList
+      });
+    }
   }
 
   render() {
@@ -103,6 +119,8 @@ export default class UploadImage extends React.Component {
       ...serviceConfig,
       onChange: this.uploadFile
     };
+    console.log(error)
+    console.log(fileList)
     if (error) {
       content = (
         <React.Fragment>

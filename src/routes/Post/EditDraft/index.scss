@@ -81,6 +81,9 @@
 }
 
 .mainContentWrapper {
+  min-height: 400px;
+  margin: 0 -25px;
+
   & > div {
     box-shadow: none;
     overflow: visible;
@@ -107,12 +110,6 @@
   }
 
 
-
-  [class*=sc-brqgnP] {
-    min-height: 400px;
-    margin: 0 -25px;
-  }
-
   [class*=sc-chPdSV] {
     overflow: visible;
   }
@@ -131,6 +128,7 @@
       }
     }
   }
+
 }
 
 

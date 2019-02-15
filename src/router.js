@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import dynamic from 'dva/dynamic'
 
-function appRouterConfig(app) {
+function appRoutes({ app, history }) {
   const IndexPage = dynamic({
     app,
     component: () => import('./routes/Index')
@@ -47,9 +47,7 @@ function appRouterConfig(app) {
     app,
     component: () => import('./routes/Extra/500')
   })
-
-
-  return ({ history }) => (
+  return (
     <Router history={history}>
       <Switch>
         <Route path="/" exact component={IndexPage} />
@@ -68,4 +66,4 @@ function appRouterConfig(app) {
   )
 }
 
-export default appRouterConfig;
+export default appRoutes;

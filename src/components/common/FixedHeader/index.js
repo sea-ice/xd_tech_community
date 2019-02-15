@@ -169,6 +169,7 @@ class FixedHeader extends Component {
     let { userId, userToken, userInfo, unreadTotalNum } = this.props
     let { inputKeyword } = this.state
     let userLogined = !!(userId && userToken && userInfo)
+    let iconBtnProps = { theme: "twoTone", type: 'icon', iconSize: 24, }
     return (
       <header className={styles.header}>
         <div className={styles.headerContent}>
@@ -177,24 +178,24 @@ class FixedHeader extends Component {
             style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.png)` }}
             onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
           <main className={styles.headerMain}>
-            <div className={styles.searchInput}>
-              <Search
-                placeholder="发现更多有趣的"
-                value={inputKeyword}
-                onChange={this.onInputKeywordChange}
-                onSearch={value => this.handleUserSearch(value)}
-                enterButton
-              />
+            <div className={styles.searchInputWrapper}>
+              <div className={styles.searchInput}>
+                <Search
+                  placeholder="发现更多有趣的"
+                  value={inputKeyword}
+                  onChange={this.onInputKeywordChange}
+                  onSearch={value => this.handleUserSearch(value)}
+                  enterButton
+                />
+              </div>
             </div>
+
 
             <div className={styles.publishBtn}>
               <ConfirmIfNotMeet
                 condition={!!userId}
                 callbackWhenMeet={this.turnToPublishPage}
-                btn={<IconBtn
-                      iconType="form" iconBtnText="发帖" type='icon'
-                      iconSize={20} fontSize={16} btnPadding='.2rem' color='#666' />
-                }
+                btn={<IconBtn iconType="form" iconBtnText="发帖" {...iconBtnProps} />}
               />
             </div>
             {/* <div className={styles.appLink}>
@@ -207,17 +208,16 @@ class FixedHeader extends Component {
             {
               !!userId ? (
                 <div className={styles.msgNotify}>
-                  <Badge count={unreadTotalNum}>
-                    <a
-                      href="javascript:void(0);"
-                      className={styles.msgNotifyIcon}
-                      onClick={this.turnToNotifyPage}
-                    >
-                      <Icon
-                        type="notification" theme="twoTone"
-                        style={{ fontSize: '28px', padding: '.05rem' }} />
-                    </a>
-                  </Badge>
+                  <a
+                    href="javascript:void(0);"
+                    className={styles.iconBtn}
+                    onClick={this.turnToNotifyPage}
+                  >
+                    <Badge count={unreadTotalNum}>
+                      <Icon type='bell' style={{fontSize: 24}} />
+                    </Badge>
+                    <span className={styles.iconBtnText}>消息中心</span>
+                  </a>
                 </div>
               ) : null
             }

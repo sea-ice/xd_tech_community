@@ -2,13 +2,22 @@ import { postJSON, setItemsBgColor } from "utils"
 import config from 'config/constants'
 
 export default {
-  namespace: 'privateMsg',
+  namespace: 'msgs',
   state: {
-    loading: false, // 加载分页数据时的loading
-    total: 0, // 包括已读和未读
-    msgs: [],
-    currentPage: 0,
-    unReadNum: 0
+    userMsgs: {
+      loading: false, // 加载分页数据时的loading
+      total: 0, // 包括已读和未读
+      msgs: [],
+      currentPage: 0,
+      unReadNum: 0
+    },
+    sysMsgs: {
+      loading: false, // 加载分页数据时的loading
+      total: 0, // 包括已读和未读
+      msgs: [],
+      currentPage: 0,
+      unReadNum: 0
+    }
   },
   reducers: {
     setState(state, { payload }) {
@@ -28,56 +37,41 @@ export default {
         return state
       }
     },
-    setAllItems(state, { payload }) {
-      let { key, newItem } = payload
-      let items = state[key].map(
-        item => Object.assign({}, item, newItem))
+    setInfo(state, { payload }) {
+      let { key, newInfo } = payload
+      let info = Object.assign({}, state[key], newInfo)
       return Object.assign({}, state, {
-        [key]: items
+        [key]: info
       })
-    }
+    },
   },
   effects: {
-    *send({ payload }, { call, put }) {
-      let { userId, receiverId, content, successCallback, failCallback } = payload
-      let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/secretMsg/sendSecretMsg`, {
-          senderId: userId,
-          receiverId,
-          content,
-          time: '' + Date.now()
-        }))
-      let { data: { code } } = res
-      if (code === 100) {
-        if (successCallback) successCallback()
-      } else {
-        if (failCallback) failCallback()
-      }
-    },
-    *getUnReadNumber({ payload }, { call, put }) {
+    *getUnReadMsgNumber({ payload }, { call, put }) {
+      // 获取未读通知数（用户消息+系统消息）
       let { userId } = payload
       let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/secretMsg/getNotReadMsgNum`, {
+        `${config.SERVER_URL_API_PREFIX}/push/getNotificationNum`, {
           userId
         }))
       let { data: { code, body } } = res
       if (code === 100) {
-        yield put({
-          type: 'setState',
-          payload: { unReadNum: body }
-        })
         return body
       }
       return 0
     },
     *getPageData({ payload }, { all, call, put }) {
-      let { userId, page, number } = payload
+      let { userId, msgType, page, number } = payload
+      let stateKey = `${msgType}Msgs`
+
       // 设置loading
       yield put({
-        type: 'setState',
-        payload: { loading: true }
+        type: 'setInfo',
+        payload: {
+          key: stateKey,
+          newInfo: { loading: true }
+        }
       })
-      // 每一次获取分页消息之前都先获取当前私信的总条数
+      // 每一次获取分页消息之前都先获取消息的总条数
       let res = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/secretMsg/getMsgNum`, {
           userId

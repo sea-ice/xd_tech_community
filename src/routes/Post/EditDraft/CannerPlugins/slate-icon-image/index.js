@@ -134,6 +134,7 @@ export default class ImageInline extends React.Component {
           placement="bottom"
           trigger="click"
           content={content}
+          overlayStyle={{zIndex: 1}}
           onVisibleChange={this.handleClickChange}
         >
           <ToolbarIcon

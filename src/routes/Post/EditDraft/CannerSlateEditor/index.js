@@ -12,9 +12,9 @@ import Blockquote, { BlockquotePlugin } from "@canner/slate-icon-blockquote";
 import Bold, { BoldPlugin } from "@canner/slate-icon-bold";
 import Code, { CodePlugin } from "@canner/slate-icon-code";
 import Clean from "@canner/slate-icon-clean";
-import { CodeBlockPlugin } from "@canner/slate-icon-codeblock";
+import { CodeBlockPlugin } from "../CannerPlugins/slate-icon-codeblock";
 import { TablePlugin } from "@canner/slate-icon-table";
-import { FontBgColorPlugin } from "@canner/slate-icon-fontbgcolor";
+import { FontBgColorPlugin } from "../CannerPlugins/slate-icon-fontbgcolor";
 import { FontColorPlugin } from "@canner/slate-icon-fontcolor";
 import {
   Header1,
@@ -24,15 +24,15 @@ import {
   HeaderThreePlugin
 } from "@canner/slate-icon-header";
 import Hr, { HrPlugin } from "@canner/slate-icon-hr";
-import { ImagePlugin } from "@canner/slate-icon-image";
+import { ImagePlugin } from "../CannerPlugins/slate-icon-image";
 import Italic, { ItalicPlugin } from "@canner/slate-icon-italic";
-import { LinkPlugin } from "@canner/slate-icon-link";
+import { LinkPlugin } from "../CannerPlugins/slate-icon-link";
 import { OlList, UlList, ListPlugin } from "@canner/slate-icon-list";
 import StrikeThrough, {
   StrikeThroughPlugin
 } from "@canner/slate-icon-strikethrough";
 import Underline, { UnderlinePlugin } from "@canner/slate-icon-underline";
-import { VideoPlugin } from "@canner/slate-icon-video";
+// import { VideoPlugin } from "@canner/slate-icon-video";
 import { ParagraphPlugin } from "@canner/slate-icon-shared";
 
 import EditList from "slate-edit-list";
@@ -85,7 +85,7 @@ const plugins = [
   ImagePlugin(),
   LinkPlugin(),
   ListPlugin(),
-  VideoPlugin(),
+  // VideoPlugin(),
   copyPastePlugin()
 ];
 

@@ -2,7 +2,7 @@ import dva from 'dva';
 import createHistory from 'history/createBrowserHistory'
 
 import initialState from './initialState'
-import appRouterConfig from './router'
+import appRoutes from './router'
 import { initRootFontSize } from './utils/dom'
 
 
@@ -33,6 +33,7 @@ function startApp() {
   app.model(require('./models/Post/comment').default);
   app.model(require('./models/User/privateMsg').default);
   app.model(require('./models/User/notification').default);
+  app.model(require('./models/User/userMsg').default);
   app.model(require('./models/User/author').default);
   app.model(require('./models/User/behaviors').default);
   app.model(require('./models/User/collection').default);
@@ -43,7 +44,7 @@ function startApp() {
   app.model(require('./models/User/register').default);
 
   // 4. Router
-  app.router(appRouterConfig(app));
+  app.router(appRoutes);
 
   // 5. Start
   // const App = app.start()

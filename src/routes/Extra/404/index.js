@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { routerRedux } from 'dva/router'
+import { connect } from 'dva'
 
 import styles from './index.scss'
 import IconBtn from 'components/common/IconBtn'
 
+@connect()
 class Page404 extends Component {
   constructor(props) {
     super(props)

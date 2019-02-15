@@ -12,7 +12,7 @@ import PullupLoadMore from 'components/common/PullupLoadMore'
 import SharePostFilterByLabel from 'components/SharePostFilterByLabel'
 // import StickPostItem from 'components/Post/StickPostItem'
 import PlainPostItem from 'components/Post/PlainPostItem'
-
+// import Template from '../Template'
 
 @checkLogin({
   *checkLoginFinish(userInfo, { all, put }) {
@@ -46,6 +46,7 @@ class IndexPage extends Component {
     this.getAppealPostPageData = this.getPageData.bind(this, 'appeal')()
     this.resetPullupState = this.resetPullupState.bind(this)
     this.appMain = React.createRef()
+    this.template = React.createRef()
   }
   bindHandlers() {
     this.toggleCollapse = this.toggleCollapse.bind(this)

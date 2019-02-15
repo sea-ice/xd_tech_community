@@ -21,7 +21,7 @@ import ReportBtn from 'components/User/ReportBtn'
 import PrivateMsgBtn from 'components/User/PrivateMsgBtn'
 import UserFollowState from 'components/User/UserFollowState'
 
-import { getPostExcerpt } from 'utils'
+import "prismjs/themes/prism.css"
 
 @connect(state => ({
   loginUserId: state.user.userId,
@@ -68,8 +68,15 @@ class PostDetail extends Component {
 
   componentDidMount() {
     this.scanStartTime = Date.now()
-    console.log(getPostExcerpt('<blockquote><p>faddsddd</p></blockquote><pre><code class="lang-actionscript"><div>kkekkekeke</div></code></pre><p></p>'))
-    console.log(getPostExcerpt('<p>发放的等待</p><ol><li><p>1234322</p></li><li><p>疯狂看到的</p></li><li><p>2341234312</p></li></ol><h1>发的</h1><p style="text-align:center">大大的</p><ul><li><p>浮动的</p></li><li><p>得到的</p></li><li><p>点点滴滴</p></li></ul><p><a href="http://baidu.com/">baidu</a></p><p></p><table><tr><td><p>vddd</p></td><td><p>dddd</p></td><td><p>fadfadffad</p></td><td><p>fafdad</p></td><td><p>fadfad</p></td></tr><tr><td><p>123</p></td><td><p>3412</p></td><td><p>234</p></td><td><p>1234</p></td><td><p>1234</p></td></tr></table><p><strong>fakdkdk</strong></p><p><i>fadfas</i></p><p><s>fdkekekek</s></p><p><u>kkekekekke</u></p><p><code>mmememeem</code></p><p>fadddddd</p>'))
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    // let { postInfo } = this.props
+    // if (postInfo && !postInfo.content && nextProps.postInfo.content) {
+    //   // import('prismjs').then(() => {
+    //   //   window.Prism.highlightAllUnder(document.getElementById('post-article'), true)
+    //   // })
+    // }
   }
 
   componentWillUnmount() {
@@ -252,7 +259,7 @@ class PostDetail extends Component {
                     </Popover>
                   </header>
                   <article className={styles.postContent}>
-                    <div className={articleStyles.article} dangerouslySetInnerHTML={{__html: content}}></div>
+                    <div className={articleStyles.article} id="post-article" dangerouslySetInnerHTML={{__html: content}}></div>
                   </article>
                   <footer className={styles.postInfoFooter}>
                     <Debounce

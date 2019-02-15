@@ -37,6 +37,7 @@ export default {
         return true
       } else if (code === 216) {
         if (successCallback) successCallback(posts)
+        return true
       }
       return false
     },

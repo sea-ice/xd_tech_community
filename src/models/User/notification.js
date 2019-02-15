@@ -15,18 +15,21 @@ export default {
   effects: {
     *getNumber({ payload }, { all, call, put }) {
       // 获取未读消息的总数目
-      // 目前只获取未读私信的数目作为header badge中显示的数字
       let { userId } = payload
-      let [privateMsgUnreadNum] = yield (yield all([
+      let [privateMsgUnreadNum, msgsUnreadNum] = yield (yield all([
         put({
           type: 'privateMsg/getUnReadNumber',
           payload: {userId}
         }), // 未读私信数量
+        put({
+          type: 'msgs/getUnReadMsgNumber',
+          payload: { userId }
+        }) // 未读用户消息+系统消息
       ]))
       yield put({
         type: 'setState',
         payload: {
-          unreadTotalNum: privateMsgUnreadNum
+          unreadTotalNum: privateMsgUnreadNum + msgsUnreadNum
         }
       })
     },

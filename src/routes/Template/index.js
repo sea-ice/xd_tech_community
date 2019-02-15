@@ -10,8 +10,10 @@ class PostDetail extends Component {
   constructor (props) {
     super(props)
   }
-  render () {
-
+  sayHello() {
+    console.log('template sayhello')
+  }
+  render() {
     return (
       <div>
         <FixedHeader />
@@ -33,4 +35,4 @@ class PostDetail extends Component {
 PostDetail.propTypes = {
 };
 
-export default connect()(PostDetail);
+export default PostDetail;

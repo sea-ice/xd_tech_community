@@ -97,8 +97,6 @@ export function setItemsBgColor(items, getUniqueKey) {
   return items
 }
 
-export class A {
-  constructor() {
-    this.name = 'BOOMSHAKALAKA'
-  }
+export function A () {
+  console.log('...666')
 }

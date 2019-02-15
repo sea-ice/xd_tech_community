@@ -2,7 +2,7 @@ import { routerRedux } from "dva/router";
 
 import { postJSON } from "utils"
 import config from 'config/constants'
-import { hasStorageKey, generateUUID } from 'utils'
+import { request, hasStorageKey, generateUUID } from 'utils'
 
 export default {
   namespace: 'user',
@@ -13,6 +13,13 @@ export default {
     loginSuccessPage: '/'
   },
   reducers: {
+    setInfo(state, { payload }) {
+      let { key, newInfo } = payload
+      let info = Object.assign({}, state[key], newInfo)
+      return Object.assign({}, state, {
+        [key]: info
+      })
+    },
     clearLoginInfo(state) {
       let key = config.USER_TOKEN_STORAGE_NAME
       if (hasStorageKey(key)) {
@@ -184,6 +191,26 @@ export default {
         successCallback()
       } else {
         failCallback(message)
+      }
+    },
+    *getUserOtherInfo({ payload }, { call, put }) {
+      let { loginUserId } = payload
+
+      let res = yield call(() => request(
+        `${
+          config.SERVER_URL_API_PREFIX
+        }/user/other/detail?myId=${loginUserId}&otherId=${loginUserId}`
+      ))
+      console.log(res)
+      let { data: { code, body } } = res
+      if (code === 100) {
+        yield put({
+          type: 'setInfo',
+          payload: {
+            key: 'userInfo',
+            newInfo: { ...body }
+          }
+        })
       }
     }
   }

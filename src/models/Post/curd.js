@@ -1,4 +1,5 @@
-import { postJSON, getInterfaceDraftFormat, getStoreDraftFormat } from 'utils'
+import { postJSON } from 'utils'
+import { getInterfaceDraftFormat, getStoreDraftFormat } from 'utils/draft'
 import config from 'config/constants'
 
 export default {

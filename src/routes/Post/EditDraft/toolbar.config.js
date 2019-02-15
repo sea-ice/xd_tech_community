@@ -9,6 +9,8 @@ import Link from "./CannerPlugins/slate-icon-link";
 import { OlList, UlList } from "@canner/slate-icon-list";
 import Undo from "@canner/slate-icon-undo";
 import Redo from "@canner/slate-icon-redo";
+// import FontBgColor from "@canner/slate-icon-fontbgcolor";
+// import FontColor from "@canner/slate-icon-fontcolor";
 
 
 export default [
@@ -35,6 +37,9 @@ export default [
   { type: "image", title: "图片" },
   { type: CodeBlock, title: "代码块" },
   { type: Table, title: "表格" },
+  // "seperator",
+  // { type: FontColor, title: "Font Color" },
+  // { type: FontBgColor, title: "Font Background Color" },
   "seperator",
   { type: "help", title: "Help" }
 ]

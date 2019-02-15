@@ -29,20 +29,26 @@
 .headerMain {
   display: flex;
   align-items: center;
+  flex-grow: 1;
+}
+
+.searchInputWrapper {
+  flex-grow: 1;
 }
 
 .searchInput {
   width: 280px;
+  margin: 0 auto;
 }
 
 
 .publishBtn {
-  margin-left: 40px;
+  margin-right: 40px;
 }
 
 
 .appLink {
-  margin-left: 40px;
+  margin-right: 40px;
 }
 
 .flyIcon {
@@ -53,15 +59,25 @@
 }
 
 .msgNotify {
-  margin-left: 40px;
+  margin-right: 40px;
 }
 
-.msgNotifyIcon {
-  display: block;
+.iconBtn {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0 .2rem;
 }
+
+.iconBtnText {
+  display: block;
+  margin-left: .1rem;
+  line-height: 1.2;
+  font-size: 16px;
+}
+
 
 .loginUserInfo {
-  margin-left: 30px;
   font-size: 0;
   line-height: .4rem;
   white-space: nowrap;

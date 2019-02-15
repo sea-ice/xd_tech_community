@@ -11,12 +11,13 @@ import LabelSelector from 'components/common/LabelSelector'
 // const APPEAL_POST_TYPE = '1'
 
 @connect(state => ({
+  userInfo: state.user.userInfo,
   editPost: state.postCURD.editPost
 }))
 @Form.create({
   onFieldsChange(props, fields) {
     let fieldName = Object.keys(fields)[0]
-    let { dispatch } = props
+    let { dispatch, userInfo } = props
     let newInfo = { [fieldName]: fields[fieldName].value }
 
     if (fieldName === 'type') {
@@ -26,11 +27,20 @@ import LabelSelector from 'components/common/LabelSelector'
       newInfo.coinsPerJointUser = 0
       newInfo.jointUsers = 0
     } else if (
-      (fieldName === 'coinsForAcceptedUser') ||
-      (fieldName === 'coinsPerJointUser') ||
-      (fieldName === 'jointUsers')
+      ~(['coinsForAcceptedUser', 'coinsPerJointUser', 'jointUsers'].indexOf(fieldName))
     ) {
       newInfo[fieldName] = Number(newInfo[fieldName])
+    } else if (
+      ~(['setShareCoins', 'setAppealCoins'].indexOf(fieldName)) &&
+      fields[fieldName].value
+    ) {
+      // 获取当前登录用户的金币信息
+      dispatch({
+        type: 'user/getUserOtherInfo',
+        payload: {
+          loginUserId: userInfo.userId
+        }
+      })
     }
     dispatch({
       type: 'postCURD/setInfo',
@@ -96,10 +106,13 @@ class PublishDrawer extends Component {
     return !!this.props.editPost.selectedTags.length
   }
   render() {
-    let { form: { getFieldDecorator }, editPost } = this.props
+    let { form: { getFieldDecorator }, editPost, userInfo } = this.props
     let { type, selectedTags, setShareCoins, setAppealCoins,
       coinsForAcceptedUser, coinsPerJointUser, jointUsers } = editPost
+
+    let payCoins = Number(coinsForAcceptedUser) + coinsPerJointUser * jointUsers
     let { visible, checkValid } = this.state
+    let { coin = 0 } = userInfo
 
     let badgeSymbol = checkValid ? {
       count: < Icon type="check-circle" theme="filled" style={{ color: '#52c41a' }} />
@@ -266,7 +279,11 @@ class PublishDrawer extends Component {
 
             {
               setCoins ? (
-                <p>你当前的金币数量为，共需要支付{Number(coinsForAcceptedUser) + coinsPerJointUser * jointUsers}枚金币</p>
+                <p>{
+                  payCoins > coin ? (
+                    <span style={{color: 'red'}}>金币数量不足！</span>
+                  ) : null
+                }你当前的金币数量为{coin}枚，共需要支付{payCoins}枚金币</p>
               ) : null
             }
           </Form>

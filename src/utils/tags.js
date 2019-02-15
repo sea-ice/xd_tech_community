@@ -10,7 +10,7 @@ import categories from 'config/categoryTags.json'
  * @param {*} tags
  * @returns
  */
-export function getFullTags (tags) {
+export function getFullTags(tags) {
   return tags.map(tag => categories.filter(
       c => !!c.tags.find(t => t.name === tag)
     ).map(

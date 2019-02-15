@@ -18,7 +18,8 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 @withRouter
 @checkLogin({
   *checkLoginFinish(userInfo, { put }, props) {
-    let { location } = props
+    let { location, history } = props
+    console.log(`history.action:${history.action}`)
     let { q } = getSearchObj(location)
     yield put({
       type: 'searchPost/getPageData',

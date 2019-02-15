@@ -69,7 +69,7 @@ class Notification extends Component {
     })
   }
   render() {
-    let { privateMsgs } = this.props
+    let { privateMsgs, userMsgs, sysMsgs } = this.props
     let checkIconOpt = {
       lineHeight: '45px',
       btnPadding: 0,
@@ -78,7 +78,10 @@ class Notification extends Component {
     let iconStyle = { fontSize: 60, color: '#999' }
 
     let { activeTabKey } = this.state
-    let unReadNum = activeTabKey === 'private' ? privateMsgs.unReadNum : 0
+    let unReadNum = activeTabKey === 'private' ?
+      privateMsgs.unReadNum :
+      activeTabKey === 'user' ?
+        userMsgs.unReadNum : sysMsgs.unReadNum
     return (
       <div>
         <FixedHeader />

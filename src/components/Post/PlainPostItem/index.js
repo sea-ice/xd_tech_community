@@ -34,7 +34,7 @@ class PlainPostItem extends Component {
       time,
       ...postFooterInfo
     } = this.props
-    let excerpt = getPostExcerpt(content, 120)
+    let excerpt = getPostExcerpt(content)
 
     return (
       <li className={styles.postItem} onClick={this.showPostDetail}>

@@ -5,7 +5,7 @@ import { withRouter, routerRedux } from 'dva/router'
 
 import { Row, Col, Icon, Button, Spin, message } from 'antd'
 import Html from 'slate-html-serializer'
-import { DEFAULT_RULES as rules } from '@canner/slate-editor-html/lib'
+import { DEFAULT_RULES as rules } from './CannerPlugins/slate-editor-html'
 // import CannerEditor from 'canner-slate-editor'
 import CannerEditor from './CannerSlateEditor'
 import { isKeyHotkey } from 'is-hotkey'
@@ -43,6 +43,7 @@ const isSaveKey = isKeyHotkey('mod+s')
   // 先验证用户是否登录，再验证用户是否用权限编辑当前的帖子
   *checkLoginFinish(userInfo, { put }, props) {
     let { match: { params }, newPostFlag } = props
+
     if (newPostFlag) {
       // 如果是新建帖子，就不需要检查草稿是否存在
       // newPostFlag为true只可能由fixedHeader中的发帖按钮触发
@@ -182,6 +183,7 @@ class EditDraft extends Component {
         draftSaveState: 'unsaved'
       }
     })
+    if (this.unBlock) this.unBlock()
     this.unBlock = history.block('确定要离开当前页吗？当前未保存的内容将会丢失！') // 对下次路由操作有效(无论下次是PUSH还是POP操作)
   }
   isDraftInfoChanged(newInfo) {
