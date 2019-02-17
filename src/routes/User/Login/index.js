@@ -19,7 +19,7 @@ class UserLoginPage extends Component {
   render () {
 
     return (
-      <div>
+      <div className={styles.scrollContainer}>
         <FixedHeader />
         <main className="app-main">
           <div className={styles.loginForm}>

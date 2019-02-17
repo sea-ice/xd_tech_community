@@ -1,3 +1,11 @@
+.scrollContainer {
+  height: 100%;
+  border-top: 107px solid transparent;
+  padding-top: 40px;
+  overflow: auto;
+  padding-bottom: 40px;
+}
+
 .spinWrapper {
   position: fixed;
   width: 100%;
@@ -60,7 +68,6 @@
 
 .main {
   font-size: 16px;
-  padding: 138px 0 60px;
 }
 
 .editorWrapper {

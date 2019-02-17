@@ -294,7 +294,7 @@ class EditDraft extends Component {
           <Spin tip="加载中..." />
         </div>
       ) : (
-        <div>
+        <div className={styles.scrollContainer}>
           <header className={styles.fixedHeader}>
             <section className={styles.leftSide}>
               <a href="javascript:void(0);" className={styles.returnBtn} onClick={this.backToLastPage}>返回</a>

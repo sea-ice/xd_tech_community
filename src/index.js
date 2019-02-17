@@ -31,9 +31,10 @@ function startApp() {
   app.model(require('./models/Post/curd').default);
   app.model(require('./models/Post/postDetails').default);
   app.model(require('./models/Post/comment').default);
-  app.model(require('./models/User/privateMsg').default);
-  app.model(require('./models/User/notification').default);
-  app.model(require('./models/User/userMsg').default);
+  app.model(require('./models/User/msgs').default);
+  app.model(require('./models/User/privateMsgs').default);
+  app.model(require('./models/User/userMsgs').default);
+  app.model(require('./models/User/sysMsgs').default);
   app.model(require('./models/User/author').default);
   app.model(require('./models/User/behaviors').default);
   app.model(require('./models/User/collection').default);

@@ -36,7 +36,7 @@ class ResetPassword extends Component {
         break
     }
     return (
-      <div>
+      <div className={styles.scrollContainer}>
         <FixedHeader />
         <main className="app-main">
           <Row type="flex" justify="center">

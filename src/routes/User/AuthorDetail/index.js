@@ -67,7 +67,7 @@ class AuthorDetail extends Component {
           <Spin tip="加载中..." />
         </div>
       ) : (
-        <div>
+        <div className={styles.scrollContainer}>
           <FixedHeader />
           <main className="app-main">
             {

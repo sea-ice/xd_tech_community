@@ -237,7 +237,7 @@ class PostDetail extends Component {
     }
     let commonOtherInfoIconOpt = Object.assign({}, commonFooterIconOpt, { iconSize: 20 })
     return (
-      <div>
+      <div className={styles.scrollContainer}>
         <FixedHeader />
         <main className="app-main">
           <Row gutter={20}>
@@ -380,7 +380,7 @@ class PostDetail extends Component {
               </main>
             </Col>
             <Col span={8}>
-              <Affix offsetTop={108}>
+              <Affix offsetTop={0}>
                 <div className={styles.postOtherInfo}>
                   {
                     !!label ? (

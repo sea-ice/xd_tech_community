@@ -34,12 +34,10 @@ export default {
           }
         })
         if (successCallback) successCallback(posts)
-        return true
       } else if (code === 216) {
         if (successCallback) successCallback(posts)
-        return true
       }
-      return false
+      return code === 100 || code === 216 // 加载成功的标志
     },
     *getPostByNewTags({ payload }, { all, put }) {
       let { userInfo, tags, successCallback } = payload

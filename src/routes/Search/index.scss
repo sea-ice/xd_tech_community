@@ -18,6 +18,14 @@
   height: 24px;
 }
 
+.scrollContainer {
+  height: 100%;
+  border-top: 69px solid transparent;
+  padding-top: 40px;
+  overflow: auto;
+  padding-bottom: 40px;
+}
+
 .postList {
   border-bottom: 1px solid #f1f1f1;
   margin-bottom: 0;

@@ -42,11 +42,12 @@ class NotifyItem extends Component {
     e.stopPropagation()
   }
   setMsgRead(successCallback) {
-    let { dispatch, isReceiver, id, content, isRead } = this.props
+    let { dispatch, isReceiver, loginUserId, id, content, isRead } = this.props
     if (!isReceiver || isRead) return
     dispatch({
       type: 'privateMsg/setMsgRead',
       payload: {
+        userId: loginUserId,
         msgId: id,
         setReadImmediately: content.length <= 60, // 查看详情点击之后文字不立即置灰
         successCallback
@@ -113,50 +114,51 @@ class NotifyItem extends Component {
       replyId
     } = this.props
     let { showComplete, replyContent } = this.state
+    let isClickable = (content.length <= 60) && isReceiver && !isRead
     return (
       <div className={(isReceiver && isRead) ? styles.read : styles.notifyItem}>
-        <div className={styles.avatarWrapper}>
-          <Avatar
-            style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}
-            src={avatar} shape="square" size={80}
-          >{nickName}</Avatar>
-        </div>
         <main className={styles.main}>
           <div
             className={styles.contentWrapper}
-            style={{ cursor: ((content.length <= 60) && isReceiver) ? 'pointer' : 'auto' }}
+            style={{ cursor: isClickable ? 'pointer' : 'auto' }}
             onClick={this.onShortMsgItemClick}
           >
             <header className={styles.header}>
-              <h4 className={styles.title}>{
-                isReceiver ? (
-                  <React.Fragment>
-                    <strong>{nickName}</strong>&nbsp;
-                    {replyId === -1 ? `给你发了一封私信` : `回复了你的私信`}
+              <div className={styles.avatarWrapper}>
+                <Avatar
+                  style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}
+                  src={avatar} shape="circle" size={36}
+                >{!avatar && nickName ? nickName[0] : ''}</Avatar>
+                <h4 className={styles.title}>{
+                  isReceiver ? (
+                    <React.Fragment>
+                      <strong>{nickName}</strong>&nbsp;
+                    {replyId === -1 ? `给你发了一封私信：` : `回复了你的私信：`}
+                    </React.Fragment>
+                  ) : (
+                      <React.Fragment>
+                        {replyId === -1 ? `已发送至` : `已回复`}
+                        &nbsp;<strong>{nickName}</strong>：
                   </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {replyId === -1 ? `已发送至：` : `已回复：`}
-                    &nbsp;<strong>{nickName}</strong>
-                  </React.Fragment>
-                )}
-              </h4>
+                    )}
+                </h4>
+              </div>
               <time>{time}</time>
             </header>
             {
               content.length > 60 ? (
                 <div className={styles.summaryWithDetails}>
                   <p className={styles.summary}>
-                    {showComplete ? content : `${content.slice(0, 60)}...`}
+                    <span>{showComplete ? content : `${content.slice(0, 60)}...`}</span>
+                    <a
+                      href="javascript:void(0);"
+                      className={styles.showDetailsBtn}
+                      onClick={this.toggleShowComplete}
+                    >{showComplete ? '收起' : '查看详情'}</a>
                   </p>
-                  <a
-                    href="javascript:void(0);"
-                    className="showDetailsBtn"
-                    onClick={this.toggleShowComplete}
-                  >{showComplete ? '收起' : '查看详情'}</a>
                 </div>
               ) : (
-                <p className={isReceiver ? styles.clickableSummary : styles.summary}>{content}</p>
+                <p className={isClickable ? styles.clickableSummary : styles.summary}>{content}</p>
               )
             }
           </div>

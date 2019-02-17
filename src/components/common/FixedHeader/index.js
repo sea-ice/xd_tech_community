@@ -13,7 +13,7 @@ import { getSearchObj } from 'utils'
   userId: state.user.userId,
   userToken: state.user.userToken,
   userInfo: state.user.userInfo,
-  unreadTotalNum: state.notify.unreadTotalNum,
+  unreadTotalNum: state.msgs.totalUnreadNum,
   searchKeyword: state.searchPost.searchKeyword
 }))
 @withRouter
@@ -51,7 +51,7 @@ class FixedHeader extends Component {
     // 刷新未读消息数量
     if (!!userId) {
       dispatch({
-        type: 'notify/getNumber',
+        type: 'msgs/getUnreadNumber',
         payload: {
           userId
         }

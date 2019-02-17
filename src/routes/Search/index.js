@@ -113,7 +113,7 @@ class SearchPage extends Component {
 
     let iconStyle = { fontSize: 60, color: '#999' }
     return (
-      <div>
+      <div className={styles.scrollContainer}>
         <FixedHeader />
         <main className="app-main" ref={this.appMain}>
           <Row gutter={20}>

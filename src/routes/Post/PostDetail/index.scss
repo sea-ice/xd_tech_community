@@ -1,3 +1,11 @@
+.scrollContainer {
+  height: 100%;
+  border-top: 69px solid transparent;
+  padding-top: 40px;
+  overflow: auto;
+  padding-bottom: 40px;
+}
+
 .postContentSection {
   background-color: white;
   padding: .4rem .4rem .2rem;
