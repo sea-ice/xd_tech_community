@@ -1,5 +1,5 @@
 import { fillPostListPayload } from 'utils'
-import config from 'config/constants'
+// import config from 'config/constants'
 
 export default {
   namespace: 'firstScreenRender',
@@ -87,7 +87,11 @@ export default {
       let { userId } = payload
       yield all([
         put({
-          type: 'privateMsg/getPageData',
+          type: 'msgs/getMsgTotalNumber',
+          payload: { userId }
+        }),
+        put({
+          type: 'privateMsgs/getPageData',
           payload: {
             userId,
             page: 1,

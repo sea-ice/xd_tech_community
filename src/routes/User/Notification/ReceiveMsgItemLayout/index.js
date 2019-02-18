@@ -92,13 +92,7 @@ class ReceiveMsgItemLayout extends Component {
             onClick={this.onShortMsgItemClick}
           >
             <header className={styles.header}>
-              <div className={styles.avatarWrapper}>
-                <Avatar
-                  style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}
-                  src={avatar} shape="circle" size={36}
-                >{!avatar && nickName ? nickName[0] : ''}</Avatar>
-                <h4 className={styles.title}>{header}</h4>
-              </div>
+              <h4 className={styles.title}>{header}</h4>
               <time>{time}</time>
             </header>
             {!!extraContent ? (

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router'
 import { Avatar, Button, Input, message } from 'antd'
 
 import styles from './index.scss'
@@ -16,6 +17,7 @@ class NotifyItem extends Component {
   }
   constructor(props) {
     super(props)
+    this.turnToAuthorHomepage = this.turnToAuthorHomepage.bind(this)
     this.toggleShowComplete = this.toggleShowComplete.bind(this)
     this.setMsgRead = this.setMsgRead.bind(this)
     this.onShortMsgItemClick = this.onShortMsgItemClick.bind(this)
@@ -23,6 +25,11 @@ class NotifyItem extends Component {
     this.sendReply = this.sendReply.bind(this)
     this.deleteMsg = this.deleteMsg.bind(this)
     this.isRead = !!props.isRead // 查看详情的时候使用
+  }
+  turnToAuthorHomepage(e) {
+    let { dispatch, authorId } = this.props
+    dispatch(routerRedux.push(`/author/${authorId}`))
+    e.stopPropagation()
   }
   onShortMsgItemClick() {
     let { content } = this.props
@@ -115,6 +122,16 @@ class NotifyItem extends Component {
     } = this.props
     let { showComplete, replyContent } = this.state
     let isClickable = (content.length <= 60) && isReceiver && !isRead
+
+    const avatarWrapper = (
+      <div className={styles.avatarWrapper} onClick={this.turnToAuthorHomepage}>
+        <Avatar
+          style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}
+          src={avatar} shape="circle" size={36}
+        >{!avatar && nickName ? nickName[0] : ''}</Avatar>
+        <strong>{nickName}</strong>
+      </div>
+    )
     return (
       <div className={(isReceiver && isRead) ? styles.read : styles.notifyItem}>
         <main className={styles.main}>
@@ -124,25 +141,19 @@ class NotifyItem extends Component {
             onClick={this.onShortMsgItemClick}
           >
             <header className={styles.header}>
-              <div className={styles.avatarWrapper}>
-                <Avatar
-                  style={{ backgroundColor: avatar ? '#fff' : avatarBgColor, verticalAlign: 'middle' }}
-                  src={avatar} shape="circle" size={36}
-                >{!avatar && nickName ? nickName[0] : ''}</Avatar>
-                <h4 className={styles.title}>{
-                  isReceiver ? (
-                    <React.Fragment>
-                      <strong>{nickName}</strong>&nbsp;
+              <h4 className={styles.title}>{
+                isReceiver ? (
+                  <React.Fragment>
+                    {avatarWrapper}&nbsp;
                     {replyId === -1 ? `给你发了一封私信：` : `回复了你的私信：`}
-                    </React.Fragment>
-                  ) : (
-                      <React.Fragment>
-                        {replyId === -1 ? `已发送至` : `已回复`}
-                        &nbsp;<strong>{nickName}</strong>：
                   </React.Fragment>
-                    )}
-                </h4>
-              </div>
+                ) : (
+                  <React.Fragment>
+                    {replyId === -1 ? `已发送至` : `已回复`}
+                    &nbsp;&nbsp;&nbsp;{avatarWrapper}：
+                  </React.Fragment>
+                )}
+              </h4>
               <time>{time}</time>
             </header>
             {

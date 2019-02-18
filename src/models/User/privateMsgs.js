@@ -2,7 +2,7 @@ import { postJSON, setItemsBgColor } from "utils"
 import config from 'config/constants'
 
 export default {
-  namespace: 'privateMsg',
+  namespace: 'privateMsgs',
   state: {},
   reducers: {},
   effects: {

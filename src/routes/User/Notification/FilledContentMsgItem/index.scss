@@ -1,3 +1,12 @@
+.avatarWrapper {
+  composes: faic from global;
+  cursor: pointer;
+  strong {
+    margin-left: 10px;
+  }
+}
+
+
 .replyToContent {
   color: #ccc;
   padding: 10px 20px 0;

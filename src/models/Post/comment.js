@@ -102,7 +102,7 @@ export default {
         `${config.SERVER_URL_API_PREFIX}/commentsv1/getCommentsv1/WebUpdate`, {
         id: postId,
         userId,
-        page: 0, // page不起作用，但需要传
+        page: 1, // page不起作用，但需要传
         lastId: 0, // 始终从头开始加载，不记录每次分页的最后一条评论的id
         number: 9999 // 获取全部的评论
       }))

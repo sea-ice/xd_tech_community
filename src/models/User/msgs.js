@@ -99,6 +99,37 @@ export default {
         }
       })
     },
+    *getMsgTotalNumber({ payload }, { all, call, put }) {
+      // 获取未读消息的总数目
+      let { userId } = payload
+      yield all([
+        put({
+          type: 'getSingleTypeMsgTotalNum',
+          payload: {
+            msgType: 'privateMsgs',
+            url: `${config.SERVER_URL_API_PREFIX}/secretMsg/getMsgNum`,
+            userId
+          }
+        }), // 私信数量
+        put({
+          type: 'getSingleTypeMsgTotalNum',
+          payload: {
+            msgType: 'userMsgs',
+            url: `${config.SERVER_URL_API_PREFIX}/push/getUserNotifyNum`,
+            userId
+          }
+        }), // 用户消息
+        put({
+          type: 'getSingleTypeMsgTotalNum',
+          payload: {
+            msgType: 'sysMsgs',
+            url: `${config.SERVER_URL_API_PREFIX}/push/getSystemNotifyNum`,
+            userId
+          }
+        })
+        // 系统消息
+      ])
+    },
     *getSingleTypeMsgUnreadNum({ payload }, { call, put }) {
       let { msgType, url, userId } = payload
       let res = yield call(() => postJSON(url, {
@@ -115,6 +146,22 @@ export default {
         }
       })
       return unreadNum
+    },
+    *getSingleTypeMsgTotalNum({ payload }, { call, put }) {
+      let { msgType, url, userId } = payload
+      let res = yield call(() => postJSON(url, {
+        userId
+      }))
+
+      let { data: { code, body } } = res
+      let total = code === 100 ? body : 0
+      yield put({
+        type: 'setInfo',
+        payload: {
+          key: msgType,
+          newInfo: { total }
+        }
+      })
     },
     *getSingleTypeMsgPageData({ payload }, { call, put }) {
       let { msgType, getTotalNumURL, getPageDataURL, userId, page, number } = payload

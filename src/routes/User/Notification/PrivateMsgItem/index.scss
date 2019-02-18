@@ -26,6 +26,8 @@
   composes: faic from global;
   justify-content: space-between;
   h4 {
+    display: flex;
+    align-items: center;
     margin-bottom: 0;
     margin-left: 10px;
   }
@@ -36,9 +38,11 @@
 
 .avatarWrapper {
   composes: faic from global;
+  cursor: pointer;
+  strong {
+    margin-left: 5px;
+  }
 }
-
-
 
 .summary {
   margin-top: 12px;

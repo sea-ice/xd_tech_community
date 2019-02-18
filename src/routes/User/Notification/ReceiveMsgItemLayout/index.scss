@@ -26,16 +26,14 @@
   composes: faic from global;
   justify-content: space-between;
   h4 {
+    display: flex;
+    align-items: center;
     margin-bottom: 0;
     margin-left: 10px;
   }
   time {
     margin-left: 20px;
   }
-}
-
-.avatarWrapper {
-  composes: faic from global;
 }
 
 .summary {

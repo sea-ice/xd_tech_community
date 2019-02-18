@@ -1,25 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import { Popover } from 'antd'
 import dayjs from 'dayjs'
 
-import { getIconBtnToggleProps } from 'utils'
+import { setHTMLSafely } from 'utils'
 
 import styles from './index.scss'
 import config from 'config/constants'
 import ReportBtn from 'components/User/ReportBtn'
 import IconBtn from 'components/common/IconBtn'
-import Debounce from 'components/common/Debounce'
 
 @connect(state => ({
   comments: state.postDetails.comments
 }))
 class ReplyItem extends Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.updateReplyLikeState = this.updateReplyLikeState.bind(this)
-  // }
+  constructor (props) {
+    super(props)
+    // this.updateReplyLikeState = this.updateReplyLikeState.bind(this)
+    this.turnToAuthorHomepage = this.turnToAuthorHomepage.bind(this)
+  }
   // updateReplyLikeState() {
   //   let { dispatch, replyInfo, comments } = this.props
   //   let { commentsv1Id, commentsv2Id } = replyInfo
@@ -32,7 +33,11 @@ class ReplyItem extends Component {
   //     }
   //   })
   // }
-
+  turnToAuthorHomepage() {
+    let { dispatch, replyInfo } = this.props
+    let { userId } = replyInfo
+    dispatch(routerRedux.push(`/author/${userId}`))
+  }
   render () {
     let {
       loginUserId,
@@ -40,17 +45,17 @@ class ReplyItem extends Component {
     } = this.props
     // 如果是一级评论，则replyInfo只具有commentsv1Id，如果是评论的评论，
     // 则同时具有commentsv1Id和commentsv2Id
-    let { nickName, avator, commentsv1Id, commentsv2Id,
+    let { userId, nickName, avator, commentsv1Id, commentsv2Id,
       content, isApproval, approvalNum, time } = replyInfo
     console.log(this.props.comments)
 
-    let commonIconOpt = {
-      type: 'icon',
-      color: '#666',
-      btnPadding: '.2rem',
-      iconSize: 20,
-      fontSize: 16
-    }
+    // let commonIconOpt = {
+    //   type: 'icon',
+    //   color: '#666',
+    //   btnPadding: '.2rem',
+    //   iconSize: 20,
+    //   fontSize: 16
+    // }
     return (
       <section className={styles.replyItem}>
         <main className={styles.replyMain}>
@@ -62,27 +67,33 @@ class ReplyItem extends Component {
                 avatarURL={avator}
                 color="#333"
                 iconBtnText={nickName}
-                btnPadding={0} />
+                btnPadding={0}
+                onClick={this.turnToAuthorHomepage}
+              />
               <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
             </p>
-            <Popover content={
-              <ul className={styles.popoverBtns}>
-                <li>
-                  <ReportBtn
-                    objectType={3}
-                    objectId={commentsv2Id} />
-                </li>
-              </ul>
-            } placement="bottomRight">
-              <i
-                className={styles.more}
-                style={{
-                  backgroundImage: `url(${
-                    config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
-                }}></i>
-            </Popover>
+            {
+              loginUserId === userId ? null : (
+                <Popover content={
+                  <ul className={styles.popoverBtns}>
+                    <li>
+                      <ReportBtn
+                        objectType={3}
+                        objectId={commentsv2Id} />
+                    </li>
+                  </ul>
+                } placement="bottomRight">
+                  <i
+                    className={styles.more}
+                    style={{
+                      backgroundImage: `url(${
+                        config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
+                    }}></i>
+                </Popover>
+              )
+            }
           </header>
-          <p className={styles.commentContent}>{content}</p>
+          <p className={styles.commentContent} dangerouslySetInnerHTML={{ __html: setHTMLSafely(content, true)}}></p>
           {/* <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
               <Debounce

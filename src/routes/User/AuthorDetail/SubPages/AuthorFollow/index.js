@@ -163,10 +163,11 @@ console.log(targetAuthorFollowInfo)
                 return (
                   <div className={styles.iconWrapper}>
                     <Icon type="inbox" style={iconStyle} />
+                    {/*<p>{guest ? '还没有人关注TA' : '说好的面向对象，却还是孑然一身'}</p>*/}
                     {followed ? (
-                      <p>还没有关注{guest ? 'TA' : '你'}</p>
+                      <p>说好的面向对象，却还是孑然一身</p>
                     ) : (
-                      <p>{guest ? 'TA' : '你'}还没有关注任何人</p>
+                      <p>{guest ? 'TA还没有关注任何人' : '去寻找志同道合的伙伴吧！'}</p>
                     )}
                   </div>
                 )

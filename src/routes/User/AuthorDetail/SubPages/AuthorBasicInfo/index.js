@@ -231,7 +231,7 @@ class AuthorBasicInfo extends Component {
             </section>
             <section className={styles.section}>
               <div className={styles.titleWrapper}>
-                <h3>个人成就</h3>
+                <h3>成长之路</h3>
               </div>
               <ul>
                 <li>

@@ -16,6 +16,7 @@ const covertLabelsToArray = createSelector(
 class TagManage extends Component {
   constructor (props) {
     super(props)
+    this.selectTagsLimit = 5
     this.getSelectedTags = this.getSelectedTags.bind(this)
     this.removeTag = this.removeTag.bind(this)
     this.saveSelectedTags = this.saveSelectedTags.bind(this)
@@ -76,7 +77,11 @@ class TagManage extends Component {
                 <p className={styles.tips} style={{color: '#ccc'}}>请选择你感兴趣的标签</p>
               ) : (
                 <ul className={styles.categoryTagsList}>
-                  <li className={styles.listItem}><p className={styles.tips}>已选标签：</p></li>
+                  <li className={styles.listItem}>
+                    <p className={styles.tips}>
+                      已选标签({selectedTags.length}/{this.selectTagsLimit})：
+                    </p>
+                  </li>
                   {
                     selectedTags.map(tag => (
                       <li
@@ -101,7 +106,7 @@ class TagManage extends Component {
               )}
             </header>
             <main>
-              <LabelSelector selectedTags={selectedTags} notifySelectedTags={this.getSelectedTags} />
+              <LabelSelector selectedTags={selectedTags} selectTagsLimit={this.selectTagsLimit} notifySelectedTags={this.getSelectedTags} />
             </main>
           </div>
         </main>

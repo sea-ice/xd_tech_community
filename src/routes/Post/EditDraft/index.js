@@ -307,7 +307,7 @@ class EditDraft extends Component {
                     return (
                       <p className={styles.draftSaveTips}>
                         <Icon type="exclamation-circle" style={{ color: '#ffe58f' }} {...iconCommonProps} />
-                        <span>有未保存的内容(ctrl+s保存)</span>
+                        <span>有未保存的内容(Ctrl+S保存)</span>
                       </p>)
                   } else if (draftSaveState === 'saving') {
                     return (

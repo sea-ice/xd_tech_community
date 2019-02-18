@@ -71,6 +71,7 @@ class Notification extends Component {
   // }
   onMsgPageChange(msgType, page) {
     let { dispatch, loginUserId } = this.props
+    console.log(`page: ${page}`)
     dispatch({
       type: `${msgType}/getPageData`,
       payload: {
@@ -118,7 +119,7 @@ class Notification extends Component {
                     />
                   ) : null
                 } onChange={this.onTabsChange}>
-                  <Tabs.TabPane tab="私信" key="privateMsgs">
+                  <Tabs.TabPane tab={`私信(${privateMsgs.total})`} key="privateMsgs">
                     <div className={styles.msgList}>
                       {
                         (({ loading, error, total, msgs, currentPage }) => (
@@ -158,7 +159,7 @@ class Notification extends Component {
                       }
                     </div>
                   </Tabs.TabPane>
-                  <Tabs.TabPane tab="用户消息" key="userMsgs">
+                  <Tabs.TabPane tab={`用户消息(${userMsgs.total})`} key="userMsgs">
                     <div className={styles.msgList}>
                       {
                         (({ loading, error, total, msgs, currentPage }) => (
@@ -199,7 +200,7 @@ class Notification extends Component {
                       }
                     </div>
                   </Tabs.TabPane>
-                  <Tabs.TabPane tab="系统消息" key="sysMsgs">
+                  <Tabs.TabPane tab={`系统消息(${sysMsgs.total})`} key="sysMsgs">
                     <div className={styles.msgList}>
                       {
                         (({ loading, error, total, msgs, currentPage }) => (

@@ -120,3 +120,17 @@ export function differTime(time, relativeTo) {
   }
   return result + diffPostfix
 }
+
+/**
+ * HTML特殊字符转义
+ * @param {*} html
+ * @param {*} keepLineBreak
+ */
+export function setHTMLSafely(html, keepLineBreak) {
+  let safeHTML = html.replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/'/g, '&#x27;')
+    .replace(/"/g, '&quot;')
+  return keepLineBreak ? safeHTML.replace(/\n/g, '<br>') : safeHTML
+}

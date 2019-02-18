@@ -58,6 +58,7 @@ class PublishDrawer extends Component {
   }
   constructor(props) {
     super(props)
+    this.selectTagsLimit = 3
     this.toggleSettings = this.toggleSettings.bind(this)
     // this.onPostTypeChange = this.onPostTypeChange.bind(this)
     this.removeTag = this.removeTag.bind(this)
@@ -156,7 +157,11 @@ class PublishDrawer extends Component {
                       <p className={styles.tips} style={{ color: '#ccc' }}>请选择标签</p>
                     ) : (
                         <ul className={styles.categoryTagsList}>
-                          <li className={styles.listItem}><p className={styles.tips}>已选标签({selectedTags.length}/3)：</p></li>
+                          <li className={styles.listItem}>
+                            <p className={styles.tips}>
+                              已选标签({selectedTags.length}/{this.selectTagsLimit})：
+                            </p>
+                          </li>
                           {
                             selectedTags.map(tag => (
                               <li
@@ -173,7 +178,7 @@ class PublishDrawer extends Component {
                   <main>
                     <LabelSelector
                       selectedTags={selectedTags}
-                      selectTagsLimit={3}
+                      selectTagsLimit={this.selectTagsLimit}
                       notifySelectedTags={this.getSelectedTags} />
                   </main>
                 </div>

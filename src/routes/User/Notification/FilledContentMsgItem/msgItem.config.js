@@ -1,31 +1,108 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { routerRedux } from 'dva/router'
+import { Avatar, Button, Input, message } from 'antd'
+import Confirm from 'components/common/Confirm'
+
 import styles from './index.scss'
 
 // const maxLength = (title, maxLength = 10) => title.length > maxLength ? `${title.slice(0, maxLength)}...` : title
+const turnToAuthorHomepage = (e, userId, dispatch) => {
+  dispatch(routerRedux.push(`/author/${userId}`))
+  e.stopPropagation()
+}
+
+const makeAvatarWrapper = ({avator, nickName, userId}, dispatch) => (
+  <div
+    className={styles.avatarWrapper}
+    onClick={e => turnToAuthorHomepage(e, userId, dispatch)}
+  >
+    <Avatar
+      style={{ backgroundColor: avator ? '#fff' : '#7265e6', verticalAlign: 'middle' }}
+      src={avator} shape="circle" size={36}
+    >{!avator && nickName ? nickName[0] : ''}</Avatar>
+    <strong>{nickName}</strong>
+  </div>
+)
+
+const makeCommentMsgReplyBtn = function (
+  { nickName, comment1Id },
+  { dispatch, loginUserId }
+) {
+  function ReplyBtn () {
+    let [replyContent, updateReplyContent] = useState('')
+
+    const sendReply = function () {
+      return new Promise((resolve, reject) => {
+        if (!replyContent.trim()) {
+          message.error('请输入回复内容！')
+          return reject()
+        }
+        dispatch({
+          type: 'comment/publishComment',
+          payload: {
+            objectId: comment1Id,
+            userId: loginUserId,
+            content: replyContent,
+            reply: true,
+            successCallback() {
+              message.success('回复成功！')
+              resolve(true)
+            },
+            failCallback() {
+              message.success('操作失败，请稍后再试！')
+              reject()
+            }
+          }
+        })
+      })
+    }
+    return (
+      <div className={styles.btn}>
+        <Confirm
+          triggerModalBtn={
+            <Button type="primary" block>回复</Button>
+          }
+          modalTitle="回复帖子评论"
+          confirmBtnText="发送"
+          handleOk={sendReply}
+        >
+          <p>回复&nbsp;<strong>{nickName}</strong>&nbsp;的评论：</p>
+          <Input.TextArea
+            placeholder="请输入回复内容"
+            value={replyContent}
+            onChange={e => updateReplyContent(e.target.value)}></Input.TextArea>
+        </Confirm>
+      </div>
+    )
+  }
+  return <ReplyBtn />
+}
 
 export const msgTemplates = {
   '1': {
-    // user1_id:
-
-    header: ({ nickName, title }) => (
+    // 评论帖子
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;评论了你的帖子《{title}》：
       </React.Fragment>
     ),
+    btnGroup: makeCommentMsgReplyBtn
   },
-  '2': {
-    header: ({ nickName, title }) => (
+  '2': { // 评论帖子
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;评论了你的帖子《{title}》：
       </React.Fragment>
     ),
+    btnGroup: makeCommentMsgReplyBtn
   },
   '3': {
-    header: ({ nickName, title }) => (
+    // 回复评论
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;回复了你在《{title}》帖子中的评论：
       </React.Fragment>
     ),
@@ -37,28 +114,30 @@ export const msgTemplates = {
     } // 内容区域默认显示content属性值
   },
   '4': {
-    // user1_id:
-    header: ({ nickName, title }) => (
+    // 帖子点赞
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;赞了你的帖子《{title}》
       </React.Fragment>
     ),
     content: null
   },
   '5': {
-    header: ({ nickName, title }) => (
+    // 帖子点赞
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;赞了你的帖子《{title}》
       </React.Fragment>
     ),
     content: null
   },
   '6': {
-    header: ({ nickName, title }) => (
+    // 评论点赞
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;赞了你在帖子《{title}》中的评论：
       </React.Fragment>
     ),
@@ -72,18 +151,20 @@ export const msgTemplates = {
     content: '给你点了个大大的赞'
   },
   '8': {
-    header: ({ nickName, title }) => (
+    // 收藏帖子
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;收藏了你的帖子《{title}》
       </React.Fragment>
     ),
     content: null
   },
   '9': {
-    header: ({ nickName, title }) => (
+    // 收藏帖子
+    header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
-        <strong>{nickName}</strong>
+        {makeAvatarWrapper(rest, dispatch)}
         &nbsp;收藏了你的帖子《{title}》
       </React.Fragment>
     ),

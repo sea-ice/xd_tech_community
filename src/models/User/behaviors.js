@@ -7,9 +7,7 @@ import config from 'config/constants'
 export default {
   namespace: 'userBehaviors',
   state: {},
-  reducers: {
-
-  },
+  reducers: {},
   effects: {
     *approval({ payload }, { call, put }) {
       let { type, objectId, userId, like, successCallback, failCallback } = payload

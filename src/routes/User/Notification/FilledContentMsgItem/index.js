@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import dayjs from 'dayjs'
+import { connect } from 'dva'
 
 import ReceiveMsgItemLayout from '../ReceiveMsgItemLayout'
 import { msgTemplates } from './msgItem.config'
 
-const getReceiveMsgItemProps = ({ msgType, ...rest }) => {
+const getReceiveMsgItemProps = ({ msgType, updateCurrentPage, ...rest }) => {
   if (msgType === 'userMsgs') {
     let { object, type, isRead } = rest
-    let { header, content, extraContent } = msgTemplates[type]
+    let { header, content, extraContent, btnGroup = null } = msgTemplates[type]
     let { time, nickName, avator, notificationId } = object
-    header = header(object)
+    header = header(object, rest)
     content = !!content ? content(object) : content !== null ? object.content : ''
     extraContent = !!extraContent ? extraContent(object) : null
+    btnGroup = btnGroup && btnGroup(object, rest)
     return {
       msgType,
       msgId: notificationId,
@@ -21,7 +23,9 @@ const getReceiveMsgItemProps = ({ msgType, ...rest }) => {
       time: dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm'),
       content,
       extraContent,
-      isRead: !!isRead
+      btnGroup,
+      isRead: !!isRead,
+      updateCurrentPage
     }
   } else if (msgType === 'sysMsgs') {
     let { id, time, isRead, content } = rest
@@ -31,13 +35,19 @@ const getReceiveMsgItemProps = ({ msgType, ...rest }) => {
       header: '',
       time: dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm'),
       content,
-      isRead: !!isRead
+      isRead: !!isRead,
+      updateCurrentPage
     }
   }
 }
 
-export default class FilledContentMsgItem extends Component {
+@connect(state => ({
+  loginUserId: state.user.userId
+}))
+class FilledContentMsgItem extends Component {
   render() {
     return <ReceiveMsgItemLayout {...getReceiveMsgItemProps(this.props)} />
   }
 }
+
+export default FilledContentMsgItem

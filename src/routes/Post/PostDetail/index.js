@@ -11,6 +11,7 @@ import config from 'config/constants'
 import { checkLogin, getIconBtnToggleProps, removeDuplicateTags } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
+import Confirm from 'components/common/Confirm'
 import ConfirmIfNotMeet from 'components/common/ConfirmIfNotMeet'
 import IconBtn from 'components/common/IconBtn'
 import Debounce from 'components/common/Debounce'
@@ -48,6 +49,8 @@ import "prismjs/themes/prism.css"
 class PostDetail extends Component {
   constructor (props) {
     super(props)
+    this.deletePost = this.deletePost.bind(this)
+
     this.starPost = this.starPost.bind(this)
     this.updateCollectedState = this.updateCollectedState.bind(this)
     this.saveSuccessCallback = this.saveSuccessCallback.bind(this) // 收藏成功的回调
@@ -89,6 +92,28 @@ class PostDetail extends Component {
         userId: loginUserId,
         postId: articleId,
         spentTime: Date.now() - this.scanStartTime
+      }
+    })
+  }
+
+  deletePost() {
+    let { dispatch, postInfo, loginUserId } = this.props
+    let { articleId } = postInfo
+    let hideLoading = message.loading('加载中...')
+    dispatch({
+      type: 'postCURD/delete',
+      payload: {
+        userId: loginUserId,
+        postId: articleId,
+        successCallback: () => {
+          hideLoading()
+          message.success('删除成功！')
+          dispatch(routerRedux.push(`/author/${loginUserId}`))
+        },
+        failCallback() {
+          hideLoading()
+          message.error('删除失败，请稍后再试！')
+        }
       }
     })
   }
@@ -246,17 +271,41 @@ class PostDetail extends Component {
                 <section className={styles.postContentSection}>
                   <header className={styles.postTitleWrapper}>
                     <h2 className="postTitle">{title}</h2>
-                    <Popover content={
-                      <ul className={styles.popoverBtns}>
-                        <li>
-                          <ReportBtn objectType={0} objectId={articleId} />
-                        </li>
-                      </ul>
-                    } placement="bottomRight">
-                      <i
-                        className={styles.more}
-                        style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}></i>
-                    </Popover>
+                    {
+                      loginUserId === userId ? (
+                        <Popover content={
+                          <ul className={styles.popoverBtns}>
+                            <li>
+                              <Confirm
+                                triggerModalBtn={
+                                  <a href="javascript:void(0);" className={styles.deleteBtn}>删除帖子</a>}
+                                modalTitle="提示"
+                                handleOk={this.deletePost}
+                              >
+                                <p>确定删除该帖子吗？</p>
+                              </Confirm>
+                            </li>
+                          </ul>
+                        } placement="bottomRight">
+                          <i
+                            className={styles.more}
+                            style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}
+                          ></i>
+                        </Popover>
+                      ): (
+                          <Popover content={
+                            <ul className={styles.popoverBtns}>
+                              <li>
+                                <ReportBtn objectType={0} objectId={articleId} />
+                              </li>
+                            </ul>
+                          } placement="bottomRight">
+                            <i
+                              className={styles.more}
+                              style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)` }}></i>
+                          </Popover>
+                      )
+                    }
                   </header>
                   <article className={styles.postContent}>
                     <div className={articleStyles.article} id="post-article" dangerouslySetInnerHTML={{__html: content}}></div>

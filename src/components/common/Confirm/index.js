@@ -20,15 +20,12 @@ class Confirm extends Component {
     let { beforeShowModal } = this.props
     beforeShowModal = beforeShowModal || (() => Promise.resolve())
     let res = beforeShowModal()
-    console.log(`triggerModalBtnClickHandler`)
-    console.log(res)
+
     if (res && res.then) {
       res.then(res => {
         this.setState({ show: true })
       })
     } else {
-      console.log('to show')
-      console.log(this.state.show)
       this.setState({ show: true })
     }
   }

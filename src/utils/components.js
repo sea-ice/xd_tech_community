@@ -96,7 +96,3 @@ export function setItemsBgColor(items, getUniqueKey) {
   }
   return items
 }
-
-export function A () {
-  console.log('...666')
-}

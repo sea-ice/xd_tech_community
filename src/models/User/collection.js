@@ -108,8 +108,9 @@ export default {
           userId
         }))
       let { data: { code, body } } = res
-      if (code === 100) {
-        // console.log(body)
+
+      if (code === 100 || code === 216) {
+        if (code === 216) body = []
         if (successCallback) {
           successCallback(body)
         }

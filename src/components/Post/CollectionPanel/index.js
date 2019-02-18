@@ -121,8 +121,9 @@ class CollectionPanel extends Component {
   inputCollectionName(e) {
     let { dispatch } = this.props
     let val = e.target.value
+    console.log(val)
     dispatch({
-      type: 'collection/setItem',
+      type: 'collection/updateItem',
       payload: {
         key: 'temp',
         items: { 0: { favoriteDir: val } }
@@ -247,7 +248,7 @@ class CollectionPanel extends Component {
                           <Input
                             ref={this.collectionNameInput}
                             onChange={this.inputCollectionName}
-                            onPressEnter={this.createCollection}
+                            onPressEnter={() => this.createCollection()}
                           />
                         </div>
                         <p className={styles.inputTips}>按回车保存</p>

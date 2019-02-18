@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import { Popover, message } from 'antd'
 import dayjs from 'dayjs'
 
-import { getIconBtnToggleProps } from 'utils'
+import { getIconBtnToggleProps, setHTMLSafely } from 'utils'
 
 import styles from './index.scss'
 import config from 'config/constants'
@@ -26,6 +27,7 @@ class ReplyItem extends Component {
   };
   constructor(props) {
     super(props)
+    this.turnToAuthorHomepage = this.turnToAuthorHomepage.bind(this)
     this.acceptReply = this.acceptReply.bind(this)
     this.toggleCommentBox = this.toggleCommentBox.bind(this)
     this.toggleReplies = this.toggleReplies.bind(this)
@@ -33,6 +35,11 @@ class ReplyItem extends Component {
     this.onReplyContentChange = this.onReplyContentChange.bind(this)
     this.publishReply = this.publishReply.bind(this)
     this.replyInput = React.createRef()
+  }
+  turnToAuthorHomepage() {
+    let { dispatch, replyInfo } = this.props
+    let { userId } = replyInfo
+    dispatch(routerRedux.push(`/author/${userId}`))
   }
   acceptReply() {
     let { dispatch, postInfo, replyInfo } = this.props
@@ -116,7 +123,8 @@ class ReplyItem extends Component {
       color: '#666',
       btnPadding: '.2rem',
       iconSize: 20,
-      fontSize: 16
+      fontSize: 16,
+      iconBtnStyle: {height: '.52rem'}
     }
     let acceptBtnOpt = Object.assign({}, commonIconOpt, {
       iconType: 'check',
@@ -136,7 +144,9 @@ class ReplyItem extends Component {
                 avatarURL={avator}
                 color="#333"
                 iconBtnText={nickName}
-                btnPadding={0} />
+                btnPadding={0}
+                onClick={this.turnToAuthorHomepage}
+              />
               <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
             </p>
             <p className="commentNumber">#&nbsp;{rootComment}</p>
@@ -148,7 +158,7 @@ class ReplyItem extends Component {
                 backgroundImage: `url(${
                   config.SUBDIRECTORY_PREFIX}/assets/accepted.svg)`
               } : {}}></span>
-            <p className={styles.commentContent}>{content}</p>
+            <p className={styles.commentContent} dangerouslySetInnerHTML={{ __html: setHTMLSafely(content, true) }}></p>
           </main>
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
@@ -195,22 +205,26 @@ class ReplyItem extends Component {
                 ) : null
               }
             </div>
-            <Popover content={
-              <ul className={styles.popoverBtns}>
-                <li>
-                  <ReportBtn
-                    objectType={2}
-                    objectId={commentsv1Id} />
-                </li>
-              </ul>
-            } placement="bottomRight">
-              <i
-                className={styles.more}
-                style={{
-                  backgroundImage: `url(${
-                    config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
-                }}></i>
-            </Popover>
+            {
+              loginUserId === userId ? null : (
+                <Popover content={
+                  <ul className={styles.popoverBtns}>
+                    <li>
+                      <ReportBtn
+                        objectType={2}
+                        objectId={commentsv1Id} />
+                    </li>
+                  </ul>
+                } placement="bottomRight">
+                  <i
+                    className={styles.more}
+                    style={{
+                      backgroundImage: `url(${
+                        config.SUBDIRECTORY_PREFIX}/assets/ellipsis.svg)`
+                    }}></i>
+                </Popover>
+              )
+            }
           </footer>
         </main>
         <div className={showReplyBox ? styles.replyBoxSpread : styles.replyBoxCollapse}>
