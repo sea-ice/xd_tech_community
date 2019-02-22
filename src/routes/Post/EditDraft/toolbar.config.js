@@ -1,6 +1,6 @@
 import { AlignCenter, AlignLeft, AlignRight } from "@canner/slate-icon-align";
 import Blockquote from "@canner/slate-icon-blockquote";
-import Table from "@canner/slate-icon-table";
+import Table from "./CannerPlugins/slate-icon-table";
 import CodeBlock from "./CannerPlugins/slate-icon-codeblock";
 import { Header1, Header2, Header3, Header4 } from "@canner/slate-icon-header";
 import Hr from "@canner/slate-icon-hr";

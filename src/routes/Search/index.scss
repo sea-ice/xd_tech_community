@@ -21,10 +21,14 @@
 .scrollContainer {
   height: 100%;
   border-top: 69px solid transparent;
-  padding-top: 40px;
-  overflow: auto;
-  padding-bottom: 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
+.appMain {
+  padding: 40px 0;
+}
+
 
 .postList {
   border-bottom: 1px solid #f1f1f1;

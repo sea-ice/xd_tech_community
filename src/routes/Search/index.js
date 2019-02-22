@@ -37,6 +37,7 @@ class SearchPage extends Component {
   constructor (props) {
     super(props)
     this.getSearchPageData = this.getPageData.bind(this)()
+    this.scrollListener = React.createRef()
     this.appMain = React.createRef()
   }
 
@@ -113,9 +114,9 @@ class SearchPage extends Component {
 
     let iconStyle = { fontSize: 60, color: '#999' }
     return (
-      <div className={styles.scrollContainer}>
+      <div className={styles.scrollContainer} ref={this.scrollListener}>
         <FixedHeader />
-        <main className="app-main" ref={this.appMain}>
+        <main className={styles.appMain} ref={this.appMain}>
           <Row gutter={20}>
             <Col span={18} offset={3}>
               <div className={styles.tabWrapper}>
@@ -123,6 +124,7 @@ class SearchPage extends Component {
                   !!searchResults.length ? (
                     <PullupLoadMore
                       initPageNum={1}
+                      scrollListener={this.scrollListener.current}
                       container={this.appMain.current}
                       onRef={p => this.pullup = p}
                       getPageData={this.getSearchPageData}

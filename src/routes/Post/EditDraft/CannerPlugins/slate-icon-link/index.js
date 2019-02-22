@@ -144,6 +144,7 @@ export default (class Link extends React.Component {
           visible={showModal}
           title="插入超链接"
           trigger="click"
+          placement="bottom"
           content={content}
           onVisibleChange={this.handleClickChange}
         >

@@ -16,24 +16,35 @@ class PullupLoadMore extends Component {
     this.handleScroll = this.handleScroll.bind(this)
     this.reloadPage = this.reloadPage.bind(this)
     this.page = props.initPageNum || 2 // 第一次上拉加载的page number
-    this.initScrollEvent()
+    this.initScroll = false
   }
   initScrollEvent() {
-    document.getElementById('root').addEventListener(
-      'scroll', this.handleScroll)
+    let { scrollListener } = this.props
+    if (scrollListener) {
+      scrollListener.addEventListener('scroll', this.handleScroll)
+      this.initScroll = true
+    }
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    let { scrollListener } = nextProps
+    if (!this.initScroll && scrollListener) {
+      scrollListener.addEventListener('scroll', this.handleScroll)
+      this.initScroll = true
+    }
   }
   handleScroll(e) {
     let { loading, noMoreData } = this.state
     if (loading || noMoreData) return
 
     let root = e.target
-    let { container } = this.props
+    let { container, threshold = 90, loadCondition = () => true } = this.props
     if (!container) return
 
     let appMainHeight = container.clientHeight
-    console.log(root.scrollTop)
-    console.log(`threshold: ${appMainHeight - root.clientHeight - 50}`)
-    if (root.scrollTop > appMainHeight - root.clientHeight - 50) {
+    if (
+      (root.scrollTop > appMainHeight - root.clientHeight - threshold) &&
+      loadCondition()
+    ) {
       this.getPageData()
     }
   }
@@ -74,10 +85,10 @@ class PullupLoadMore extends Component {
   }
   componentDidMount() {
     if (this.props.onRef) this.props.onRef(this)
+    this.initScrollEvent()
   }
   componentWillUnmount() {
-    document.getElementById('root').removeEventListener(
-      'scroll', this.handleScroll)
+    this.props.scrollListener.removeEventListener('scroll', this.handleScroll)
   }
   render () {
     let { children } = this.props
@@ -109,4 +120,4 @@ PullupLoadMore.propTypes = {
   getPageData: PropTypes.func, // 返回Promise对象，PullupLoadMore组件调用此函数时会传入当前page
 };
 
-export default connect()(PullupLoadMore);
+export default PullupLoadMore;

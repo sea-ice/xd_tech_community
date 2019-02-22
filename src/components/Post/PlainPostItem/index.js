@@ -15,12 +15,24 @@ class PlainPostItem extends Component {
     this.showPostDetail = this.showPostDetail.bind(this)
     this.showAuthorHomepage = this.showAuthorHomepage.bind(this)
   }
+  remeberCurrentPosition() {
+    let { dispatch, currentTab, getCurrentScrollTop } = this.props
+    dispatch({
+      type: 'recommendPosts/remeberCurrentPosition',
+      payload: {
+        currentTab,
+        scrollTop: getCurrentScrollTop()
+      }
+    })
+  }
   showPostDetail () {
-    let {dispatch, articleId} = this.props
+    let { dispatch, articleId } = this.props
+    this.remeberCurrentPosition()
     dispatch(routerRedux.push(`/post/${articleId}`))
   }
   showAuthorHomepage(e) {
     let { dispatch, userId } = this.props
+    this.remeberCurrentPosition()
     dispatch(routerRedux.push(`/author/${userId}`))
     e.stopPropagation()
   }

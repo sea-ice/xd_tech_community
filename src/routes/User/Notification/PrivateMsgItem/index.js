@@ -52,7 +52,7 @@ class NotifyItem extends Component {
     let { dispatch, isReceiver, loginUserId, id, content, isRead } = this.props
     if (!isReceiver || isRead) return
     dispatch({
-      type: 'privateMsg/setMsgRead',
+      type: 'privateMsgs/setMsgRead',
       payload: {
         userId: loginUserId,
         msgId: id,
@@ -74,7 +74,7 @@ class NotifyItem extends Component {
       let { dispatch, isReceiver, loginUserId, authorId, id, replyId } = this.props
       if (!isReceiver) id = replyId // 如果是追加回复，则回复的消息id为当前消息的replyId
       dispatch({
-        type: 'privateMsg/reply',
+        type: 'privateMsgs/reply',
         payload: {
           senderId: loginUserId,
           receiverId: authorId,
@@ -95,7 +95,7 @@ class NotifyItem extends Component {
   deleteMsg() {
     let { dispatch, id, isReceiver, updateCurrentPage } = this.props
     dispatch({
-      type: 'privateMsg/deleteMsg',
+      type: 'privateMsgs/deleteMsg',
       payload: {
         msgId: id,
         type: isReceiver ? 1 : 0, // 如果是发送者，type传0，否则传1

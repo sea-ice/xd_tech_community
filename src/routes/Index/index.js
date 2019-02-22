@@ -30,6 +30,8 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 })
 @connect(state => ({
   userInfo: state.user.userInfo,
+  currentTab: state.recommendPosts.lastSelectedTab,
+  currentScrollTop: state.recommendPosts.lastScrollTop,
   postFilterCollapse: state.postFilterState.collapse,
   stickSharePosts: state.indexStickPosts.share,
   // stickAppealPosts: state.indexStickPosts.appeal,
@@ -41,15 +43,31 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 class IndexPage extends Component {
   constructor (props) {
     super(props)
-    this.bindHandlers()
+    this.onTabChange = this.onTabChange.bind(this)
+    this.getCurrentScrollTop = this.getCurrentScrollTop.bind(this)
+    this.toggleCollapse = this.toggleCollapse.bind(this)
     this.getSharePostPageData = this.getPageData.bind(this, 'share')()
     this.getAppealPostPageData = this.getPageData.bind(this, 'appeal')()
     this.resetPullupState = this.resetPullupState.bind(this)
     this.appMain = React.createRef()
-    this.template = React.createRef()
+    this.scrollListener = React.createRef()
+
+    const { lastSelectedTab = 'sharePosts' } = props
+    this.state = { currentTab: lastSelectedTab }
   }
-  bindHandlers() {
-    this.toggleCollapse = this.toggleCollapse.bind(this)
+  componentDidMount() {
+    let { currentScrollTop } = this.props
+    if (currentScrollTop) {
+      this.scrollListener.current.scrollTop = currentScrollTop
+    }
+  }
+  onTabChange(activeKey) {
+    this.setState({
+      currentTab: activeKey
+    })
+  }
+  getCurrentScrollTop() {
+    return this.scrollListener.current.scrollTop
   }
   // 切换标签过滤器的收起/展开状态
   toggleCollapse () {
@@ -85,6 +103,7 @@ class IndexPage extends Component {
   resetPullupState() {
     // 重置上拉加载组件为初始状态
     if (this.sharePullup) {
+      console.log(this.sharePullup)
       this.sharePullup.resetState()
     }
     if (this.appealPullup) { // 有可能求助帖列表页面还没有渲染
@@ -97,6 +116,8 @@ class IndexPage extends Component {
       recommendSharePosts,
       recommendAppealPosts
     } = this.props
+
+    let { currentTab } = this.state
 
     let filterIconBtn = (
       <a href="javascript:void(0);" onClick={this.toggleCollapse} className={styles.filterBtn}>
@@ -126,30 +147,36 @@ class IndexPage extends Component {
     let iconStyle = { fontSize: 60, color: '#999' }
 
     return (
-      <div className={styles.scrollContainer}>
+      <div className={styles.scrollContainer} ref={this.scrollListener}>
         <FixedHeader />
-        <main className="app-main" ref={this.appMain}>
+        <main className={styles.appMain} ref={this.appMain}>
           <Row gutter={20}>
             <Col span={18} offset={3}>
               <div className={styles.tabWrapper}>
-                <Tabs tabBarExtraContent={filterIconBtn}>
+                <Tabs tabBarExtraContent={filterIconBtn} onChange={this.onTabChange}>
                   <Tabs.TabPane tab="分享" key="sharePosts">
                     <SharePostFilterByLabel resetPullup={this.resetPullupState} />
                     {
                       !!recommendSharePosts.length ? (
                         <PullupLoadMore
                           initPageNum={1}
+                          scrollListener={this.scrollListener.current}
                           container={this.appMain.current}
+                          loadCondition={() => currentTab === 'sharePosts'}
                           onRef={c => this.sharePullup = c}
                           getPageData={this.getSharePostPageData}
                         >
                           <ul className={styles.postList}>
                             {/* {
-                          confirmedTags.length ? null : stickSharePosts.map(p => <StickPostItem key={p.articleId} {...p} />)
-                        } */}
+                              confirmedTags.length ? null : stickSharePosts.map(p => <StickPostItem key={p.articleId} {...p} />)
+                            } */}
                             {
                               recommendSharePosts.map(
-                                p => <PlainPostItem key={p.articleId} {...p} />)
+                                p => <PlainPostItem
+                                  key={p.articleId} {...p}
+                                  currentTab={currentTab}
+                                  getCurrentScrollTop={this.getCurrentScrollTop}
+                                />)
                             }
                           </ul>
                         </PullupLoadMore>
@@ -167,14 +194,20 @@ class IndexPage extends Component {
                       !!recommendAppealPosts.length ? (
                         <PullupLoadMore
                           initPageNum={1}
+                          scrollListener={this.scrollListener.current}
                           container={this.appMain.current}
+                          loadCondition={() => currentTab === 'appealPosts'}
                           onRef={c => this.appealPullup = c}
                           getPageData={this.getAppealPostPageData}
                         >
                           <ul className={styles.postList}>
                             {
                               recommendAppealPosts.map(
-                                p => <PlainPostItem key={p.articleId} {...p} />)
+                                p => <PlainPostItem
+                                  key={p.articleId} {...p}
+                                  currentTab={currentTab}
+                                  getCurrentScrollTop={this.getCurrentScrollTop}
+                                />)
                             }
                           </ul>
                         </PullupLoadMore>
@@ -192,8 +225,6 @@ class IndexPage extends Component {
                 </Tabs>
               </div>
             </Col>
-            {/* <Col span={8}>
-            </Col> */}
           </Row>
         </main>
       </div>

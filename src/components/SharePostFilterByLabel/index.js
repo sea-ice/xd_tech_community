@@ -39,7 +39,7 @@ class SharePostFilterByLabel extends Component {
     if (activeCategory !== newCategory) {
       dispatch({
         type: 'postFilterState/setState',
-        payload: {activeCategory: newCategory}
+        payload: { activeCategory: newCategory }
       })
     }
   }
@@ -85,13 +85,18 @@ class SharePostFilterByLabel extends Component {
   }
   deleteTag (tagName) {
     return () => {
-      let {dispatch, selectedTags} = this.props
-      dispatch({
-        type: 'postFilterState/changeOneTag',
-        payload: {
-          selectedTags: selectedTags.filter(tag => tag !== tagName)
-        }
-      })
+      let { dispatch, selectedTags } = this.props
+
+      if (selectedTags.length === 1) {
+        this.resetSelectTags()
+      } else {
+        dispatch({
+          type: 'postFilterState/changeOneTag',
+          payload: {
+            selectedTags: selectedTags.filter(tag => tag !== tagName)
+          }
+        })
+      }
     }
   }
   getFilterPost () {
@@ -114,19 +119,8 @@ class SharePostFilterByLabel extends Component {
     })
   }
   resetSelectTags () {
-    let { selectedTags, confirmedTags, userInfo, dispatch, resetPullup } = this.props
-    if (!confirmedTags.length) {
-      if (selectedTags.length) {
-        dispatch({
-          type: 'postFilterState/setState',
-          payload: {
-            selectedTags: [],
-            confirmState: 'confirmed'
-          }
-        })
-      }
-      return
-    }
+    let { userInfo, dispatch, resetPullup } = this.props
+
     dispatch({
       type: 'recommendPosts/getPostByNewTags',
       payload: {
@@ -142,7 +136,7 @@ class SharePostFilterByLabel extends Component {
     let {dispatch} = this.props
     dispatch({
       type: 'postFilterState/setState',
-      payload: {confirmState}
+      payload: { confirmState }
     })
   }
   render () {
@@ -195,7 +189,7 @@ class SharePostFilterByLabel extends Component {
             <span className={styles.selectTagsTitle}>已选标签({selectedTags.length}/{this.selectTagLimit})：</span>
             {
               selectedTags.length ? selectedTags.map(tag => <div className={styles.selectTag} key={tag}>
-                <Tag closable={true} onClose={this.deleteTag(tag)}>{tag}</Tag>
+                <Tag closable={confirmState !== 'loading'} onClose={this.deleteTag(tag)}>{tag}</Tag>
               </div>) :
               <span className={styles.selectTagTips}>（最多可选{this.selectTagLimit}个）</span>
             }
@@ -211,8 +205,11 @@ class SharePostFilterByLabel extends Component {
                 onClick={this.getFilterPost}>{
                   confirmState !== 'waitConfirm' ? confirmState === 'loading' ? '加载中' : '已刷新' : '确认'
                 }</Button>
-              <div className={styles.space_02rem}></div>
-              <Button size="small" onClick={this.resetSelectTags}>重置</Button>
+              {confirmState === 'loading' ? null : <React.Fragment>
+                <div className={styles.space_02rem}></div>
+                <Button size="small" onClick={this.resetSelectTags}>重置</Button>
+              </React.Fragment>}
+
             </div>
           }
         </div>

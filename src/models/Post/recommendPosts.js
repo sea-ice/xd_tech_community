@@ -79,6 +79,17 @@ export default {
           payload: { confirmState: 'waitConfirm' }
         })
       }
-    }
+    },
+    *remeberCurrentPosition({ payload }, { select, put }) {
+      let { currentTab, scrollTop } = payload
+
+      yield put({
+        type: 'setState',
+        payload: {
+          lastSelectedTab: currentTab,
+          lastScrollTop: scrollTop
+        }
+      })
+    },
   }
 }

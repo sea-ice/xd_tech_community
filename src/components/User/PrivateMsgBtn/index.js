@@ -28,7 +28,7 @@ class PrivateMsgBtn extends Component {
       }
       let { dispatch, userId, receiverId } = this.props
       dispatch({
-        type: 'privateMsg/send',
+        type: 'privateMsgs/send',
         payload: {
           userId, receiverId,
           content: msg,

@@ -13,7 +13,7 @@ import Bold, { BoldPlugin } from "@canner/slate-icon-bold";
 import Code, { CodePlugin } from "@canner/slate-icon-code";
 import Clean from "@canner/slate-icon-clean";
 import { CodeBlockPlugin } from "../CannerPlugins/slate-icon-codeblock";
-import { TablePlugin } from "@canner/slate-icon-table";
+import { TablePlugin } from "../CannerPlugins/slate-icon-table";
 import { FontBgColorPlugin } from "../CannerPlugins/slate-icon-fontbgcolor";
 import { FontColorPlugin } from "@canner/slate-icon-fontcolor";
 import {
