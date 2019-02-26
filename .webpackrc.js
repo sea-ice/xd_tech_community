@@ -20,11 +20,6 @@ export default {
       "target": "http://13.76.169.167:8080/campus_test1",
       "changeOrigin": true,
       "pathRewrite": { "^/api": "" }
-    },
-    "/sms": {
-      "target": "https://leancloud.cn",
-      "changeOrigin": true,
-      "pathRewrite": { "^/sms": "" }
     }
   },
   "html": {

@@ -11,9 +11,7 @@
 
 .headerContent {
   display: flex;
-  width: 80%;
   height: 68px;
-  margin: 0 auto;
   justify-content: space-between;
   align-items: center;
 }

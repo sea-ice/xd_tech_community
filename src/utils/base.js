@@ -1,4 +1,5 @@
 
+import dayjs from 'dayjs'
 /**
  * 判断两个数组是否具有完全相同的元素
  *
@@ -119,6 +120,10 @@ export function differTime(time, relativeTo) {
     }
   }
   return result + diffPostfix
+}
+
+export function timeRelativeToNow(time) {
+  return differTime(dayjs(+time), dayjs())
 }
 
 /**

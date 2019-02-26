@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Popover } from 'antd'
-import dayjs from 'dayjs'
 
-import { setHTMLSafely } from 'utils'
+import { setHTMLSafely, timeRelativeToNow } from 'utils'
 
 import styles from './index.scss'
 import config from 'config/constants'
@@ -48,7 +47,9 @@ class ReplyItem extends Component {
     let { userId, nickName, avator, commentsv1Id, commentsv2Id,
       content, isApproval, approvalNum, time } = replyInfo
     console.log(this.props.comments)
-
+    let commentContent = setHTMLSafely(content).split(/\n/).map(
+      line => line.match(/\s+/) ? null : <p className={styles.commentContent}>{line}</p>
+    ).filter(line => !!line)
     // let commonIconOpt = {
     //   type: 'icon',
     //   color: '#666',
@@ -70,7 +71,7 @@ class ReplyItem extends Component {
                 btnPadding={0}
                 onClick={this.turnToAuthorHomepage}
               />
-              <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
+              <time>{timeRelativeToNow(time)}</time>
             </p>
             {
               loginUserId === userId ? null : (
@@ -93,7 +94,7 @@ class ReplyItem extends Component {
               )
             }
           </header>
-          <p className={styles.commentContent} dangerouslySetInnerHTML={{ __html: setHTMLSafely(content, true)}}></p>
+          {commentContent}
           {/* <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>
               <Debounce

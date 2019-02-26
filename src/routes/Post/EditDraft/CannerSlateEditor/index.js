@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Toolbar from "../Toolbar";
 import toolbar from "slate-toolbar";
 import sidebar from "slate-sidebar";
-import { MarkdownPlugin } from "slate-md-editor";
+import { MarkdownPlugin } from "../CannerPlugins/slate-md-editor";
 import { BLOCKS } from "@canner/slate-constant";
 import copyPastePlugin from "@canner/slate-paste-html-plugin";
 

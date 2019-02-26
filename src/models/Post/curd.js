@@ -90,7 +90,7 @@ export default {
       }
     },
     *newDraft({ payload }, { call, put }) {
-      let { userId, pathname, successCallback, failCallback } = payload
+      let { userId, returnPath, successCallback, failCallback } = payload
       let url = `${config.SERVER_URL_API_PREFIX}/article/saveArticleDraft`
       let newDraft = {
         title: '',
@@ -125,7 +125,7 @@ export default {
         })
         yield put({
           type: 'saveEditDraftReturnPage',
-          payload: { returnPath: pathname }
+          payload: { returnPath }
         })
         if (successCallback) successCallback(draftId)
       } else {

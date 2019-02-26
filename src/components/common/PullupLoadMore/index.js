@@ -88,7 +88,10 @@ class PullupLoadMore extends Component {
     this.initScrollEvent()
   }
   componentWillUnmount() {
-    this.props.scrollListener.removeEventListener('scroll', this.handleScroll)
+    let { scrollListener } = this.props
+    if (scrollListener) {
+      scrollListener.removeEventListener('scroll', this.handleScroll)
+    }
   }
   render () {
     let { children } = this.props

@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import dayjs from 'dayjs'
 import { connect } from 'dva'
+import { Avatar } from 'antd'
 
 import ReceiveMsgItemLayout from '../ReceiveMsgItemLayout'
 import { msgTemplates } from './msgItem.config'
+import { timeRelativeToNow } from 'utils'
+import config from 'config/constants'
+import styles from './index.scss'
 
 const getReceiveMsgItemProps = ({ msgType, updateCurrentPage, ...rest }) => {
   if (msgType === 'userMsgs') {
@@ -20,7 +23,7 @@ const getReceiveMsgItemProps = ({ msgType, updateCurrentPage, ...rest }) => {
       avatar: avator,
       nickName,
       header,
-      time: dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm'),
+      time: timeRelativeToNow(time),
       content,
       extraContent,
       btnGroup,
@@ -32,8 +35,17 @@ const getReceiveMsgItemProps = ({ msgType, updateCurrentPage, ...rest }) => {
     return {
       msgType,
       msgId: id,
-      header: '',
-      time: dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm'),
+      header: <div className={styles.avatarWrapper}>
+        <Avatar
+          src={`${config.SUBDIRECTORY_PREFIX}/assets/sys_avatar.png`}
+          shape="circle" size={36}
+        ></Avatar>
+        <strong>源来官方</strong>
+        <i
+          className={styles.crown}
+          style={{ backgroundImage: `url(${config.SUBDIRECTORY_PREFIX}/assets/crown.svg)` }}></i>
+      </div>,
+      time: timeRelativeToNow(time),
       content,
       isRead: !!isRead,
       updateCurrentPage

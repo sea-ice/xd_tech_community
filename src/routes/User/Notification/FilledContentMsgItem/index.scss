@@ -6,6 +6,17 @@
   }
 }
 
+.crown {
+  composes: icon from global;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  text-indent: -9999px;
+  &:after {content: '\3000';}
+}
+
+
 
 .replyToContent {
   color: #ccc;
@@ -14,5 +25,19 @@
   margin: 0;
   cursor: auto;
 }
+
+.referCommentContent {
+  composes: replyToContent;
+  position: relative;
+  top: 10px;
+  left: 10px;
+  border-left: 5px solid #acc6aa;
+  background-color: #eee;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+}
+
+
+
 
 

@@ -3,6 +3,7 @@ import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 
 import styles from './index.scss'
+import config from 'config/constants'
 import IconBtn from 'components/common/IconBtn'
 
 @connect()
@@ -18,7 +19,7 @@ class Page404 extends Component {
   render() {
     return (
       <div className={styles.fixed}>
-        <img src="/assets/404.jpg" alt="" />
+        <img src={`${config.SUBDIRECTORY_PREFIX}/assets/404.jpg`} alt="" />
         <footer className={styles.footer}>
           <IconBtn
             type="icon"
@@ -31,7 +32,7 @@ class Page404 extends Component {
           />
         </footer>
         <img
-          src="/assets/logo.png" alt=""
+          src={`${config.SUBDIRECTORY_PREFIX}/assets/logo.png`} alt=""
           className={styles.logo}
           onClick={this.turnToHomePage}
         />

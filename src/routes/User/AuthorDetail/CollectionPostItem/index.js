@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router'
 import { Icon, Popover, message } from 'antd'
-import dayjs from 'dayjs'
 
 import styles from './index.scss'
 import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import IconBtn from "components/common/IconBtn";
 import CollectionPanel from 'components/Post/CollectionPanel'
+import { timeRelativeToNow } from 'utils'
 
 @connect(state => ({
   loginUserId: state.user.userId,
@@ -128,7 +128,7 @@ class CollectionPostItem extends Component {
           }
         </header>
         <footer className={styles.footer}>
-          <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
+          <time>发表于{timeRelativeToNow(time)}</time>
           <div className={styles.iconBtnWrapper}>
             {/* <IconBtn iconType="eye" iconBtnText={`${scanNum}人看过`} {...commonIconOpt} /> */}
             <IconBtn iconType="heart" iconBtnText={`${approvalNum}人喜欢`} {...commonIconOpt} />

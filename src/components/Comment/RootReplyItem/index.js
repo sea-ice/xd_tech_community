@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Popover, message } from 'antd'
-import dayjs from 'dayjs'
 
-import { getIconBtnToggleProps, setHTMLSafely } from 'utils'
+import { getIconBtnToggleProps, setHTMLSafely, timeRelativeToNow } from 'utils'
 
 import styles from './index.scss'
 import config from 'config/constants'
@@ -132,6 +131,9 @@ class ReplyItem extends Component {
       color: '#4DB93C'
     })
     let { showReplyBox, replyContent } = this.state
+    let commentContent = setHTMLSafely(content).split(/\n/).map(
+      line => line.match(/\s+/) ? null : <p className={styles.commentContent}>{line}</p>
+    ).filter(line => !!line)
 
     return (
       <section className={styles.replyItem}>
@@ -147,7 +149,7 @@ class ReplyItem extends Component {
                 btnPadding={0}
                 onClick={this.turnToAuthorHomepage}
               />
-              <time>{dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
+              <time>{timeRelativeToNow(time)}</time>
             </p>
             <p className="commentNumber">#&nbsp;{rootComment}</p>
           </header>
@@ -158,7 +160,7 @@ class ReplyItem extends Component {
                 backgroundImage: `url(${
                   config.SUBDIRECTORY_PREFIX}/assets/accepted.svg)`
               } : {}}></span>
-            <p className={styles.commentContent} dangerouslySetInnerHTML={{ __html: setHTMLSafely(content, true) }}></p>
+            {commentContent}
           </main>
           <footer className={styles.replyItemFooter}>
             <div className={styles.iconBtns}>

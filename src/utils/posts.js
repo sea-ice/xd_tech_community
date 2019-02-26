@@ -21,7 +21,7 @@ export function fillPostListPayload (userInfo, postType, page, tags=[]) {
     params.userId = userInfo.userId
     params.cookie = ''
   } else {
-    params.userId = 1
+    params.userId = 0
     params.cookie = window.localStorage.getItem(config.UUID_STORAGE_NAME)
   }
   return payload

@@ -91,5 +91,15 @@ export default {
         }
       })
     },
+    *clearPageScrollState(_, { put }) {
+      console.log('clearPageScrollState')
+      yield put({
+        type: 'setState',
+        payload: {
+          lastSelectedTab: '',
+          lastScrollTop: 0
+        }
+      })
+    }
   }
 }

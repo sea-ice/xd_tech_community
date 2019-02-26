@@ -11,6 +11,8 @@ const turnToAuthorHomepage = (e, userId, dispatch) => {
   e.stopPropagation()
 }
 
+const maxLength = (title, length = 999) => title.length > length ? `${title.slice(0, length)}...` : title
+
 const makeAvatarWrapper = ({avator, nickName, userId}, dispatch) => (
   <div
     className={styles.avatarWrapper}
@@ -84,7 +86,7 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;评论了你的帖子《{title}》：
+        &nbsp;评论了你的帖子《{maxLength(title)}》：
       </React.Fragment>
     ),
     btnGroup: makeCommentMsgReplyBtn
@@ -93,24 +95,24 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;评论了你的帖子《{title}》：
+        &nbsp;评论了你的帖子《{maxLength(title)}》：
       </React.Fragment>
     ),
     btnGroup: makeCommentMsgReplyBtn
   },
   '3': {
     // 回复评论
-    header: ({ title, ...rest }, { dispatch }) => (
+    header: ({ articleTitle, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;回复了你在《{title}》帖子中的评论：
+        &nbsp;回复了你在《{maxLength(articleTitle)}》帖子中的评论：
       </React.Fragment>
     ),
-    extraContent: () => {
-      return <p
-        className={styles.replyToContent}
+    extraContent: ({ comment1Content }) => {
+      return <blockquote
+        className={styles.referCommentContent}
         onClick={e => e.stopPropagation()}
-      >“评论了啥”</p>
+      >{comment1Content}</blockquote>
     } // 内容区域默认显示content属性值
   },
   '4': {
@@ -118,7 +120,7 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;赞了你的帖子《{title}》
+        &nbsp;赞了你的帖子《{maxLength(title)}》
       </React.Fragment>
     ),
     content: null
@@ -128,23 +130,23 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;赞了你的帖子《{title}》
+        &nbsp;赞了你的帖子《{maxLength(title)}》
       </React.Fragment>
     ),
     content: null
   },
   '6': {
     // 评论点赞
-    header: ({ title, ...rest }, { dispatch }) => (
+    header: ({ articleTitle, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;赞了你在帖子《{title}》中的评论：
+        &nbsp;赞了你在帖子《{maxLength(articleTitle)}》中的评论：
       </React.Fragment>
     ),
-    extraContent: ({ title }) => <p
-      className={styles.replyToContent}
+    extraContent: ({ comment1Content }) => <blockquote
+      className={styles.referCommentContent}
       onClick={e => e.stopPropagation()}
-    >“评论了啥”</p>,
+    >{comment1Content}</blockquote>,
     content: null // 不需要显示内容区域
   },
   '7': {
@@ -155,7 +157,7 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;收藏了你的帖子《{title}》
+        &nbsp;收藏了你的帖子《{maxLength(title)}》
       </React.Fragment>
     ),
     content: null
@@ -165,7 +167,7 @@ export const msgTemplates = {
     header: ({ title, ...rest }, { dispatch }) => (
       <React.Fragment>
         {makeAvatarWrapper(rest, dispatch)}
-        &nbsp;收藏了你的帖子《{title}》
+        &nbsp;收藏了你的帖子《{maxLength(title)}》
       </React.Fragment>
     ),
     content: null

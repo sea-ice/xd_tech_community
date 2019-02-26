@@ -30,7 +30,7 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 })
 @connect(state => ({
   userInfo: state.user.userInfo,
-  currentTab: state.recommendPosts.lastSelectedTab,
+  lastSelectedTab: state.recommendPosts.lastSelectedTab,
   currentScrollTop: state.recommendPosts.lastScrollTop,
   postFilterCollapse: state.postFilterState.collapse,
   stickSharePosts: state.indexStickPosts.share,
@@ -44,7 +44,7 @@ class IndexPage extends Component {
   constructor (props) {
     super(props)
     this.onTabChange = this.onTabChange.bind(this)
-    this.getCurrentScrollTop = this.getCurrentScrollTop.bind(this)
+    this.remeberCurrentPageScrollState = this.remeberCurrentPageScrollState.bind(this)
     this.toggleCollapse = this.toggleCollapse.bind(this)
     this.getSharePostPageData = this.getPageData.bind(this, 'share')()
     this.getAppealPostPageData = this.getPageData.bind(this, 'appeal')()
@@ -56,9 +56,12 @@ class IndexPage extends Component {
     this.state = { currentTab: lastSelectedTab }
   }
   componentDidMount() {
-    let { currentScrollTop } = this.props
+    let { dispatch, currentScrollTop } = this.props
     if (currentScrollTop) {
       this.scrollListener.current.scrollTop = currentScrollTop
+      dispatch({
+        type: 'recommendPosts/clearPageScrollState'
+      })
     }
   }
   onTabChange(activeKey) {
@@ -66,8 +69,18 @@ class IndexPage extends Component {
       currentTab: activeKey
     })
   }
-  getCurrentScrollTop() {
-    return this.scrollListener.current.scrollTop
+  remeberCurrentPageScrollState() {
+    let { dispatch } = this.props
+    let { currentTab } = this.state
+
+    console.log('save currentTab: ' + currentTab)
+    dispatch({
+      type: 'recommendPosts/remeberCurrentPosition',
+      payload: {
+        currentTab,
+        scrollTop: this.scrollListener.current.scrollTop
+      }
+    })
   }
   // 切换标签过滤器的收起/展开状态
   toggleCollapse () {
@@ -118,6 +131,7 @@ class IndexPage extends Component {
     } = this.props
 
     let { currentTab } = this.state
+    console.log(`currentTab:${currentTab}`)
 
     let filterIconBtn = (
       <a href="javascript:void(0);" onClick={this.toggleCollapse} className={styles.filterBtn}>
@@ -153,7 +167,11 @@ class IndexPage extends Component {
           <Row gutter={20}>
             <Col span={18} offset={3}>
               <div className={styles.tabWrapper}>
-                <Tabs tabBarExtraContent={filterIconBtn} onChange={this.onTabChange}>
+                <Tabs
+                  activeKey={currentTab}
+                  tabBarExtraContent={filterIconBtn}
+                  onChange={this.onTabChange}
+                >
                   <Tabs.TabPane tab="分享" key="sharePosts">
                     <SharePostFilterByLabel resetPullup={this.resetPullupState} />
                     {
@@ -174,8 +192,7 @@ class IndexPage extends Component {
                               recommendSharePosts.map(
                                 p => <PlainPostItem
                                   key={p.articleId} {...p}
-                                  currentTab={currentTab}
-                                  getCurrentScrollTop={this.getCurrentScrollTop}
+                                  remeberCurrentPageScrollState={this.remeberCurrentPageScrollState}
                                 />)
                             }
                           </ul>
@@ -205,8 +222,7 @@ class IndexPage extends Component {
                               recommendAppealPosts.map(
                                 p => <PlainPostItem
                                   key={p.articleId} {...p}
-                                  currentTab={currentTab}
-                                  getCurrentScrollTop={this.getCurrentScrollTop}
+                                  remeberCurrentPageScrollState={this.remeberCurrentPageScrollState}
                                 />)
                             }
                           </ul>

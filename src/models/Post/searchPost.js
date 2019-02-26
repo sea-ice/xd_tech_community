@@ -11,7 +11,8 @@ export default {
   namespace: 'searchPost',
   state: {
     searchKeyword: '',
-    searchResults: []
+    searchResults: [],
+    lastScrollTop: 0,
   },
   reducers: {
     putNextPage(state, { payload }) {
@@ -61,6 +62,24 @@ export default {
         if (failCallback) failCallback()
       }
     },
+    *saveScrollTop({ payload }, { select, put }) {
+      let { scrollTop } = payload
+
+      yield put({
+        type: 'setState',
+        payload: {
+          lastScrollTop: scrollTop
+        }
+      })
+    },
+    *clearPageScrollState(_, { put }) {
+      yield put({
+        type: 'setState',
+        payload: {
+          lastScrollTop: 0
+        }
+      })
+    }
   }
 }
 

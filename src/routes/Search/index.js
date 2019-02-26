@@ -13,7 +13,8 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 @connect(state => ({
   userId: state.user.userId,
   searchResults: state.searchPost.searchResults,
-  searchKeyword: state.searchPost.searchKeyword
+  searchKeyword: state.searchPost.searchKeyword,
+  lastScrollTop: state.searchPost.lastScrollTop
 }))
 @withRouter
 @checkLogin({
@@ -36,9 +37,19 @@ import PlainPostItem from 'components/Post/PlainPostItem'
 class SearchPage extends Component {
   constructor (props) {
     super(props)
+    this.remeberCurrentPageScrollState = this.remeberCurrentPageScrollState.bind(this)
     this.getSearchPageData = this.getPageData.bind(this)()
     this.scrollListener = React.createRef()
     this.appMain = React.createRef()
+  }
+  componentDidMount() {
+    let { dispatch, lastScrollTop } = this.props
+    if (lastScrollTop) {
+      this.scrollListener.current.scrollTop = lastScrollTop
+      dispatch({
+        type: 'searchPost/clearPageScrollState'
+      })
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -57,6 +68,16 @@ class SearchPage extends Component {
         message.success('加载失败！')
       })
     }
+  }
+
+  remeberCurrentPageScrollState() {
+    let { dispatch } = this.props
+    dispatch({
+      type: 'searchPost/saveScrollTop',
+      payload: {
+        scrollTop: this.scrollListener.current.scrollTop
+      }
+    })
   }
 
   getSearchResultByNewKeyword(keyword, successCallback, failCallback) {
@@ -132,7 +153,10 @@ class SearchPage extends Component {
                       <ul className={styles.postList}>
                         {
                           searchResults.map(
-                            p => <PlainPostItem key={p.articleId} {...p} />)
+                            p => <PlainPostItem
+                              key={p.articleId} {...p}
+                              remeberCurrentPageScrollState={this.remeberCurrentPageScrollState}
+                            />)
                         }
                       </ul>
                     </PullupLoadMore>

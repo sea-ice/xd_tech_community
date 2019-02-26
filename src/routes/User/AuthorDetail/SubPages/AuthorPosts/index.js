@@ -62,13 +62,13 @@ class AuthorPosts extends Component {
     }))
   }
   newDraft() {
-    let { dispatch, authorId, location: { pathname } } = this.props
+    let { dispatch, authorId, location: { pathname, search } } = this.props
     let hideLoading = message.loading('加载中...', 0)
     dispatch({
       type: 'postCURD/newDraft',
       payload: {
         userId: authorId,
-        pathname,
+        returnPath: pathname + search,
         successCallback(draftId) {
           hideLoading()
           dispatch(routerRedux.push(`/edit/${draftId}`))

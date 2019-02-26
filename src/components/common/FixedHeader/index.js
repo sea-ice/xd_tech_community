@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Input, Badge, Icon, Avatar, message } from 'antd'
+import { Row, Col, Input, Badge, Icon, Avatar, message } from 'antd'
 import { connect } from 'dva'
 import { routerRedux, withRouter } from 'dva/router'
 
@@ -109,13 +109,13 @@ class FixedHeader extends Component {
     }
   }
   turnToPublishPage() {
-    let { dispatch, userId, location: { pathname } } = this.props
+    let { dispatch, userId, location: { pathname, search } } = this.props
     let hideLoading = message.loading('加载中...', 0)
     dispatch({
       type: 'postCURD/newDraft',
       payload: {
         userId,
-        pathname,
+        returnPath: pathname + search,
         successCallback(draftId) {
           hideLoading()
           dispatch(routerRedux.push(`/edit/${draftId}`))
@@ -172,74 +172,78 @@ class FixedHeader extends Component {
     let iconBtnProps = { theme: "twoTone", type: 'icon', iconSize: 24, }
     return (
       <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1
-            className={styles.logo}
-            style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.png)` }}
-            onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
-          <main className={styles.headerMain}>
-            <div className={styles.searchInputWrapper}>
-              <div className={styles.searchInput}>
-                <Search
-                  placeholder="发现更多有趣的"
-                  value={inputKeyword}
-                  onChange={this.onInputKeywordChange}
-                  onSearch={value => this.handleUserSearch(value)}
-                  enterButton
+        <Row gutter={20}>
+          <Col span={18} offset={3}>
+          <div className={styles.headerContent}>
+            <h1
+              className={styles.logo}
+              style={{ content: `url(${config.SUBDIRECTORY_PREFIX}/assets/logo.png)` }}
+              onClick={this.turnToIndexPage}>源来，西电人的技术社区</h1>
+            <main className={styles.headerMain}>
+              <div className={styles.searchInputWrapper}>
+                <div className={styles.searchInput}>
+                  <Search
+                    placeholder="发现更多有趣的"
+                    value={inputKeyword}
+                    onChange={this.onInputKeywordChange}
+                    onSearch={value => this.handleUserSearch(value)}
+                    enterButton
+                  />
+                </div>
+              </div>
+
+
+              <div className={styles.publishBtn}>
+                <ConfirmIfNotMeet
+                  condition={!!userId}
+                  callbackWhenMeet={this.turnToPublishPage}
+                  btn={<IconBtn iconType="form" iconBtnText="发帖" {...iconBtnProps} />}
                 />
               </div>
-            </div>
-
-
-            <div className={styles.publishBtn}>
-              <ConfirmIfNotMeet
-                condition={!!userId}
-                callbackWhenMeet={this.turnToPublishPage}
-                btn={<IconBtn iconType="form" iconBtnText="发帖" {...iconBtnProps} />}
-              />
-            </div>
-            {/* <div className={styles.appLink}>
-              <IconBtn
-                iconClassName={styles.flyIcon}
-                bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
-                iconBtnText="APP" color="#999" fontSize="18px"
-              />
-            </div> */}
-            {
-              !!userId ? (
-                <div className={styles.msgNotify}>
-                  <a
-                    href="javascript:void(0);"
-                    className={styles.iconBtn}
-                    onClick={this.turnToNotifyPage}
-                  >
-                    <Badge count={unreadTotalNum}>
-                      <Icon type='bell' style={{fontSize: 24}} />
-                    </Badge>
-                    <span className={styles.iconBtnText}>消息中心</span>
-                  </a>
-                </div>
-              ) : null
-            }
-            <div className={styles.loginUserInfo}>
-              {/* <Avatar src='../../../assets/yay.jpg' /> */}
+              {/* <div className={styles.appLink}>
+                <IconBtn
+                  iconClassName={styles.flyIcon}
+                  bgImage={`${config.SUBDIRECTORY_PREFIX}/assets/fly.svg`}
+                  iconBtnText="APP" color="#999" fontSize="18px"
+                />
+              </div> */}
               {
-                userLogined ? (
-                  <React.Fragment>
-                    <span className={styles.avatarWrapper}><Avatar src={userInfo.avator} onClick={this.turnToMyHomepage} /></span>
-                    <span className={styles.nickName} onClick={this.turnToMyHomepage}>{userInfo.nickName}</span>
-                    <a href="javascript:void(0);" className={styles.logout} onClick={this.toLogout}>退出</a>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <a href="javascript:void(0);" className={styles.register} onClick={this.toRegister}>注册</a>
-                    <a href="javascript:void(0);" className={styles.login} onClick={this.toLogin}>登录</a>
-                  </React.Fragment>
-                )
+                !!userId ? (
+                  <div className={styles.msgNotify}>
+                    <a
+                      href="javascript:void(0);"
+                      className={styles.iconBtn}
+                      onClick={this.turnToNotifyPage}
+                    >
+                      <Badge count={unreadTotalNum}>
+                        <Icon type='bell' style={{fontSize: 24}} />
+                      </Badge>
+                      <span className={styles.iconBtnText}>消息中心</span>
+                    </a>
+                  </div>
+                ) : null
               }
+              <div className={styles.loginUserInfo}>
+                {/* <Avatar src='../../../assets/yay.jpg' /> */}
+                {
+                  userLogined ? (
+                    <React.Fragment>
+                      <span className={styles.avatarWrapper}><Avatar src={userInfo.avator} onClick={this.turnToMyHomepage} /></span>
+                      <span className={styles.nickName} onClick={this.turnToMyHomepage}>{userInfo.nickName}</span>
+                      <a href="javascript:void(0);" className={styles.logout} onClick={this.toLogout}>退出</a>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <a href="javascript:void(0);" className={styles.register} onClick={this.toRegister}>注册</a>
+                      <a href="javascript:void(0);" className={styles.login} onClick={this.toLogin}>登录</a>
+                    </React.Fragment>
+                  )
+                }
+              </div>
+            </main>
             </div>
-          </main>
-        </div>
+          </Col>
+          </Row>
       </header>
     )
   }

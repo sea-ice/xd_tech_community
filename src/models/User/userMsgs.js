@@ -64,7 +64,7 @@ export default {
       let { userId, successCallback } = payload
       let res = yield call(() => postJSON(
         /* 接口待确定 */
-        `${config.SERVER_URL_API_PREFIX}`, {
+        `${config.SERVER_URL_API_PREFIX}/push/setAllRead`, {
           userId
         }))
       let { data: { code } } = res
@@ -85,28 +85,12 @@ export default {
         if (successCallback) successCallback()
       }
     },
-    *reply({ payload }, { call }) {
-      let { senderId, receiverId, msgId, content, successCallback, failCallback } = payload
-      let res = yield call(() => postJSON(
-        `${config.SERVER_URL_API_PREFIX}/secretMsg/replySecretMsg`, {
-          senderId, receiverId,
-          replyId: msgId,
-          content,
-          time: '' + Date.now()
-        }))
-      let { data: { code } } = res
-      if (code === 100) {
-        if (successCallback) successCallback()
-      } else {
-        if (failCallback) failCallback()
-      }
-    },
     *deleteMsg({ payload }, { call }) {
       let { msgId, successCallback, failCallback } = payload
       let res = yield call(() => postJSON(
         /* 接口待确定 */
-        `${config.SERVER_URL_API_PREFIX}`, {
-          secretMsgId: msgId
+        `${config.SERVER_URL_API_PREFIX}/push/deleteUserNotify`, {
+          notifyId: msgId
         }))
       let { data: { code } } = res
       if (code === 100) {

@@ -2,13 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
 import { Row, Col, Affix, Button, Popover, Tag, Avatar, Pagination, message } from 'antd'
-import dayjs from 'dayjs'
 
 import styles from './index.scss'
 import articleStyles from  "./article.scss"
 import config from 'config/constants'
 // import colorfulTags from 'config/colorfulTags.json'
-import { checkLogin, getIconBtnToggleProps, removeDuplicateTags } from 'utils'
+import { checkLogin, getIconBtnToggleProps, removeDuplicateTags, timeRelativeToNow } from 'utils'
 
 import FixedHeader from 'components/common/FixedHeader'
 import Confirm from 'components/common/Confirm'
@@ -451,7 +450,7 @@ class PostDetail extends Component {
                   {!!time ? (
                     <div className={styles.postOtherInfoIcon}>
                       <IconBtn iconType="clock-circle" iconBtnText={
-                        dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
+                        timeRelativeToNow(time)
                       } {...commonOtherInfoIconOpt} />
                     </div>
                   ) : null}

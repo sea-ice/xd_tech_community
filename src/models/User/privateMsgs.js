@@ -99,8 +99,8 @@ export default {
         if (successCallback) successCallback()
       }
     },
-    *reply({ payload }, { call }) {
-      let { senderId, receiverId, msgId, content, successCallback, failCallback } = payload
+    *reply({ payload }, { call, put }) {
+      let { senderId, receiverId, msgId, content, page, successCallback, failCallback } = payload
       let res = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/secretMsg/replySecretMsg`, {
           senderId, receiverId,
@@ -110,6 +110,14 @@ export default {
         }))
       let { data: { code } } = res
       if (code === 100) {
+        yield put({
+          type: 'getPageData',
+          payload: {
+            userId: senderId,
+            page,
+            number: 10
+          }
+        })
         if (successCallback) successCallback()
       } else {
         if (failCallback) failCallback()

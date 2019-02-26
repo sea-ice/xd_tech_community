@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import {connect} from 'dva'
 import { routerRedux } from 'dva/router'
-import dayjs from 'dayjs'
 
 import styles from './index.scss'
-import config from 'config/constants'
 import IconBtn from 'components/common/IconBtn'
 import PostItemFooter from 'components/common/PostItemFooter'
-import { getPostExcerpt } from 'utils'
+import { getPostExcerpt, timeRelativeToNow } from 'utils'
 
 class PlainPostItem extends Component {
   constructor (props) {
@@ -16,14 +14,8 @@ class PlainPostItem extends Component {
     this.showAuthorHomepage = this.showAuthorHomepage.bind(this)
   }
   remeberCurrentPosition() {
-    let { dispatch, currentTab, getCurrentScrollTop } = this.props
-    dispatch({
-      type: 'recommendPosts/remeberCurrentPosition',
-      payload: {
-        currentTab,
-        scrollTop: getCurrentScrollTop()
-      }
-    })
+    let { remeberCurrentPageScrollState } = this.props
+    if (remeberCurrentPageScrollState) remeberCurrentPageScrollState()
   }
   showPostDetail () {
     let { dispatch, articleId } = this.props
@@ -59,7 +51,7 @@ class PlainPostItem extends Component {
               onClick={this.showAuthorHomepage}
               btnPadding='0' color="#333" />
             <time className={styles.postItemPublishTime}>{
-              dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')
+              timeRelativeToNow(time)
             }</time>
           </div>
           <h2 className={styles.title}>{title}</h2>

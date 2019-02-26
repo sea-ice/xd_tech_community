@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva';
-import { Avatar, Button, message } from 'antd'
+import { Button, message } from 'antd'
 
 import styles from './index.scss'
-import config from 'config/constants'
 
 @connect(state => ({
   loginUserId: state.user.userId
@@ -52,11 +51,12 @@ class ReceiveMsgItemLayout extends Component {
     })
   }
   deleteMsg() {
-    let { dispatch, msgType, msgId, updateCurrentPage } = this.props
+    let { dispatch, msgType, msgId, loginUserId, updateCurrentPage } = this.props
     dispatch({
       type: `${msgType}/deleteMsg`,
       payload: {
         msgId,
+        userId: loginUserId,
         successCallback: () => {
           updateCurrentPage()
           message.success('删除成功！')
@@ -70,9 +70,6 @@ class ReceiveMsgItemLayout extends Component {
   render() {
     let {
       time,
-      avatar,
-      avatarBgColor,
-      nickName,
       isRead,
       header,
       content,
@@ -81,7 +78,7 @@ class ReceiveMsgItemLayout extends Component {
     } = this.props
     let { showComplete } = this.state
     let isClickable = (content.length <= 60) && !isRead
-    avatar = avatar === undefined ? `${config.SUBDIRECTORY_PREFIX}/assets/sys_avatar.png` : avatar
+    // avatar = avatar === undefined ? `${config.SUBDIRECTORY_PREFIX}/assets/sys_avatar.png` : avatar
 
     return (
       <div className={isRead ? styles.read : styles.notifyItem}>

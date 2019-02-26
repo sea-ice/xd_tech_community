@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, message } from 'antd'
 import { connect } from 'dva'
+import leanCloudServices from 'leancloud-storage'
 
 import styles from './index.scss'
+import config from 'config/secret.config'
 
 @connect()
 @Form.create()
@@ -15,6 +17,13 @@ class CheckPhone extends Component {
       getSmsCode: false,
       getCodeTimeout: -1
     }
+  }
+
+  componentDidMount() {
+    leanCloudServices.init({
+      appId: config.LEANCLOUD_SMS_ID,
+      appKey: config.LEANCLOUD_SMS_KEY
+    })
   }
 
   getSmsCode () {
@@ -39,7 +48,7 @@ class CheckPhone extends Component {
         },
         sendSuccessCallback: () => {
           let timeout = () => {
-            let {getCodeTimeout} = this.state
+            let { getCodeTimeout } = this.state
             this.setState({getCodeTimeout: getCodeTimeout - 1})
             if (getCodeTimeout === 0) {
               clearTimeout(this.timeout)
@@ -49,8 +58,15 @@ class CheckPhone extends Component {
           }
           this.setState({
             getSmsCode: true,
-            getCodeTimeout: 59
+            getCodeTimeout: 199
           }, () => {this.timeout = setTimeout(timeout, 1000)})
+        },
+        sendCodeFailCallback: msg => {
+          form.setFields({
+            smsCode: {
+              errors: [new Error('验证码获取失败，请稍后再试')]
+            }
+          })
         }
       }
     })
@@ -66,6 +82,15 @@ class CheckPhone extends Component {
 
     let phone = form.getFieldValue('username')
     let smsCode = form.getFieldValue('smsCode')
+
+    if (!smsCode.match(/^\d{6}$/)) {
+      form.setFields({
+        smsCode: {
+          errors: [new Error('验证码填写有误')]
+        }
+      })
+      return
+    }
 
     dispatch({
       type: 'register/verifySmsCode',
@@ -85,7 +110,7 @@ class CheckPhone extends Component {
         failCallback: () => {
           form.setFields({
             smsCode: {
-              errors: [new Error('验证码输入错误，请重新输入！')]
+              errors: [new Error('验证码填写有误')]
             }
           })
         }
@@ -114,8 +139,7 @@ class CheckPhone extends Component {
           {
             getFieldDecorator('smsCode', {
               rules: [
-                { required: true, message: '请填写验证码' },
-                { pattern: /^\d{4,8}$/, message: '请输入有效的验证码' }
+                { required: true, message: '请填写验证码' }
               ]
             })(
               <div className={styles.smsCodeWrapper}>

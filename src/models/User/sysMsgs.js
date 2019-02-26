@@ -63,8 +63,7 @@ export default {
     *setAllMsgRead({ payload }, { call, put }) {
       let { userId, successCallback } = payload
       let res = yield call(() => postJSON(
-        /* 接口待确定 */
-        `${config.SERVER_URL_API_PREFIX}`, {
+        `${config.SERVER_URL_API_PREFIX}/push/setAllSystemNotifyRead`, {
           userId
         }))
       let { data: { code } } = res
@@ -87,11 +86,12 @@ export default {
     },
     /* 系统消息删除功能待确定 */
     *deleteMsg({ payload }, { call }) {
-      let { msgId, successCallback, failCallback } = payload
+      let { msgId, userId, successCallback, failCallback } = payload
       let res = yield call(() => postJSON(
         /* 接口待确定 */
-        `${config.SERVER_URL_API_PREFIX}`, {
-          notify: msgId
+        `${config.SERVER_URL_API_PREFIX}/push/deleteSystemNotifyByUserId`, {
+          notifyId: msgId,
+          userId
         }))
       let { data: { code } } = res
       if (code === 100) {

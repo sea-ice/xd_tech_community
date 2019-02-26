@@ -65,7 +65,7 @@ class AuthorInfoList extends Component {
         </li>
         <li>
           <label>性别</label>
-          <p>{gender === 1 ? '男' : '女'}</p>
+          <p>{gender === 1 ? '男' : gender === 0 ? '女' : '保密'}</p>
         </li>
         <li>
           <label>学校</label>

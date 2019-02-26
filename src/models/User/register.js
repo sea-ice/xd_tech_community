@@ -1,6 +1,7 @@
 import { postJSON } from "utils"
 import config from 'config/constants'
 import { getSmsCode, verifySmsCode } from 'services/user/register'
+import leanCloudServices from 'leancloud-storage'
 
 export default {
   namespace: 'register',
@@ -33,7 +34,12 @@ export default {
 
     *checkRegister({ payload }, { call, put }) {
 
-      let { username, checkFailCallback, sendSuccessCallback } = payload
+      let {
+        username,
+        checkFailCallback,
+        sendSuccessCallback,
+        sendCodeFailCallback
+      } = payload
       let checkRes = yield call(() => postJSON(
         `${config.SERVER_URL_API_PREFIX}/user/checkPhone`, {
         userName: username
@@ -46,7 +52,8 @@ export default {
           type: 'getSmsCode',
           payload: {
             username,
-            successCallback: sendSuccessCallback
+            successCallback: sendSuccessCallback,
+            failCallback: sendCodeFailCallback
           }
         })
       } else {
@@ -93,20 +100,29 @@ export default {
       }
     },
     // https://leancloud.cn/docs/rest_sms_api.html#hash889571772
-    *getSmsCode({payload}, {call}) {
+    getSmsCode({ payload }, { call }) {
       // let code = yield call(getSmsCode, {phone: payload.username})
       // console.log(code)
-      yield Promise.resolve()
-      payload.successCallback()
+      let { username, successCallback, failCallback } = payload
+      console.log(leanCloudServices)
+      leanCloudServices.Cloud.requestSmsCode({
+        mobilePhoneNumber: username,
+        name: '源来',
+        op: '注册',
+        ttl: 5
+      }).then(() => {
+        if (successCallback) successCallback()
+      }).catch(err => {
+        if (failCallback) failCallback(err)
+      })
     },
-    *verifySmsCode ({payload}, {call}) {
-      let {successCallback, failCallback, ...rest} = payload
-      // let verifyRes = yield call(verifySmsCode, rest)
-      // if (verifyRes.code === 0) {
-        successCallback()
-      // } else {
-        // failCallback()
-      // }
+    verifySmsCode({ payload }, { call }) {
+      let { phone, code, successCallback, failCallback } = payload
+      leanCloudServices.Cloud.verifySmsCode(code, phone).then(res => {
+        if (successCallback) successCallback()
+      }).catch(err => {
+        if (failCallback) failCallback(err)
+      })
     }
   }
 }

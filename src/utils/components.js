@@ -1,5 +1,4 @@
-import dayjs from 'dayjs'
-import { getRandomInt } from 'utils';
+import { getRandomInt, timeRelativeToNow } from 'utils';
 
 
 /**
@@ -59,7 +58,7 @@ export function privateMsgItemStandardProps({
   let isReceiver = type === 1 // 当前用户是私信接收者
   return {
     isReceiver,
-    time: dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm'),
+    time: timeRelativeToNow(time),
     avatar: avator,
     authorId: isReceiver ? senderId : receiverId,
     nickName,

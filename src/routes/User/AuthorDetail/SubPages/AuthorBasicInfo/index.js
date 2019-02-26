@@ -10,6 +10,7 @@ import UserFollowState from 'components/User/UserFollowState'
 import PrivateMsgBtn from 'components/User/PrivateMsgBtn'
 
 import secret from 'config/secret.config'
+import config from 'config/constants'
 
 @connect(state => ({
   loginUserId: state.user.userId,
@@ -150,7 +151,7 @@ class AuthorBasicInfo extends Component {
         <Row gutter={15}>
           <Col span={6}>
             <div className={styles.avatarWrapper}>
-              <Avatar src={avator || '/assets/yay.jpg'} shape="square" />
+              <Avatar src={avator || `${config.SUBDIRECTORY_PREFIX}/assets/yay.jpg`} shape="square" />
             </div>
             {
               (!loginUserId || authorId && (loginUserId !== authorId)) ? (

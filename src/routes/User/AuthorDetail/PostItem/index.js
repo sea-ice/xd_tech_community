@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva';
 import { routerRedux, withRouter } from 'dva/router'
 import { Icon, Popover, message } from 'antd'
-import dayjs from 'dayjs'
 
 import styles from './index.scss'
 import config from 'config/constants'
 import Confirm from 'components/common/Confirm'
 import IconBtn from "components/common/IconBtn";
-import { getPostExcerpt } from 'utils'
+import { getPostExcerpt, timeRelativeToNow } from 'utils'
 
 @withRouter
 class PostItem extends Component {
@@ -21,15 +20,18 @@ class PostItem extends Component {
   }
   turnToPostDetails() {
     let { dispatch, articleId, isDraft } = this.props
-    if (isDraft) return
-    dispatch(routerRedux.push(`/post/${articleId}`))
+    if (isDraft) {
+      this.editDraft()
+    } else {
+      dispatch(routerRedux.push(`/post/${articleId}`))
+    }
   }
   editDraft() {
-    let { dispatch, articleId, location: { pathname } } = this.props
+    let { dispatch, articleId, location: { pathname, search } } = this.props
     dispatch(routerRedux.push(`/edit/${articleId}`))
     dispatch({
       type: 'postCURD/saveEditDraftReturnPage',
-      payload: { returnPath: pathname }
+      payload: { returnPath: pathname + search }
     })
   }
   deletePost() {
@@ -69,7 +71,7 @@ class PostItem extends Component {
           <div className={styles.title}>
             <h4 onClick={this.turnToPostDetails}>
               {isDraft ? `[${type === config.postType.SHARE ? '分享' : '求助'}]` : ''}
-              <span>{title || '无标题'}</span>
+              <span style={{marginLeft: title ? 0 : '10px'}}>{title || '无标题'}</span>
             </h4>
             {isDraft ? (
               <i className={styles.editIcon} onClick={this.editDraft}><Icon type="edit" /></i>
@@ -99,7 +101,7 @@ class PostItem extends Component {
           }
         </header>
         <footer className={styles.footer}>
-          <time>{!!time && dayjs(Number(time)).format('YYYY年MM月DD日 HH:mm')}</time>
+          <time>{!!time && `发表于${timeRelativeToNow(time)}`}</time>
           {
             isDraft ?
               <p className={styles.wordCount}>共&nbsp;{getPostExcerpt(content || '').length}&nbsp;字</p>

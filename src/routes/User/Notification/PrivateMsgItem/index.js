@@ -8,7 +8,8 @@ import styles from './index.scss'
 import Confirm from 'components/common/Confirm'
 
 @connect(state => ({
-  loginUserId: state.user.userId
+  loginUserId: state.user.userId,
+  currentPage: state.msgs.privateMsgs.currentPage
 }))
 class NotifyItem extends Component {
   state = {
@@ -71,7 +72,7 @@ class NotifyItem extends Component {
         message.error('请输入回复内容！')
         return reject()
       }
-      let { dispatch, isReceiver, loginUserId, authorId, id, replyId } = this.props
+      let { dispatch, isReceiver, loginUserId, authorId, id, replyId, currentPage, number } = this.props
       if (!isReceiver) id = replyId // 如果是追加回复，则回复的消息id为当前消息的replyId
       dispatch({
         type: 'privateMsgs/reply',
@@ -80,6 +81,7 @@ class NotifyItem extends Component {
           receiverId: authorId,
           content: replyContent,
           msgId: id,
+          page: currentPage,
           successCallback() {
             message.success('回复成功！')
             resolve(true)
